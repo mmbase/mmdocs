@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title>How to contribute to the community</title><link href="style/documentation.css" rel="stylesheet" type="text/css" /><meta content="DocBook XSL Stylesheets V1.72.0" name="generator" /><link xmlns="" type="image/x-icon" href="style/favicon.ico" rel="icon" /><link xmlns="" type="image/x-icon" href="style/favicon.ico" rel="shortcut icon" /><meta xmlns="" content="text/html; charset=utf-8" http-equiv="content-type" /></head><body><div xmlns="" class="navigation"><img alt="mmbase logo" src="style/logo.png" /><h2>How to contribute to the community</h2><p><a href="contribute.html#N10021">Participating in the community</a></p><p><a href="contribute.html#N10043">What to read</a></p><p><a href="contribute.html#N1004C">Directory layout</a></p><p><a href="contribute.html#N10054">Coding standards</a></p><p><a href="contribute.html#N10066">Writing log messages</a></p><p><a href="contribute.html#N1008B">Patch submission guidelines</a></p><p><a href="contribute.html#N1008F">Filing bugs / issues</a></p><p><a href="contribute.html#N100AD">Commit access</a></p><p><a href="contribute.html#N100B1">Release numbering, compatibility, and deprecation</a></p><p><a href="contribute.html#N100B5">Stabilizing and maintaining releases</a></p><hr /><p><a href="http://www.mmbase.org">MMBase</a></p><p><a href="index.html">home</a></p></div><div class="article" lang="en"><div class="titlepage"><div><div><h1 class="title"><a id="N10001" />How to contribute to the community</h1></div><div><div class="authorgroup"><strong class="authorgroup">Author: </strong><span class="author"><span class="firstname">Nico</span> <span class="surname">Klasens</span></span><br /><strong class="authorgroup">Date: </strong>2005-02-20</div></div><div><div class="legalnotice"><a id="N10018" /><p>This software is OSI Certified Open Source Software. OSI Certified is a certification mark of the Open Source Initiative.</p><p>The license (Mozilla version 1.0) can be read at the MMBase site. See <a xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.mmbase.org/license" target="_top">http://www.mmbase.org/license</a></p></div></div></div><hr /></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="section"><a href="contribute.html#N10021">1. Participating in the community</a></span></dt><dt><span class="section"><a href="contribute.html#N10043">2. What to read</a></span></dt><dt><span class="section"><a href="contribute.html#N1004C">3. Directory layout</a></span></dt><dt><span class="section"><a href="contribute.html#N10054">4. Coding standards</a></span></dt><dt><span class="section"><a href="contribute.html#N10066">5. Writing log messages</a></span></dt><dt><span class="section"><a href="contribute.html#N1008B">6. Patch submission guidelines</a></span></dt><dt><span class="section"><a href="contribute.html#N1008F">7. Filing bugs / issues</a></span></dt><dt><span class="section"><a href="contribute.html#N100AD">8. Commit access</a></span></dt><dt><span class="section"><a href="contribute.html#N100B1">9. Release numbering, compatibility, and deprecation</a></span></dt><dt><span class="section"><a href="contribute.html#N100B5">10. Stabilizing and maintaining releases</a></span></dt></dl></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="N10021" />1. Participating in the community</h2></div></div></div><p>MMBase is originally build by the VPRO, a dutch broadcasting corporation (http://www.vpro.nl), and has been opensourced in april 2000.
+    MMbase is a open-source project under a MPL-style license. A number of developers work for broadcasting corporations in the Netherlands, some work
+    for other large companies, and many others are simply excellent volunteers who are interested in building a better general purpose object oriented
+    content management system.</p><p>The community exists mainly through mailing lists and a source repository. To participate:</p><p>Go to <a xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.mmbase.org" target="_top">http://www.mmbase.org</a> and</p><div class="itemizedlist"><ul type="disc"><li>Join the "developers", "cvs", and "announce" mailing lists. The developers list, <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="6c08091a0900031c091e1f2c00051f181f4201010e0d1f0942031e0b">[email&#160;protected]</a>, is where almost all
+        discussion takes place. All questions should go there, though you might want to check the list archives first. The "cvs" list receives
+        automated commit emails.</li><li>Read the Architectural Overview document. This document can be found in the "Documentation" area of the website in the
+        Documentation-&gt;general section. The architecture will give you a theoretical overview of MMBase's design.</li><li>For discussions about technical issues, technical questions, or just to chat with MMBase developers. There is a IRC channel that you
+        can join: #mmbase, server irc.slashnet.org.</li></ul></div><p>There are many ways to join the project, either by writing code, or by testing and/or helping to manage the bug database. If you'd like to
+    contribute, then look at:</p><p>The bugs/issues/wishes database. <a xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.mmbase.org/bugs" target="_top">http://www.mmbase.org/bugs</a></p><p>To submit code, simply send your patches to <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="fc98998a9990938c998e8fbc90958f888fd291919e9d8f99d2938e9b">[email&#160;protected]</a> after you have read the rest of this file.</p><p>To help manage the issues database, read over the issue summaries, looking and testing for issues that are either invalid, or are duplicates
+    of other issues. Both kinds are very common, the first because bugs often get unknowingly fixed as side effects of other changes in the code, and
+    the second because people sometimes file an issue without noticing that it has already been reported. If you are not sure about an issue, post a
+    question to <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="d4b0b1a2b1b8bba4b1a6a794b8bda7a0a7fab9b9b6b5a7b1fabba6b3">[email&#160;protected]</a>.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="N10043" />2. What to read</h2></div></div></div><p>Before you can contribute code, you'll need to familiarize yourself with the existing code base and interfaces.</p><p>Check out a copy of MMBase (anonymously, so you can look at the code.</p><p>Within 'src/org/mmbase/bridge/' are a bunch of interfaces with doc comments. If you read through these, you'll have a pretty good
+    understanding of the concepts of MMBase.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="N1004C" />3. Directory layout</h2></div></div></div><p>A rough guide to the source tree from the CVS 'all' module:</p><pre class="programlisting">
+   documentation/
+      User and Developer documentation.
+   config/
+      Default MMBase configuration files
+   html/
+      MMBase general web pages like editors and admin interface
+   src/
+      Source code to MMBase itself (as opposed to external libraries).
+   tests/
+      Automated test suite.
+   applications/
+      Stuff that works with MMBase, but that MMBase doesn't depend on.
+   applications/bugtracker
+      Sources of the bugs/issues database
+   applications/cloudcontext
+      Sources of the cloudcontext security implementation
+   applications/crontab
+      Sources of scheduling framework
+   applications/dove
+      Sources of xml communication interface
+   applications/editwizard
+      Sources of editors which can be defined by xml
+   applications/email
+      Sources of email application
+   applications/media
+      Sources of media framework
+   applications/packaging
+      Sources of packaging application
+   applications/rmmci
+      Sources of RMI communication
+   applications/taglib
+      Sources of taglibrary
+   applications/xmlimporter
+      Sources of xml import application
+  </pre></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="N10054" />4. Coding standards</h2></div></div></div><p>To understand how things work, read documentation/backenddevelopers/codingstandards We're following the Sun coding standards for
+    Java.</p><p>Read <a xmlns:xlink="http://www.w3.org/1999/xlink" href="http://java.sun.com/docs/codeconv/" target="_top">http://java.sun.com/docs/codeconv/</a> for a full description of the Sun coding
+    standards; but here is a short example demonstrating the most important formatting guidelines:</p><pre class="programlisting">
+    /**
+     * Documentation of method
+     *
+     * @param arg1 Description of parameter
+     * @param arg2 Description of parameter
+     * @return expected return values
+     */
+    private static final int foo(int arg1, int arg2) { /* Use visibility modifier first */
+        try {                                          /* Brace on same line, indent 4 */
+            if ((some_very_long_condition &amp;&amp; arg2 == 1) 
+                    || remaining_condition) {          /* Generally use the 8-space rule */
+                int v = 10 + someFunction(arg1, arg2); /* Use space around operators */
+                return v;
+            } else {                                   /* Else on same line as close brace */
+                return 1;                              /* Don't use magic numbers like these */
+            }                                          /* close brace on own line */
+        } catch (Exception e) {                        /* Catch on same line as close brace */
+            //documentation of code
+        } finally {                                    /* Finally on same line as close brace */
+        }
+        return 3;
+    }
+  </pre><p>In general, be generous with parentheses even when you're sure about the operator precedence, and be willing to add spaces and newlines to
+    avoid "code crunch". Don't worry too much about vertical density; it's more important to make code readable than to fit that extra line on the
+    screen.</p><p>We understamd that formatting is a matter of taste and that many developers prefer other formmatting styles, but try to stick to the
+    guidelines. We are using them to keep the code readable. Don't take it personally when someone points you to the coding standards when you submit
+    some code. We will accept your code anyway.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="N10066" />5. Writing log messages</h2></div></div></div><p>Certain guidelines should be adhered to when writing log messages for code changes:</p><p>Make a log message for every change. The value of the log becomes much less if developers cannot rely on its completeness. Even if you've
+    only changed comments, write a log that says "Doc fix." or something.</p><p>Start off the log message with one line indicating the general nature of the change. This helps put developers in the right frame of mind
+    for reading the rest of the log message.</p><p>Use full sentences, not sentence fragments. Fragments are more often ambiguous, and it takes only a few more seconds to write out what you
+    mean. Fragments like "Doc fix", "New file", or "New mewthod" are acceptable because they are standard idioms, and all further details should
+    appear in the source code.</p><p>The log message should name every affected method, variable, etc, including the names of variables that are being removed in this commit.
+    This helps people searching through the logs later. Don't hide names in wildcards, because the globbed portion may be what someone searches for
+    later.</p><p>If your change is related to a specific issue in the issue tracker, then include a string like "issue #N" in the log message. For example,
+    if a patch resolves issue 1729, then the log message might be:</p><p>Fix issue #1729: Don't crash because of a missing file.</p><p>For large changes or change groups, group the log entry into paragraphs separated by blank lines. Each paragraph should be a set of changes
+    that accomplishes a single goal, and each group should start with a sentence or two summarizing the change. Truly independent changes should be
+    made in separate commits, of course.</p><p>One should never need the log entries to understand the current code. If you find yourself writing a significant explanation in the log, you
+    should consider carefully whether your text doesn't actually belong in a comment, alongside the code it explains.</p><p>There are some common-sense exceptions to the need to name everything that was changed:</p><div class="itemizedlist"><ul type="disc"><li>If you have made a change which requires trivial changes throughout the rest of the program (e.g., renaming a variable), you needn't
+        name all the functions affected, you can just say "All callers changed".</li><li>If you have rewritten a file completely, the reader understands that everything in it has changed, so your log entry may simply give
+        the file name, and say "Rewritten".</li><li>If your change was to multiple files, provide a brief summary of the change in the log message</li></ul></div><p>In general, there is a tension between making entries easy to find by searching for identifiers, and wasting time or producing unreadable
+    entries by being exhaustive. Use your best judgment --- and be considerate of your fellow developers. (Also, run "cvs log" to see how others have
+    been writing their log entries.)</p><p>Log messages for documentation have somewhat looser guidelines. The requirement to name every symbol obviously does not apply, and if the
+    change is just one more increment in a continuous process it's not even necessary to name every file. Just briefly summarize the change, When you
+    finish a distinct stage of work, note it in the log message. Please write your log messages in English, so everybody involved in the project can
+    understand the changes you made.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="N1008B" />6. Patch submission guidelines</h2></div></div></div><p /></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="N1008F" />7. Filing bugs / issues</h2></div></div></div><p>If you encounter a situation where MMBase is clearly behaving wrongly, or behaving opposite to what the documentation says, then it's okay
+    to file the issue right away (after searching to make sure it isn't already filed, of course!). But if you're</p><div class="itemizedlist"><ul type="disc"><li>Requesting a new feature, or</li><li>Having build problems, or</li><li>Not sure what the behavior should be, or</li><li>Disagreeing with current intended behavior, or</li><li>Not TOTALLY sure that others would agree this is a bug, or</li><li>For any reason at all not sure this should be filed,</li></ul></div><p>...then please post to the dev list first. You'll get a faster response, and others won't be forced to use the issues database to have the
+    initial real-time conversations.</p><p>Nothing is lost this way. If we eventually conclude that it should be in the issue tracker, then we can still file it later, after the
+    description and reproduction recipe have been honed on the dev list.</p><p>*Please* be conservative about filing issues. The issues database is physically much more cumbersome than email. It wastes people's time to
+    have conversations in the issues database that should be had in email. (This is not a libel against the issue tracker, it's just a result of the
+    fact that the issues database is for permanent storage and flow annotation, not for real-time conversation.)</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="N100AD" />8. Commit access</h2></div></div></div><p /></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="N100B1" />9. Release numbering, compatibility, and deprecation</h2></div></div></div><p /></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="N100B5" />10. Stabilizing and maintaining releases</h2></div></div></div><p /></div></div><hr xmlns="" /><p xmlns="">
+      This is part of the <a href="http://www.mmbase.org">MMBase</a> documentation.
+    </p><p xmlns="">
+      For questions and remarks about this documentation mail to: 
+      <a href="/cdn-cgi/l/email-protection#b5d1dad6c0d8d0dbc1d4c1dcdadbf5d8d8d7d4c6d09bdac7d2"><span class="__cf_email__" data-cfemail="05616a667068606b7164716c6a6b456868676476602b6a7762">[email&#160;protected]</span></a></p><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script></body></html>

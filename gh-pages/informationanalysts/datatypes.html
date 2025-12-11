@@ -1,0 +1,441 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title>Data types in MMBase</title><link href="../style/documentation.css" rel="stylesheet" type="text/css" /><meta content="DocBook XSL Stylesheets V1.72.0" name="generator" /><link xmlns="" type="image/x-icon" href="../style/favicon.ico" rel="icon" /><link xmlns="" type="image/x-icon" href="../style/favicon.ico" rel="shortcut icon" /><meta xmlns="" content="text/html; charset=utf-8" http-equiv="content-type" /></head><body><div xmlns="" class="navigation"><img alt="mmbase logo" src="../style/logo.png" /><h2>Data types in MMBase</h2><p><a href="datatypes.html#datatypes">MMBase Data Types</a></p><p><a href="datatypes.html#datatype.xml">Description of the Data-type XML</a></p><p><a href="datatypes.html#builders">How to associate a data type with a field</a></p><p><a href="datatypes.html#bridge">Datatypes and the MMBase bridge</a></p><p><a href="datatypes.html#taglib">Datatypes and the MMBase Taglib</a></p><p><a href="datatypes.html#javascript">Datatypes and JavaScript</a></p><p><a href="datatypes.html#available">Summary of default datatypes</a></p><hr /><p><a href="http://www.mmbase.org">MMBase</a></p><p><a href="../index.html">home</a></p></div><div class="article" lang="en"><div class="titlepage"><div><div><h1 class="title"><a id="N10001" />Data types in MMBase</h1></div><div><div class="authorgroup"><strong class="authorgroup">Authors: </strong><span class="author"><span class="firstname">André</span> <span class="surname">van Toly</span>, </span><span class="author"><span class="firstname">Michiel</span> <span class="surname">Meeuwissen</span></span><br /><strong class="authorgroup">Date: </strong>2007-08-03</div></div><div><div class="legalnotice"><a id="N1001A" /><p>This software is OSI Certified Open Source Software. OSI Certified
+      is a certification mark of the Open Source Initiative.</p><p>The license (Mozilla version 1.0) can be read at the MMBase site.
+      See <a xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.mmbase.org/license" target="_top">http://www.mmbase.org/license</a></p></div></div></div><hr /></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="section"><a href="datatypes.html#datatypes">1. MMBase Data Types</a></span></dt><dt><span class="section"><a href="datatypes.html#datatype.xml">2. Description of the Data-type XML</a></span></dt><dd><dl><dt><span class="section"><a href="datatypes.html#datatype.description">2.1. Description, class, default value, and properties</a></span></dt><dt><span class="section"><a href="datatypes.html#datatype.restrictions">2.2. Restrictions</a></span></dt><dd><dl><dt><span class="section"><a href="datatypes.html#enforcementandfixation">2.2.1. Enforcement and fixation</a></span></dt><dt><span class="section"><a href="datatypes.html#errormessage">2.2.2. Error messages</a></span></dt><dt><span class="section"><a href="datatypes.html#unique">2.2.3. Unique</a></span></dt><dt><span class="section"><a href="datatypes.html#required">2.2.4. Required</a></span></dt><dt><span class="section"><a href="datatypes.html#minmax">2.2.5. Minimal and maximal values</a></span></dt><dt><span class="section"><a href="datatypes.html#minmaxlength">2.2.6. Minimal, maximal and fixed lengths</a></span></dt><dt><span class="section"><a href="datatypes.html#pattern">2.2.7. Patterns</a></span></dt></dl></dd><dt><span class="section"><a href="datatypes.html#enumeration">2.3. Other properties &amp; enumerations</a></span></dt><dd><dl><dt><span class="section"><a href="datatypes.html#password">2.3.1. Password</a></span></dt><dt><span class="section"><a href="datatypes.html#enumerations">2.3.2. Enumerations</a></span></dt><dd><dl><dt><span class="section"><a href="datatypes.html#resourcebundle">Enumeration from a Resource bundle</a></span></dt><dt><span class="section"><a href="datatypes.html#sorterclass">sorterclass attribute</a></span></dt><dt><span class="section"><a href="datatypes.html#query">Enumerations based on MMBase queries</a></span></dt></dl></dd></dl></dd><dt><span class="section"><a href="datatypes.html#processors">2.4. Processors</a></span></dt><dd><dl><dt><span class="section"><a href="datatypes.html#setgetprocessor">2.4.1. Set-processors and Get-processors</a></span></dt><dt><span class="section"><a href="datatypes.html#commitprocessors">2.4.2. Commit-processors</a></span></dt></dl></dd></dl></dd><dt><span class="section"><a href="datatypes.html#builders">3. How to associate a data type with a field</a></span></dt><dt><span class="section"><a href="datatypes.html#bridge">4. Datatypes and the MMBase bridge</a></span></dt><dt><span class="section"><a href="datatypes.html#taglib">5. Datatypes and the MMBase Taglib</a></span></dt><dd><dl><dt><span class="section"><a href="datatypes.html#mmform">5.1. Forms &amp; validation</a></span></dt></dl></dd><dt><span class="section"><a href="datatypes.html#javascript">6. Datatypes and JavaScript</a></span></dt><dt><span class="section"><a href="datatypes.html#available">7. Summary of default datatypes</a></span></dt></dl></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="datatypes" />1. MMBase Data Types</h2></div></div></div><p>
+      MMBase datatypes are defined in the resource <code class="filename">&lt;MMBase
+      configuration&gt;/datatypes.xml</code>. See <a xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.mmbase.org/xmlns/datatypes.xsd" target="_top">the Xml Schema Definition</a>, for a
+      formal description of this XML format. This resource can exist multiple times, but there is
+      at least one in mmbase.jar. The contents of that one are described in <a href="datatypes.html#available" title="7. Summary of default datatypes">Section 7, “Summary of default datatypes”</a>
+    </p><p>
+      Other jars (e.g. of MMBase components) can also provide such a datatypes.xml, which will also
+      be read in, and added to the repository of available datatypes.
+    </p><p>
+      Of course you can also place your own datatypes.xml, e.g. just in WEB-INF/config.
+    </p><p>
+      On a running MMBase you can see which datatypes are available in /mmbase/validation/.
+      See e.g. at <a xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.mmbase.org/mmbase/validation" target="_top">/mmbase/validation at the mmbase.org site</a>.
+    </p></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="datatype.xml" />2. Description of the Data-type XML</h2></div></div></div><p>
+      A <code class="filename">datatypes.xml</code> basically contains a list of 'datatype' entries. E.g.
+      <pre class="programlisting">
+&lt;?xml version="1.0" ?&gt;
+&lt;datatypes
+    xmlns="http://www.mmbase.org/xmlns/datatypes"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/datatypes http://www.mmbase.org/xmlns/datatypes.xsd"&gt;
+
+
+  &lt;datatype id="integer"&gt;
+    &lt;description xml:lang="en"&gt;
+      Not so very big integer numbers. Common base for all kind of enumerations.
+    &lt;/description&gt;
+    &lt;class name="org.mmbase.datatypes.IntegerDataType" /&gt;
+  &lt;/datatype&gt;
+  ...
+
+        
+      </pre>
+      There are only a limited number of data types which can be defined like 'integer' in this
+      example. Namely only the
+      database types of MMBase (string, integer, binary, float, double, long, xml, node, datetime
+      and boolean). All other datatypes are based on one of those. This can be done in two
+      ways. As a sub element 'specialization':
+      <pre class="programlisting">
+&lt;datatype id="float"&gt;
+  &lt;specialization id="scale1-10"&gt;
+    &lt;description xml:lang="en"&gt;A scale from 1 to 10.&lt;/description&gt;
+    &lt;minInclusive value="1.0"  /&gt;
+    &lt;maxInclusive value="10.0"  /&gt;
+  &lt;/specialization&gt;
+&lt;/datatype&gt;</pre>
+      or as a 'datatype' element with a 'base' attribute.
+      <pre class="programlisting">
+&lt;datatype base="float" id="scale1-10"&gt;
+  &lt;description xml:lang="en"&gt;A scale from 1 to 10.&lt;/description&gt;
+  &lt;minInclusive value="1.0"  /&gt;
+  &lt;maxInclusive value="10.0"  /&gt;
+&lt;/datatype&gt;</pre>
+    </p><p>
+      It is also possible to replace a data type, by extending from the data type with the same
+      id. This is only feasible in <code class="filename">WEB-INF/config/datatypes</code> because that one
+      is parsed last.<pre class="programlisting">
+&lt;!-- In this site, email addresses are required --&gt;
+&lt;datatype base="emailaddress" id="emailaddress"&gt;
+  &lt;required value="true"&gt;
+    &lt;description xml:lang="nl"&gt;Je moet een emailadres intypen&lt;/description&gt;
+    &lt;description xml:lang="fr"&gt;Un address courriel est requis&lt;/description&gt;
+    &lt;description xml:lang="en"&gt;An email address is required&lt;/description&gt;
+  &lt;/required&gt;
+&lt;/datatype&gt;</pre>
+    </p><p>
+      In the following subsections we will elaborate a bit on the possible sub-elements of a
+      datatype (or 'specialization') element.
+    </p><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="datatype.description" />2.1. Description, class, default value, and properties</h3></div></div></div><p>
+        You can start with descriptions (one for each language). These descriptions are used in
+        automated overview pages (as e.g. in /mmbase/validation). If you define a data type for
+        inclusion in mmbase.jar or in some component, it is advised to at least provide a
+        description in English.
+      </p><p>
+        There can be one or no 'class' element then, which defines the actual implementation of
+        the <span class="structname">org.mmbase.datatypes.DataType</span> interface which backs the
+        data type. The class can often be inherited from the base data type. If not, the class must
+        at least extend from the class from the base data type.
+      </p><p>
+        With every data type a default value is associated. E.g.<pre class="programlisting">
+&lt;datatype id="integer"&gt;
+    &lt;specialization id="colors"&gt;
+      &lt;description xml:lang="en"&gt;
+        colors as can be used in css
+      &lt;/description&gt;
+      &lt;default value="white" /&gt;
+      &lt;enumeration&gt;
+        &lt;entry basename="org.mmbase.datatypes.resources.string.colors" /&gt;
+      &lt;/enumeration&gt;
+    &lt;/specialization&gt;</pre>
+        The value is implicitly cast to the correct type. In this case 'white' can be converted to
+        an integer, because there is a mapping present in the defined enumeration.
+      </p><p>
+        If the class of the data type supports properties which are not recognized by the data type
+        XSD (as described in this document) then arbitrary properties can be set using 'property' sub elements.<pre class="programlisting">
+&lt;specialization id="confirmpassword"&gt;
+  &lt;description xml:lang="en"&gt;
+    This is a field datatype that of which the value is only valid, if it is equal to the value
+    of another field in this node. The other field's name is default 'password' but it can be
+    changed by overriding the property 'field'.
+  &lt;/description&gt;
+  &lt;class name="org.mmbase.datatypes.ConfirmPasswordDataType" /&gt;
+  &lt;property name="field" value="password" /&gt;
+&lt;/specialization&gt;</pre>
+        In this case, the 'ConfirmPasswordDataType' class has a 'setField' method which is called when this
+        data type is instantiated.
+      </p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="datatype.restrictions" />2.2. Restrictions</h3></div></div></div><p>
+        Several 'restrictions' can then be applied to further define the 'data type'. The following
+        sub sections describe the possibilities.
+      </p><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a id="enforcementandfixation" />2.2.1. Enforcement and fixation</h4></div></div></div><p>
+          All of the restrictions described in the next sections also support the attributes
+          'enforce' and 'fixed'.
+        </p><p>
+          With the 'enforce' attribute it is indicated how 'strong' the restriction on the values
+          is. The possible values are, in order of decreasing strength:
+        </p><div class="itemizedlist"><ul type="disc"><li><p>absolute: This restriction is enforced by the MMBase, it probably cannot
+          even correctly store the value if this restriction is not satisfied. This restriction is
+          even enforced in inherited datatypes.</p></li><li><p>always: The restriction is always effective. But extensions can change
+          it. This is the default.</p></li><li><p>onchange: The restriction is only enforced if the value is changed, or
+          created. So if it is left unchanged, it is not enforced.</p></li><li><p>oncreate: Only the first time.</p></li><li><p>never: The value restriction is never enforced. It only serves as meta
+          information which can be used as an indication for GUI's.</p></li></ul></div><p>
+          If the restriction is 'fixed', then that means that the restriction cannot be overridden at
+          all. (TODO, check this).
+        </p></div><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a id="errormessage" />2.2.2. Error messages</h4></div></div></div><p>
+          If a restriction is not satified, then a certain message can be provided to the user. On
+          default this message is looked up in the resource bundle
+          'org.mmbase.datatypes.resources.datatypes'. The used key is something like &lt;database type&gt;.&lt;name of restriction&gt;.error.
+        </p><p>
+          The error description can however, per language, be overridden, using 'description' sub
+          elements of the restriction element. For example<pre class="programlisting">
+&lt;specialization id="emailaddress"&gt;
+  &lt;description xml:lang="en"&gt;
+    The valid values of such a field must be a valid email address. The current implemenation is by a rather simple regular expression.
+   &lt;/description&gt;
+   &lt;pattern value="(?i)\A[A-Z0-9_\-\+\&amp;amp;\*\#]+([\.-]?[A-Z0-9_\-\+\&amp;amp;\*\#])*@([A-Z0-9_-]{2,}[\.]{1})+([A-Z]{2,})\z"&gt;
+     &lt;description xml:lang="nl"&gt;'${VALUE}' is geen geldig email adres&lt;/description&gt;
+     &lt;description xml:lang="en"&gt;'${VALUE}' is not a valid email-address&lt;/description&gt;
+     &lt;description xml:lang="fr"&gt;'${VALUE}' n'est pas un correct address courriel&lt;/description&gt;
+     &lt;description xml:lang="eo"&gt;'${VALUE}' ne estas korektforma retadreso&lt;/description&gt;
+   &lt;/pattern&gt;
+&lt;/specialization&gt;</pre>
+          As you see, token replacement is done. Currently, NAME, VALUE, CONSTRAINT and
+          CONSTRAINTVALUE are recognized. No java.text.MessageFormat features are yet supported.
+        </p></div><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a id="unique" />2.2.3. Unique</h4></div></div></div><p>
+          A value can be marked to be 'unique'. This can only be applied if the data type is
+          associated with a field (See also <a href="datatypes.html#builders" title="3. How to associate a data type with a field">Section 3, “How to associate a data type with a field”</a>) Of course this means that
+          that values which are already present, are not valid any more for new objects.
+        </p></div><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a id="required" />2.2.4. Required</h4></div></div></div><p>
+          If a data type is 'required' then that means that the values may not be <code class="constant">null</code>.
+        </p></div><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a id="minmax" />2.2.5. Minimal and maximal values</h4></div></div></div><p>
+          For datatypes which describe 'comparable' values (and so the class implements
+          <span class="structname">org.mmbase.datatypes.ComparableDataType</span>), a minimal and maximal
+          value can be assigned.<pre class="programlisting">
+&lt;datatype base="datetime" xmlns="http://www.mmbase.org/xmlns/datatypes"&gt;
+   &lt;default value="now" /&gt;
+   &lt;minExclusive value="today - 3 day"    enforce="oncreate" /&gt;
+   &lt;maxInclusive value="today + 100 year" enforce="onchange" /&gt;
+&lt;/datatype&gt;</pre>
+          As you can see, these minimal and maximal values can be set -Exclusive or -Inclusive, with
+          the obvious semantics.
+        </p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>
+            Most datatypes are comparable. But e.g. not binaries or xml's. It is most logical for
+            dates, and numerics. For strings it indicates alphabetic ordering (I have yet to encounter
+            the first serious use of a restriction on minimal or maximal value of a string field)
+          </p></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a id="minmaxlength" />2.2.6. Minimal, maximal and fixed lengths</h4></div></div></div><p>
+          The values of some data types have a length (implementations of
+          <span class="structname">org.mmbase.datatypes.LengthDataType</span>). This length can also be
+          restricted. Noticeable 'length data types' are strings and binaries. The 'maximal length'
+          can also be used as an indication for the length of the field in the database (if the
+          database is associated with a field).<pre class="programlisting">
+&lt;datatype base="binary" xmlns="http://www.mmbase.org/xmlns/datatypes"&gt;
+  &lt;minLength value="3" /&gt;
+  &lt;maxLength value="10000" /&gt;
+&lt;/datatype&gt;</pre>
+          If minLength and maxLength are equal, you can simply use 'length'.
+        </p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>
+            A minimal length of '1' is often a bit confusing, because that means approximately the
+            same as 'required'. Especially when using taglib generated input-fields. Taglib
+            interprets the empty string as 'null' if the value is not required. So, it is adviced to
+            use the 'required' restriction if you find that content for this data type is essential.
+          </p><p>
+          </p></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a id="pattern" />2.2.7. Patterns</h4></div></div></div><p>
+          For strings, the pattern is interpreted as a regular expression, which must match. For
+          date times, the pattern is interpreted as SimpleDataFormat pattern (but see also
+          org.mmbase.datatypes.DateTimePattern).
+        </p></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="enumeration" />2.3. Other properties &amp; enumerations</h3></div></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a id="password" />2.3.1. Password</h4></div></div></div><p>
+          For strings you can set the password to 'true', which is only an indication to user
+          interfaces. So this is not a restriction, it is more like a property (and actually, you
+          can achieve the same effect with a property element).<pre class="programlisting">
+&lt;specialization id="password"&gt;
+  &lt;pattern enforce="never" value="\A[^\n\r]*\z" /&gt; &lt;!-- cannot contain newlines --&gt;
+  &lt;password value="true" /&gt;
+
+  ..
+
+  this would work too:
+&lt;specialization id="password"&gt;
+   &lt;property name="password" value="true" ?&gt;
+   &lt;pattern enforce="never" value="\A[^\n\r]*\z" /&gt;
+   ..
+          </pre>
+        </p></div><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a id="enumerations" />2.3.2. Enumerations</h4></div></div></div><p>
+          It is also possible to restrict the values to the entries of a certain set. There are
+          several ways to provided those certain values. The most basic one, is simply stating every
+          value:<pre class="programlisting">
+&lt;specialization id="spells"&gt;
+&lt;!-- example to test --&gt;
+  &lt;enumeration&gt;
+    &lt;entry value="1" xml:lang="nl" display="hokus pokus" /&gt;
+    &lt;entry value="2" xml:lang="nl" display="simsalabim" /&gt;
+    &lt;entry value="3" xml:lang="nl" display="pilatus pas" /&gt;
+    &lt;entry value="4" xml:lang="nl" display="abcracadabra" /&gt;
+    &lt;entry value="2" xml:lang="en" display="simsalabim" /&gt;
+    &lt;entry value="3" xml:lang="en" display="pilatus pas" /&gt;
+    &lt;entry value="1" xml:lang="en" display="hocus pocus" /&gt;
+  &lt;/enumeration&gt;
+&lt;/specialization&gt;</pre>
+          You can see that you can enter the same value more than once, for different languages. The
+          default value to display is the value itself, so it is not needed to specify localized
+          display values.
+        </p><p>
+          Enumerations are most often used on data types with 'base="integer"', but can also work
+          on string data types, and node data type (using 'query').
+        </p><p>
+          An enumeration is a restriction, but or course it is mainly a powerfull hint to produce
+          a user interface using e.g. a dropdown list or so.
+        </p><div class="section" lang="en"><div class="titlepage"><div><div><h5 class="title"><a id="resourcebundle" />Enumeration from a Resource bundle</h5></div></div></div><p>
+            It is also possible to specify the possible value using a ResourceBundle.<pre class="programlisting">
+&lt;enumeration &gt;
+   &lt;entry basename="org.mmbase.datatypes.resources.weekdays" /&gt;
+&lt;/enumeration&gt;</pre>
+            where the weekdays resource bundle could look something like this:<pre class="programlisting">
+0=sunday
+1=monday
+2=tuesday
+3=wednesday
+4=thursday
+5=friday
+6=saturday</pre>
+            If you look in the <code class="filename">datatypes.xml</code> in <code class="filename">mmbase.jar</code>
+            you will find that this 'weekdays' enumeration actually defined like this<pre class="programlisting">
+&lt;enumeration&gt;
+   &lt;entry basename="org.mmbase.datatypes.resources.weekdays"
+          javaconstants="java.util.Calendar"
+/&gt;
+&lt;/enumeration&gt;</pre>
+            This indicates that the keys of the resource bundle are resolved to the actual values
+            using constants in the given java class. This results in that the resource bundle can look
+            like this:<pre class="programlisting">
+SUNDAY=sunday
+MONDAY=monday
+TUESDAY=tuesday
+WEDNESDAY=wednesday
+THURSDAY=thursday
+FRIDAY=friday
+SATURDAY=saturday
+          </pre>
+          Which looks of course a lot nicer.
+          </p></div><div class="section" lang="en"><div class="titlepage"><div><div><h5 class="title"><a id="sorterclass" />sorterclass attribute</h5></div></div></div><p>
+            To specify an alternative presentation order, you can specify a 'Comparator' or
+            'Comparable' class name with the 'sorterclass' attribute. This will be used to order the
+            entries, using the <span class="emphasis"><em>keys</em></span>. If it is a comparator, then it will need
+            the empty constructor, if it is a comparable, then it will be used to 'wrap' the keys,
+            so a constructor must exist, which can accept the keys as an argument.
+          </p><pre class="programlisting">
+&lt;datatype base="long" xmlns="http://www.mmbase.org/xmlns/datatypes"&gt;
+  &lt;enumeration&gt;
+    &lt;entry
+       sorterclass="org.mmbase.util.ReverseComparator"
+       basename="org.mmbase.notifications.resources.offset" /&gt;
+  &lt;/enumeration&gt;
+      &lt;/datatype&gt;
+TUESDAY=tuesday
+WEDNESDAY=wednesday
+THURSDAY=thursday
+FRIDAY=friday
+SATURDAY=saturday</pre><p>
+             A special, and relatively often, value for the value of 'sorterclass' is
+             org.mmbase.util.SortedBundle$ValueWrapper. Using this, the entries will be orderd by
+             (localized) <span class="emphasis"><em>value</em></span>. This will often be used for enumeration which
+             have no intrincic order. Drop downs will then be presented in alphabetical order. For
+             example, This gives all languages:
+          </p><pre class="programlisting">
+&lt;enumeration&gt;
+   &lt;entry sorterclass="org.mmbase.util.SortedBundle$ValueWrapper"
+          basename="org.mmbase.datatypes.resources.iso639" /&gt;
+&lt;/enumeration&gt;</pre></div><div class="section" lang="en"><div class="titlepage"><div><div><h5 class="title"><a id="query" />Enumerations based on MMBase queries</h5></div></div></div><p>
+            TODO: query sub element.
+          </p></div></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="processors" />2.4. Processors</h3></div></div></div><p>
+        The data type also provides hooks to plug in functionality on several events like 'getting a
+        value' 'setting a value' and 'committing the object which contains this data type'. This is at
+        the moment only sensible for fields. MMBase provides several general purpose processors,
+        which you can also use in your own datatypes. But of course you can also implement new ones
+        (if you want to do that, we refer to the javadoc of the org.mmbase.datatype.processors package)
+      </p><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a id="setgetprocessor" />2.4.1. Set-processors and Get-processors</h4></div></div></div><p>
+          Lets take
+          an example:<pre class="programlisting">
+&lt;specialization id="created"&gt;
+  &lt;description xml:lang="en"&gt;
+    Read-only date-time field that contains the time of creation of the node.
+  &lt;/description&gt;
+  &lt;default value="now" /&gt;
+  &lt;setprocessor&gt;
+     &lt;class name="org.mmbase.datatypes.processors.Readonly" /&gt;
+  &lt;/setprocessor&gt;
+  &lt;getprocessor type="*"&gt;
+    &lt;class name="org.mmbase.datatypes.processors.CreationTimeGuesser" /&gt;
+  &lt;/getprocessor&gt;
+  &lt;getprocessor type="string"&gt;
+    &lt;class name="org.mmbase.datatypes.processors.CreationTimeGuesser" /&gt;
+    &lt;class name="org.mmbase.datatypes.processors.FormatDateTime" /&gt;
+  &lt;/getprocessor&gt;
+&lt;/specialization&gt;</pre>
+
+          Using the 'type' attribute one of the MMBase database type can be associated with get- and
+          setprocessors. Those database types also correspond to methods in the MMBase bridge 'Node'
+          interface. In this case we see that when getting a value as a string ('getStringValue'),
+          something else happens then when it is gotten otherwise ('getDateValue'). In this case the
+          creation time is nicely formatted when the value is requested as a string.
+        </p><p>
+          The CreationTimeGuesser processor arranges that if the value is empty, it guesses an
+          actual value using the MMBase 'day markers'.
+        </p><p>
+          In this example, there is also hooked in a class on the set-processor. Namely the
+          processor which simply refuses the action, effectively leading to a read-only field. (The
+          CreationTimeGuesser itself can use 'setObjectValue' to bypass all set-processors, if it
+          wants to store its guessed value for efficiency).
+        </p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>
+            You can specify more than one class for a certain processor. They will be 'chained' in
+            such a case.
+          </p></div><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>
+            The class may also implemented org.mmbase.util.transformers.CharTransformer (or
+            factory), in which case an instance of that class is simply wrapped into a Processor,
+            which only transforms the value.
+          </p></div><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>
+            The instances of the processors can be configured with 'param' subtags.
+          </p></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a id="commitprocessors" />2.4.2. Commit-processors</h4></div></div></div><p>
+          Commit-processors are effectively called on commit of the node which contains the field
+          with this data type (for other datatypes the behavior is as yet undefined). For example<pre class="programlisting">
+&lt;specialization id="lastmodified"&gt;
+  &lt;description xml:lang="en"&gt;
+    Read-only date-time field that contains the most recent time at which this node was changed .
+  &lt;/description&gt;
+  &lt;setprocessor&gt;
+    &lt;class name="org.mmbase.datatypes.processors.Readonly" /&gt;
+  &lt;/setprocessor&gt;
+  &lt;commitprocessor&gt;
+    &lt;class name="org.mmbase.datatypes.processors.LastModified" /&gt;
+  &lt;/commitprocessor&gt;
+  ..
+  </pre>
+          So, on commit, the 'LastModified' processor is called, which simply fills the current
+          time into the value of the field with this data type.
+        </p></div></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="builders" />3. How to associate a data type with a field</h2></div></div></div><p>
+      A data type specialization needs to be added to a field in a builder configuration file just
+      before the 'db' section. By the way, since the datatypes can provide the necessary information,
+      the db section can  be omitted all together. The following example creates a lastmodified field for a node that is
+      automatically adjusted every time a node is saved.
+    </p><pre class="programlisting">
+&lt;field&gt;
+  &lt;datatype xmlns="http://www.mmbase.org/xmlns/datatypes" base="lastmodified" /&gt;
+  &lt;db&gt;
+    &lt;name&gt;updated&lt;/name&gt;
+    &lt;type key="false" notnull="false" state="system"&gt;DATETIME&lt;/type&gt;
+  &lt;/db&gt;
+&lt;/field&gt;
+</pre><p>
+    which can also be noted like this.
+    </p><pre class="programlisting">
+&lt;field name="updated" state="system"&gt;
+  &lt;datatype xmlns="http://www.mmbase.org/xmlns/datatypes" base="lastmodified"&gt;
+    &lt;required value="false" /&gt; &lt;!-- this is btw also the default --&gt;
+  &lt;/datatype&gt;
+&lt;/field&gt;
+</pre><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>
+        Using 'db' subtag is actually a MMBase pre-1.8 remnant. Since MMBase 1.8 the db type of
+        a field can be completely implicit by the data type, and the remaining properties of the
+        db-section were not really database related. E.g. the name of a field is much more generic,
+        and is used not only in the database layer. The database layer may even use something
+        else. The 'state' of a field is only partially database related. So 'name' and 'state' are
+        now also attributes of the field tag itself.
+      </p><p>
+        Keys can be indicated in a seperate 'indexlist' section of the builder xml.
+      </p><p>
+        The database property 'notnull' can correspond to the 'required' restriction of the data type.
+      </p></div><p>
+      As you can see, this is simply a part of the same XML as also used in
+      <code class="filename">datatypes.xml</code>'s. So, you can also 'anonymously' define or refine a
+      data type just for one field.
+    </p></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="bridge" />4. Datatypes and the MMBase bridge</h2></div></div></div><p>
+      When you use the bridge, you can get the data type associated with a certain field use the
+      'getDataType' method on 'Field'. Then you can use the interfaces of 'org.mmbase.datatypes' to
+      explore the possible values.
+    </p></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="taglib" />5. Datatypes and the MMBase Taglib</h2></div></div></div><p>
+      If the mm:fieldinfo tag is used to create form-entries, then the data type of the field is
+      explored to do that. If it e.g. detects that new-lines are permissible, then a textarea is created.
+    </p><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="mmform" />5.1. Forms &amp; validation</h3></div></div></div><p>
+        TODO: mm:input, mm:form, mm:valid, mm:datatype
+      </p></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="javascript" />6. Datatypes and JavaScript</h2></div></div></div><p>
+      Since MMBase 1.8.5, the meta information provided by MMBase Data Types can also be accessed
+      using JavaScript. For that you include the javascript file
+      /mmbase/validation/validation.js.jsp, plus some other utilities (see
+      /mmbase/valiation/test.jspx), and instatiate an "MMBaseValidator".
+      <a id="mmbasevalidator" /><pre class="programlisting">
+&lt;html  xmlns="http://www.w3.org/1999/xhtml"&gt;
+  &lt;head&gt;
+    &lt;title&gt;Test&lt;/title&gt;
+    &lt;jsp:directive.include file="/mmbase/validation/javascript.jspxf" /&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;script type="text/javascript"&gt;new MMBaseValidator(window);&lt;/script&gt;
+    ... the rest of your page..
+</pre>
+    </p><p>
+      This javascript library searches (on load) all form elements with the class
+      "mm_validate". 'onkeyup' events are added to all those elements.
+    </p><p>
+      The data type is determined by inspecting the css class names. If one  starts with "mm_dt_"
+      then the remaining is interpreted as the MMBase Data Type id. There can also be two class
+      names, one starting with mm_f_ and mm_nm_ which can together identify the datatype of a
+      certain field of a nodemanager.
+    </p><p>
+      The mm:fieldinfo tag of the MMBase Taglib will set up the correct CSS class for form elements
+      that it creates.
+    </p><p>
+      As soon a data type meta information is needed, then this is requested (using 'ajax') with a
+      call to /mmbase/validation/datatype.jspx.  The resulting XML's are cached in MMBaseValidator.
+    </p></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="available" />7. Summary of default datatypes</h2></div></div></div><p>
+      This is a summary of all MMBase datatypes and their specializations found in the
+      'datatypes.xml' in <code class="filename">mmbase.jar</code> and as such are per default available. The
+      basic data types (the 'database types') are xml, string, datetime, long, boolean, integer,
+      long, float, double, binary and node, below their respective titles you will find their
+      specializations.
+    </p></div></div><hr xmlns="" /><p xmlns="">
+      This is part of the <a href="http://www.mmbase.org">MMBase</a> documentation.
+    </p><p xmlns="">
+      For questions and remarks about this documentation mail to: 
+      <a href="/cdn-cgi/l/email-protection#c0a4afa3b5ada5aeb4a1b4a9afae80adada2a1b3a5eeafb2a7"><span class="__cf_email__" data-cfemail="f6929995839b93988297829f9998b69b9b94978593d8998491">[email&#160;protected]</span></a></p><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script></body></html>

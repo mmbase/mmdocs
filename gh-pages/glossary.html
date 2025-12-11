@@ -1,0 +1,348 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title>MMBase Glossary</title><link href="style/documentation.css" rel="stylesheet" type="text/css" /><meta content="DocBook XSL Stylesheets V1.72.0" name="generator" /><meta name="description" content="This glossary tries to provide an overview of the terms used in MMBase and their meaning. As MMBase has evolved during the last years, its language evolved with it. This means that sometimes one term refers to two concepts, whereas in other occasions two terms are synonyms for one and the same thing. Therefore this document tries to describe the meaning of the terms used in MMBase in the different contexts. Next to this, the glossary tries to provide a list preferred terms." /><link xmlns="" type="image/x-icon" href="style/favicon.ico" rel="icon" /><link xmlns="" type="image/x-icon" href="style/favicon.ico" rel="shortcut icon" /><meta xmlns="" content="text/html; charset=utf-8" http-equiv="content-type" /></head><body><div xmlns="" class="navigation"><img alt="mmbase logo" src="style/logo.png" /><h2>MMBase Glossary</h2><p><a href="glossary.html#glossary">MMBase Glossary</a></p><hr /><p><a href="http://www.mmbase.org">MMBase</a></p><p><a href="index.html">home</a></p></div><div class="article" lang="en"><div class="titlepage"><div><div><h1 class="title"><a id="N10001" />MMBase Glossary</h1></div><div><div class="authorgroup"><strong class="authorgroup">Authors: </strong><span class="author"><span class="firstname">Henk</span> <span class="surname">Hangyi</span>, </span><span class="author"><span class="firstname">Michiel</span> <span class="surname">Meeuwissen</span></span><br /><strong class="authorgroup">Date: </strong>2005-03</div></div><div><div class="legalnotice"><a id="N1000B" /><p>This software is OSI Certified Open Source Software. OSI Certified
+      is a certification mark of the Open Source Initiative.</p><p>The license (Mozilla version 1.0) can be read at the MMBase site.
+      See <a xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.mmbase.org/license" target="_top">http://www.mmbase.org/license</a></p></div></div><div><div class="abstract"><p class="title"><b>Abstract</b></p><p>This glossary tries to provide an overview of the terms used in
+      MMBase and their meaning. As MMBase has evolved during the last years,
+      its language evolved with it. This means that sometimes one term refers
+      to two concepts, whereas in other occasions two terms are synonyms for
+      one and the same thing. Therefore this document tries to describe the
+      meaning of the terms used in MMBase in the different contexts. Next to
+      this, the glossary tries to provide a list preferred terms.</p></div></div></div><hr /></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="section"><a href="glossary.html#glossary">1. MMBase Glossary</a></span></dt></dl></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="glossary" />1. MMBase Glossary</h2></div></div></div><div class="glosslist"><dl><dt><a id="plusone" />+1</dt><dd><div class="orderedlist"><ol type="1"><li><p>A geeky synonym for 'I agree'.</p></li><li><p>One of the elections in a vote</p></li></ol></div><p>See Also <a href="glossary.html#vote">vote</a>.</p></dd><dt><a id="application" />application</dt><dd><div class="orderedlist"><ol type="1"><li><p>
+                An 'mmbase application' is a modular piece of
+                functionality, which can contain code (jars, classes), templates
+                and a piece of an object model, with possbily some data, and
+                other resources. A tool implemented with MMBase means.
+              </p><p>This thing is also called 'package' by some.</p><p>This functionality was never quite finished. In MMBase 1.9 we talk about 'components'</p></li><li><p>In the 'apps1' framework, 'application' refers to only the
+              object model and data.</p></li><li><p>An 'authentication application' is one of the handlers -
+              identified by a string - of a certain security {authentication}
+              implementation, to deal with a authentication request. Most
+              security implementations support a 'name/password', a 'class'
+              and an 'anonymous' authentication application, but these modules
+              can be pluggable, and some implementations allow for a unlimited
+              number of these. In taglib this is shorthanded to
+              'authentication' rather then to 'application' (meant is the
+              attribute of the mm:cloud tag).</p></li><li><p>Copied from WordNet: a program that gives a computer
+              instructions that provide the user with tools to accomplish a
+              task; "he has tried several different word processing
+              applications" [syn: {application program}, {applications
+              programme}]</p></li></ol></div><p>See Also <a href="glossary.html#package">package</a>, <a href="glossary.html#bundle">bundle</a>, <a href="glossary.html#component">component</a>, <a href="glossary.html#contribution">contribution</a>.</p></dd><dt><a id="bidir" />bidirectional</dt><dd><p>A value for the `dir' attribute of reldef and insrel nodes. It
+          only says something about the visibility of the relation. Every
+          MMBase relation is bidirectional in the sense that it has a clearly
+          defined source and destination, but that it not meant when we talk
+          about `bidirectional' relations in MMBase.</p><p>See Also <a href="glossary.html#unidir">unidirectional</a>, <a href="glossary.html#reldef">reldef</a>, <a href="glossary.html#insrel">insrel</a>.</p></dd><dt><a id="block" />block</dt><dd><p>
+            A component can have 1 or more 'blocks', which are actual pieces of markup, which
+            represent a rendering of the component's functionality.
+          </p><p>See Also <a href="glossary.html#component">component</a>.</p></dd><dt><a id="bridge" />bridge</dt><dd><p>The bridge is the set of Java interfaces which are to be used
+          to talk to MMBase. If one uses the bridge, all actions are
+          authorized by the security system, which does not happen if one
+          talks to the core of MMBase directly.</p><p>Templating languages should communicate through the bridge,
+          and for example the MMBase Taglib is doing this.</p><p>There is currently one `basic' implementation of the bridge,
+          and also one alternative implementation which makes it possible to
+          talk to a `remote' MMBase by remote method invocations.</p><p>See Also <a href="glossary.html#rmmci">Remote MMBase Cloud Interfaces</a>, <a href="glossary.html#mmci">MMBase Cloud Interfaces</a>, <a href="glossary.html#core">core</a>, <a href="glossary.html#mmbasetaglib">MMBase tag library</a>.</p></dd><dt><a id="builder" />builder</dt><dd><div class="orderedlist"><ol type="1"><li><p>The xml configuration file which defines an object type in
+              the MMBase object cloud.</p></li><li><p>The xml configuration file used by MMBase to create a
+              table in the database.</p></li></ol></div><div class="example"><a id="N10057" /><p class="title"><b>Example 1. Example of a builder with only one field, named
+            title.</b></p><div class="example-contents"><p><pre class="programlisting">&lt;
+&lt;?xml version="1.0"&gt;
+&lt;builder
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
+                        http://www.mmbase.org/xmlns/builder.xsd"
+    name="news" maintainer="mmbase.org" version="0" extends="object"&gt;
+  &lt;searchage&gt;14&lt;/searchage&gt;
+  &lt;names&gt;
+    &lt;singular xml:lang="en"&gt;NewsItem&lt;/singular&gt;
+    &lt;singular xml:lang="nl"&gt;NieuwsItem&lt;/singular&gt;
+    &lt;plural xml:lang="en"&gt;NewsItems&lt;/plural&gt;
+    &lt;plural xml:lang="nl"&gt;NieuwsItems&lt;/plural&gt;
+  &lt;/names&gt;
+
+  &lt;descriptions&gt;
+    &lt;description xml:lang="en"&gt;News item&lt;/description&gt;
+    &lt;description xml:lang="nl"&gt;Nieuws item&lt;/description&gt;
+  &lt;/descriptions&gt;
+
+  &lt;fieldlist&gt;
+    &lt;field name="title"&gt;
+      &lt;descriptions&gt;
+        &lt;description xml:lang="en"&gt;Title of the news item&lt;/description&gt;
+        &lt;description xml:lang="nl"&gt;Titel (hoofdkop) van het nieuwsitem&lt;/description&gt;
+      &lt;/descriptions&gt;
+      &lt;gui&gt;
+        &lt;guiname xml:lang="en"&gt;Title&lt;/guiname&gt;
+        &lt;guiname xml:lang="nl"&gt;Titel&lt;/guiname&gt;
+      &lt;/gui&gt;
+      &lt;editor&gt;
+        &lt;positions&gt;
+          &lt;list&gt;1&lt;/list&gt;
+        &lt;/positions&gt;
+      &lt;/editor&gt;
+      &lt;datatype base="eline" xmlns="http://www.mmbase.org/xmlns/datatypes" &gt;
+        &lt;required value="true" /&gt;
+        &lt;maxLength value="255" /&gt;
+      &lt;/datatype&gt;
+    &lt;/field&gt;
+  &lt;/fieldlist&gt;
+&lt;/builder&gt;
+</pre></p></div></div><br class="example-break" /><em><span class="remark">The term builder is used when one speaks about the object
+          cloud and its representation in the database.</span></em><p>See Also <a href="glossary.html#nodemanager">node manager</a>, <a href="glossary.html#objecttype">object type</a>.</p></dd><dt><a id="bundle" />bundle</dt><dd><div class="orderedlist"><ol type="1"><li><p>
+                A bundle is a special kind of package (1) containing other
+                packages, and distributed as a unit.
+              </p><p>This functionality was never quite finished. In MMBase 1.9 we talk about 'components'</p></li><li><p>A resource bundle is generally a bunch of property files
+              (or something functionally similar) , see
+              java.util.ResourceBundle.</p></li></ol></div><p>See Also <a href="glossary.html#package">package</a>, <a href="glossary.html#component">component</a>.</p></dd><dt><a id="cloud" />cloud</dt><dd><div class="orderedlist"><ol type="1"><li><p>A bunch of interrelated nodes viewed as a unity.</p></li><li><p>All nodes from one MMBase instance.</p></li><li><p>All nodes inside an MMBase transaction.</p></li></ol></div><p>See Also <a href="glossary.html#node">node</a>.</p></dd><dt><a id="clusternode" />cluster node</dt><dd><p>Complicated database queries do not give back simple nodes,
+          but fields from several tables. A record from such a table join is
+          represented by a 'cluster node'. A cluster node is a special kind of
+          virtual node.</p><p>See Also <a href="glossary.html#virtualnode">virtual node</a>.</p></dd><dt><a id="committer" />committer</dt><dd><p>An MMBase developer with CVS committing access.</p><p>See Also <a href="glossary.html#vote">vote</a>, <a href="glossary.html#cvs">Concurrent Versions System</a>.</p></dd><dt><a id="component" />component</dt><dd><p>
+            It means approximately 'one part of a whole', 'something that can be installed in
+            some program to make it more powerful'. Since MMBase 1.9 and the MMBase Component
+            Framework (MMCF) a component has gathered meaning as a piece of functionality that can be
+            installed using the component framework. A component in the MMCF sence can be a poll, an
+            e-card application or even some more hidden functionality like the e-mail application as
+            long it is 'plugable' within the framework. 
+          </p><p>See Also <a href="glossary.html#application">application</a>, <a href="glossary.html#block">block</a>.</p></dd><dt><a id="cvs" />Concurrent Versions System (CVS)</dt><dd><p>Open Source version system, which is used to administrate
+          MMBase source codes. Typical for CVS is that it is possible to use
+          it without acquiring locks on files (which is the way it is used for
+          MMBase). This means that files can be edited simultaneously by
+          different people, but also that the risk for 'conflicts' arises (if
+          a patch cannot be made automatically).</p><p>The MMBase CVS repository is hosted on the mmbase.org
+          server.</p><p>See Also <a href="glossary.html#vote">vote</a>, <a href="glossary.html#module">module</a>.</p></dd><dt><a id="contentmanagement" />content management</dt><dd><p>MMBase is described as a 'content managment system', which
+          means that it is used to manage the content of normally
+          web-sites.</p></dd><dt><a id="context" />context</dt><dd><div class="orderedlist"><ol type="1"><li><p>In several MMBase security implementations the concept
+              `security context' is stored in the owner field, to attribute
+              rights to objects.</p></li><li><p>A 'User Context' is the MMBase security object which
+              provides the essential identity information for a user: an
+              identifier, an 'owner' abstraction (sometimes also called
+              'context') and a rank. It is provided by the
+              <span class="emphasis"><em>authentication</em></span> implementation and is used
+              by the <span class="emphasis"><em>authorization</em></span> implementation.</p></li><li><p>A 'Cloud Context' is the bridge object which provides
+              clouds, modules, and empty lists.</p></li><li><p>In MMBase taglib a 'context' is a container for Taglib
+              variables. It is also associated with every page, the 'context'
+              tag, and (in MMBase &gt;= 1.7) list tags.</p></li><li><p>MMBaseContext is a core MMBase class, which takes care of
+              initializing MMBase and its configuration. It provides several
+              static methods for that.</p></li><li><p>In a J2EE environment the web-application is associated
+              with a 'context', which is basically the first part of the path.
+              Often it will be '/', but this is not required for
+              MMBase.</p></li></ol></div></dd><dt><a id="contribution" />contribution</dt><dd><p>In the `contributions' CVS module you find MMBase applicitions
+          and other MMBase related code, which is contributed by third parties
+          to MMBase, and are not maintained by the `community' but individual
+          commitors are responsible.</p><p>See Also <a href="glossary.html#application">application</a>, <a href="glossary.html#component">component</a>.</p></dd><dt><a id="core" />core</dt><dd><div class="orderedlist"><ol type="1"><li><p>The java classes of MMBase which are `under' the bridge,
+              and should be invisible for casual users. They provide the data
+              persistence and other basic MMBase concepts like relations. The
+              MMBase core is not protected by MMBase security.</p></li><li><p>All java classes from the 'src' CVS module which are
+              present in mmbase.jar, so everything which is not an MMBase
+              application, is MMBase 'core'.</p></li><li><p>MMObjectBuilder/MMObjectNode vs NodeManager/Node. When you
+              want to define a new 'object type' with extra functionality then
+              it is currently not possible to extend NodeManagers or Nodes,
+              but you need to extend the core's MMObjectBuilder.</p></li></ol></div><p>See Also <a href="glossary.html#bridge">bridge</a>.</p></dd><dt><a id="datatype" />data type</dt><dd><p>Since MMBase 1.8, with mmbase values are associated 'data
+          types', which assign restrictions, a default value and processors.
+          Generic data types are specified in the 'datatypes.xml'
+          configuration file, but they can also be defined `on the fly' in
+          builder xmls and editwizard xmls.</p><p>See Also <a href="glossary.html#restriction">restriction</a>.</p></dd><dt><a id="devlist" />developers list</dt><dd><p>The <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="a0c4c5d6c5cccfd0c5d2d3e0ccc9d3d4d38ecdcdc2c1d3c58ecfd2c7">[email&#160;protected]</a> mailing list, sometimes
+          shorthanded to dev-list. This is the most active MMBase mailing
+          list, which is used by the developers community to discuss and
+          answer questions about technical issues.</p><p>Information about the subscription and about other mmbase
+          mailing lists can be found on the mmbase web-site.</p><p>Before november 2004 this list was addressed as
+          <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="ec88899a8980839c899e9fac81818e8d9f89c2839e8b">[email&#160;protected]</a>.</p><p>See Also <a href="glossary.html#vote">vote</a>, <a href="glossary.html#irc">Internet Relay Chat</a>.</p></dd><dt><a id="dontpanic" />Don't Panic!</dt><dd><p>An exception from an edit wizard. It is called like this,
+          because the error page of an editwizard is (was?) introduced with
+          these big friendly letters.</p><p>Normally, but a bit unexpectedly, this is read as the
+          completely opposite advice.</p><p>This is a reference to the Hitchhiker's guide to the Galaxy
+          which according to the book of Douglas Adams had these words written
+          on the cover.</p><p>See Also <a href="glossary.html#editwizard">Editwizards</a>.</p></dd><dt><a id="dove" />Dove</dt><dd><p>Dove is a protocol to receive a part of the MMBase cloud in
+          XML, make changes to it, and send it back. It was inspired by the
+          SOAP protocol (and hence the name Dove, which is a brand of soap),
+          but sadly is not compatible with it.</p><p>It was created for use by the editwizards. There is also a
+          Dove servlet, which is not used by the editwizards, but which one
+          could use for similar purposes.</p><p>See Also <a href="glossary.html#editwizard">Editwizards</a>.</p></dd><dt><a id="editwizard" />Editwizards</dt><dd><p>Editwizards are `task oriented' content editors. Tasks are
+          defined by XML and could for example be something like `create news
+          articles and relate one author and several images to them'.
+          Editwizards are not `generic' editors, which means that they not
+          automaticly allow for creating all possible types of relations,
+          though some parties have been creating tools to automaticly generate
+          all possible editwizards.</p><p>Editwizards communicate with MMBase by the 'dove'
+          protocol.</p><p>See Also <a href="glossary.html#dove">Dove</a>, <a href="glossary.html#dontpanic">Don't Panic!</a>.</p></dd><dt><a id="extension" />extension</dt><dd><p>Has no MMBase specific meanings. In java you can 'extend'
+          classes, and extensions of classes are therefore specializations of
+          some kind of functionality.</p><p>See Also <a href="glossary.html#component">component</a>, <a href="glossary.html#application">application</a>.</p></dd><dt><a id="function" />function</dt><dd><p>
+            A function is a piece of functionality, normally implemented in java, which can be
+            attached to objects on several places in MMBase. Functions can be assigned to 'sets',
+            'nodes', 'nodemanagers' and 'modules'
+          </p><p>See Also <a href="glossary.html#functionsets">function set</a>.</p></dd><dt><a id="functionsets" />function set</dt><dd><p>
+            A function set is just a set of functions, which are declared in the 'functionsets.xml'
+            resource. These are a kind of public methods which can be called from everywhere, any
+            time.
+          </p><p>See Also <a href="glossary.html#function">function</a>.</p></dd><dt><a id="inheritance" />inheritance</dt><dd><p>MMBase supports inheritance. This means that every `news' node
+          is also an `object' node. You can also extend your `mynews' builder
+          from the `news' builder. All fields from news are then inherited to
+          mynews, and mynews nodes can be treated as (because they are) news
+          nodes.</p><p>See Also <a href="glossary.html#builder">builder</a>.</p></dd><dt><a id="insrel" />insrel</dt><dd><p>A relation instance. This is special kind of object type which
+          contains relation objects.</p><p>See Also <a href="glossary.html#builder">builder</a>, <a href="glossary.html#objecttype">object type</a>, <a href="glossary.html#reldef">reldef</a>.</p></dd><dt><a id="irc" />Internet Relay Chat (IRC)</dt><dd><p>The channel #mmbase of the <a xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.slashnet.org" target="_top">Slashnet IRC network</a> is an
+          active scene which is used by MMBase developers to discuss MMBase in
+          a casual way. It is also much used to get help for installation and
+          implementation issues.</p><p>See Also <a href="glossary.html#devlist">developers list</a>.</p></dd><dt><a id="mmci" />MMBase Cloud Interfaces (MMCI)</dt><dd><p>See <a href="glossary.html#bridge">bridge</a>.</p></dd><dt><a id="foundation" />MMBase Foundation</dt><dd><p>The MMBase foundation covers the non-technical issues with
+          regard to MMBase. The tasks of the foundation includes organizing
+          MMBase Events, facilitating communication between MMBase users,
+          providing management information about MMBase in presentations and
+          brochures, etc. etc.</p></dd><dt><a id="mmc" />MMBase Management Committee (MMC)</dt><dd><p>This used to be a small group of MMBase committers who are
+          supposed to meet every Thursday to talk about MMBase. Originally it
+          were 4 or 5 people, from which in the last year a few were
+          democraticly elected. In march 2005 the MMC in this form was
+          abolished, and the committors divided the tasks of the MMC among
+          them, so it can be said that the MMC now consists of all committors.
+          It has also be suggested that the subgroup for external
+          communication can be referred to as MMC now.</p><p>See Also <a href="glossary.html#committer">committer</a>.</p></dd><dt><a id="mmbasetaglib" />MMBase tag library (MMBase taglib)</dt><dd><p>A taglib implementation for MMBase. Tags to access MMBase
+          data, but also more general tags. It consists more or less a
+          complete (however simple) language. The taglib can be used in
+          combination with pieces of Java in your JSP pages.</p><p>See Also <a href="glossary.html#taglib">tag library</a>.</p></dd><dt><a id="module" />module</dt><dd><div class="orderedlist"><ol type="1"><li><p>An piece of (MMBase) functionality which is configured by
+              a XML file in &lt;config&gt;/modules/. MMBase itself can be seen
+              as a group of such modules.</p><p>An extension from org.mmbase.module.Module, such as
+              MMBase.java itself. In MMBase modules are started on
+              initizalization, and are configured by an XML in
+              &lt;config&gt;/modules (which contains only key/value
+              properties). Modules were more important in the SCAN era, where
+              they provided all kind of auxiliary functionality. Nowadays they
+              mainly provide a way to plug things in the bootstrap of MMBase
+              accompanied with a convenient way of customization.</p></li><li><p>When talking about CVS, a 'module' is a kind of main entry
+              of the repository. The MMBase CVS repository currently has the
+              following modules: src (core java classes), documentation
+              (docbook sources), html (general content for the mmbase distro),
+              config (example configuration) and applications (components
+              supported by the community).</p></li><li><p>An independent piece of software which forms part of one
+              or more larger programs. Different languages have different
+              concepts of a module but there are several common ideas.</p><p>Modules are usually compiled separately (in compiled
+              languages) and provide an abstraction or information hiding
+              mechanism so that a module's implementation can be changed
+              without requiring any change to other modules. In this respect
+              they are similar to objects in an object-oriented language,
+              though a module may contain many procedures and/or functions
+              which would correspond to many objects.</p><p class="remark"><i><span class="remark">Definition copied from The Free On-line Dictionary of
+              Computing (09 FEB 02) [foldoc]</span></i></p></li></ol></div><p>See Also <a href="glossary.html#cvs">Concurrent Versions System</a>.</p></dd><dt><a id="mmbase" />Multi Media Base (MMBase)</dt><dd><div class="orderedlist"><ol type="1"><li><p>for managers: open source content management system, with
+              strong multi-media features</p></li><li><p>for dummies: a tool by which you can build intelligent web
+              sites</p></li><li><p>for techies: java based web-application, which acts as an
+              object oriented interface to relational databases</p></li><li><p>for information analysts: content management system by
+              which text, images and other content can be managed in an object
+              oriented way.</p></li></ol></div><em><span class="remark">It is not clear whether MMBase really stands for Multi Media
+          Base. <span class="emphasis"><em>The preferred term is MMBase</em></span></span></em><p>See Also <a href="glossary.html#opensource">open source</a>, <a href="glossary.html#contentmanagement">content management</a>, Everywhere else.</p></dd><dt><a id="node" />node</dt><dd><p>MMBase objects are generally referred to as 'node', especially
+          in the bridge. A normal MMBase node corresponds to one record in the
+          database (in the table(s) associated with the builder). We recognize
+          also 'cluster nodes' and 'virtual nodes'.</p><p>Every Node is uniquely (inside the MMBase instance) identified
+          by a node number. In editors this number field is sometimes even be
+          indicated with 'Object'.</p><p>See Also <a href="glossary.html#clusternode">cluster node</a>, <a href="glossary.html#virtualnode">virtual node</a>, <a href="glossary.html#bridge">bridge</a>, <a href="glossary.html#object">object</a>.</p></dd><dt><a id="nodemanager" />node manager</dt><dd><div class="orderedlist"><ol type="1"><li><p>This bridge concept represents the object which describes
+              meta information (which fields are available and so on) about
+              node types, and serves to create new nodes and so on.</p></li><li><p>A synonym for `builder'.</p></li><li><p>...</p></li></ol></div><div class="example"><a id="N10072" /><p class="title"><b>Example 2. Example of use in spoken language</b></p><div class="example-contents"><p>The nodemanager of an image makes it possible to scale
+            images dynamically.</p></div></div><br class="example-break" /><em><span class="remark">The term nodemanager is used in when one speaks about the
+          functionality of the bridge.</span></em><p>See Also <a href="glossary.html#builder">builder</a>, <a href="glossary.html#objecttype">object type</a>, <a href="glossary.html#bridge">bridge</a>.</p></dd><dt><a id="object" />object</dt><dd><div class="orderedlist"><ol type="1"><li><p>The base builder, from which every other builder
+              extends.</p></li><li><p>More general term for 'node'.</p></li><li><p>An instance of a Java class.</p></li></ol></div><p>See Also <a href="glossary.html#node">node</a>, <a href="glossary.html#builder">builder</a>, <a href="glossary.html#inheritance">inheritance</a>.</p></dd><dt>object cloud</dt><dd><p>See <a href="glossary.html#cloud">cloud</a>.</p></dd><dt><a id="objecttype" />object type</dt><dd><div class="orderedlist"><ol type="1"><li><p>An object type defines an object in the object
+              cloud</p></li><li><p>...</p></li></ol></div><div class="example"><a id="N1008B" /><p class="title"><b>Example 3. In spoken language</b></p><div class="example-contents"><p>The object type of the employee object only contains fields
+            which describe the employee, but are not related to its position
+            in departments and projects.</p></div></div><br class="example-break" /><em><span class="remark">The term is used when one speaks about information
+          analysis.</span></em><p>See Also <a href="glossary.html#builder">builder</a>, <a href="glossary.html#nodemanager">node manager</a>.</p></dd><dt><a id="opensource" />open source</dt><dd><p>MMBase is open source. This means that the MMBase source code
+          can be downloaded freely. The licence is quite free.</p></dd><dt><a id="package" />package</dt><dd><div class="orderedlist"><ol type="1"><li><p>Functional unit of software.</p></li><li><p>
+                A package is the concretization of an application (1). It
+                is the thing which you can download and install, or burn on a
+                CD.
+              </p><p>This functionality was never quite finished. In MMBase 1.9 we talk about
+              'components'</p></li><li><p>In java a package is like a directory of classes. It is
+              the part of a fully qualified class name until the last dot. All
+              MMBase classes are in the org.mmbase package or subpackages of
+              that.</p></li></ol></div><p>See Also <a href="glossary.html#application">application</a>, <a href="glossary.html#component">component</a>.</p></dd><dt><a id="path" />path</dt><dd><p>A list of steps. The definition from the bridge's javadoc
+          follows. A comma separated list of node manager names which
+          specifies the path that should be followed. It is possible to
+          explicitly specify a relation manager that should be used to go from
+          one node to an other. If no relation manager is specified between
+          two nodes, all possible relation managers that can be used to go to
+          the next specified node in the path are followed.</p><p>See Also <a href="glossary.html#searchquery">Search Query</a>, <a href="glossary.html#step">step</a>.</p></dd><dt><a id="relation" />relation</dt><dd><div class="orderedlist"><ol type="1"><li><p>An MMBase Node defining a link between to other MMBase
+              Nodes. A relation can contain other data. A relation
+              instance.</p></li><li><p>An allowed relation. Sometimes also 'typerel' entries are
+              referred to as simply 'relations'. It would perhaps be clearer
+              to call these 'allowed relations'</p></li><li><p>A relation definition or reldef instance.</p></li></ol></div><p>See Also <a href="glossary.html#insrel">insrel</a>, <a href="glossary.html#reldef">reldef</a>, <a href="glossary.html#typerel">typerel</a>.</p></dd><dt><a id="reldef" />reldef</dt><dd><p>The builder defining relation roles. It has several fields,
+          which are not all equally important. The most important fields are
+          `sname', `dir' and `builder'. `sname' is the identifying name of
+          this role. `dir' specifies if relations with this role are uni- or
+          bidirectional, and `builder' defines the relation builder (so the
+          actual fields the relations has, and in which table the relations
+          will be stored).</p><p>`sguiname' and `dguiname' can be used to attribute names to
+          the source and destination sides of the relations, which can be used
+          in GUI interfaces to describe the relations. The remaining field is
+          `dname' which has no real use. It's original idea would be the
+          `role' as seen from the destination node, but this is not used (in
+          stead, to define that relations must be followed in a certain
+          direction the search direction is stated explicitely).</p><p>See Also <a href="glossary.html#role">role</a>, <a href="glossary.html#unidir">unidirectional</a>, <a href="glossary.html#bidir">bidirectional</a>, <a href="glossary.html#typerel">typerel</a>, <a href="glossary.html#relation">relation</a>, <a href="glossary.html#path">path</a>.</p></dd><dt><a id="rmmci" />Remote MMBase Cloud Interfaces (RMMCI)</dt><dd><p>An alternative implementation of the bridge. Can be used to
+          implement life/staging MMBase's, but can also be useful to
+          inspect/test a running MMBase, because it can run stand alone, and
+          talks by remote method calls to an MMBase instance.</p><p>See Also <a href="glossary.html#bridge">bridge</a>, <a href="glossary.html#wiab">Web in a Box</a>.</p></dd><dt><a id="resourceloader" />resourceloader</dt><dd><p>
+            MMBase has a 'resourceloader' which loads its configuration files. This uses several
+            strategies, and is like a java class loader.
+          </p><p>
+            The effect is that mmbase configuration files can be present in jars, in WEB-INF/config
+            or both. Or even in the database. The admin-pages provide an overview, to check how a
+            certain configuration was loaded.
+          </p></dd><dt><a id="restriction" />restriction</dt><dd><p>The value of a certain field for parameter in MMBase can be
+          `restricted'. It can e.g. have a minimal or maximal value, or be one
+          of the values of an 'enumeration'.</p><p>See Also <a href="glossary.html#datatype">data type</a>.</p></dd><dt><a id="role" />role</dt><dd><p>The name of an reldef object. Practicly, it serves as extra
+          way of distinguishing relations, and connects a relation builder to
+          it. One could for example define the role `author' (by creating a
+          reldef object). This role could then be used to allow relations
+          between news and people.</p><p>The most often roles are `related' and `posrel', which both
+          lack any real-life semantics.</p><p>Two `related' nodes are just that. Two `posrel' related nodes
+          are also just related, but to the posrel role normally the `posrel'
+          relation builder is associated, which allows for one extra field in
+          the relations; the `pos' field with integer type, which makes it
+          possible to order relations.</p><p>See Also <a href="glossary.html#reldef">reldef</a>, <a href="glossary.html#typerel">typerel</a>.</p></dd><dt><a id="scan" />SCAN</dt><dd><p>The original MMBase template language. An interpreted language
+          characterized by several parse stages of the source. Commands,
+          parameters and variables are recognized by $-symbols. SCAN HTML
+          pages use to be mapped to `.shtml'.</p><p>Use of SCAN is nowadays discouraged in favor of more modern
+          and standardized scripting manner like JSP and (MMBase)
+          taglib.</p><p>Because the long history of SCAN, SCAN-specific legacy code
+          can still be found on a lot of places in the MMBase core code. Even
+          the bridge way to handle with `MMBase modules' is influenced by
+          SCAN.</p><p>See Also <a href="glossary.html#mmbasetaglib">MMBase tag library</a>, <a href="glossary.html#core">core</a>.</p></dd><dt><a id="searchquery" />Search Query</dt><dd><p>MMBase has a completely abstract way of querying its storage
+          layer. This allows for a great deal of database independency, and
+          also for efficient and object oriented manipulating of search
+          queries. The other option is to use the String oriented SQL
+          language, and this was tried in MMBase &lt; 1.7, but was abandoned
+          as non-feasible in a database (or even <span class="emphasis"><em>storage</em></span>)
+          independent product as MMBase is.</p><p>See Also <a href="glossary.html#sql">Structured Query Language</a>, <a href="glossary.html#storage">storage</a>, <a href="glossary.html#step">step</a>.</p></dd><dt><a id="step" />step</dt><dd><p>One of the items of a path in a query. You could often read it
+          as `database table' or `builder'. Step is an abstraction of this in
+          the Search Query framework of MMBase.</p><p>See Also <a href="glossary.html#searchquery">Search Query</a>, <a href="glossary.html#path">path</a>.</p></dd><dt><a id="storage" />storage</dt><dd><p>MMBase has an abstract `storage' layer, which is used for
+          persistency of MMBase objects. Currently only database storages are
+          implemented so you can safely read `storage' as `the database which
+          MMBase is using'. There are several types of databases which are
+          supported however, most notably Informix, MySql, Postgresql and
+          HSql.</p><p>See Also <a href="glossary.html#searchquery">Search Query</a>.</p></dd><dt><a id="sql" />Structured Query Language (SQL)</dt><dd><p>This is the `general' language to talk to databases. The
+          common denominator of all databases in SQL is actually very small,
+          which largely limits its use for database independent products like
+          MMBase.</p><p>To work around the babylon of SQL dialects, MMBase makes use
+          of Search Query objects.</p><p>See Also <a href="glossary.html#searchquery">Search Query</a>.</p></dd><dt><a id="taglib" />tag library (taglib)</dt><dd><p>A Tag Library is a SUN defined way to define extra XML-like
+          tags. A tag library is implemented in Java and currently only
+          available in mixture with JSP-pages.</p><p>See Also <a href="glossary.html#mmbasetaglib">MMBase tag library</a>.</p></dd><dt><a id="template" />template</dt><dd><p>A JSP-file with belonging css, javascript and images, also
+          XSL's are templates. The customized pieces of front-end code which
+          arrange presentation of MMBase data.</p></dd><dt><a id="tcp" />temporary cloud project (TCP)</dt><dd><p>An XML way to add content to an MMBase cloud. It is hardly
+          used anymore.</p><p>See Also <a href="glossary.html#xmlimporter">XML importer</a>, <a href="glossary.html#scan">SCAN</a>.</p></dd><dt><a id="typedef" />typedef</dt><dd><p>In MMBase object types are objects too. These nodes are stored
+          in the `typedef' builder. It generates a small chicken/egg problem
+          because the typedef type itself is also present aa a node of itself.
+          (Normally the typedef node will have to have number 1)</p></dd><dt><a id="typerel" />typerel</dt><dd><p>Typerel is the MMBase builder which defines the allowed
+          relations. If for example you want to create a certain relation from
+          news node to an URL node, then a corresponding typerel record, which
+          allows that must exist.</p><p>Inheritance is taken into consideration, so if you allow from
+          object to object (with a certain role), then every kind of relation
+          (with that certain role) should be allowed (because all node types
+          extends object). It is by the way usually not very prudent to
+          actually do this, because allowing every relation will often enforce
+          MMBase to do very complicated queries, which can be very bad for
+          performance.</p><p>See Also <a href="glossary.html#inheritance">inheritance</a>, <a href="glossary.html#relation">relation</a>, <a href="glossary.html#role">role</a>.</p></dd><dt><a id="unidir" />unidirectional</dt><dd><p>A value for the 'dir' attribute of reldef and insrel nodes. It
+          only says something about the visibility of the relation. A
+          unidirectional relation is not visible from the destination
+          node.</p><p>See Also <a href="glossary.html#bidir">bidirectional</a>, <a href="glossary.html#reldef">reldef</a>, <a href="glossary.html#insrel">insrel</a>.</p></dd><dt><a id="virtualnode" />virtual node</dt><dd><p>A non-persistent node, which means that you cannot `commit'
+          such a node. Generally no builder xml is associated witch such a
+          node.</p><p>See Also <a href="glossary.html#clusternode">cluster node</a>.</p></dd><dt><a id="vote" />vote</dt><dd><p>Major decisions on MMBase implementation are done by voting by
+          committer on the developers list.</p><p>See Also <a href="glossary.html#plusone">+1</a>, <a href="glossary.html#committer">committer</a>, <a href="glossary.html#devlist">developers list</a>.</p></dd><dt><a id="wiab" />Web in a Box (WIAB)</dt><dd><p>A packaged content management system based on MMBase. Typical
+          for WIAB is a fixed object model and a distinction between life and
+          staging environments in two separate object clouds. It was developed
+          for the Amsterdam municipal by Framfab but is maintained by Finalist
+          now.</p><p>See Also <a href="glossary.html#rmmci">Remote MMBase Cloud Interfaces</a>.</p></dd><dt><a id="xmlimporter" />XML importer</dt><dd><p>A way to synchronize data from another source with MMBase
+          data. This happens in a fuzzy way, to avoid duplications because of
+          minor inconsistencies in the source data.</p></dd></dl></div></div></div><hr xmlns="" /><p xmlns="">
+      This is part of the <a href="http://www.mmbase.org">MMBase</a> documentation.
+    </p><p xmlns="">
+      For questions and remarks about this documentation mail to: 
+      <a href="/cdn-cgi/l/email-protection#9ffbf0fceaf2faf1ebfeebf6f0f1dff2f2fdfeecfab1f0edf8"><span class="__cf_email__" data-cfemail="187c777b6d757d766c796c7177765875757a796b7d36776a7f">[email&#160;protected]</span></a></p><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script></body></html>

@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title>How to share code in the MMBase repository</title><link href="style/documentation.css" rel="stylesheet" type="text/css" /><meta content="DocBook XSL Stylesheets V1.72.0" name="generator" /><link xmlns="" type="image/x-icon" href="style/favicon.ico" rel="icon" /><link xmlns="" type="image/x-icon" href="style/favicon.ico" rel="shortcut icon" /><meta xmlns="" content="text/html; charset=utf-8" http-equiv="content-type" /></head><body><div xmlns="" class="navigation"><img alt="mmbase logo" src="style/logo.png" /><h2>How to share code in the MMBase repository</h2><p><a href="3rdparty.html#readfirst" /></p><p><a href="3rdparty.html#core_and_applications">Core and Applications</a></p><p><a href="3rdparty.html#mmbase_core">MMBase Core</a></p><p><a href="3rdparty.html#community_packages">MMBase Community Packages</a></p><p><a href="3rdparty.html#third_pary_packages">MMBase 3rd Party Packages</a></p><p><a href="3rdparty.html#infrastructure">Infrastructure and Organization</a></p><p><a href="3rdparty.html#become_third_party">How to become a 3rd Party Package</a></p><p><a href="3rdparty.html#open_source">Open Source</a></p><hr /><p><a href="http://www.mmbase.org">MMBase</a></p><p><a href="index.html">home</a></p></div><div class="article" lang="en"><div class="titlepage"><div><div><h1 class="title"><a id="N10001" />How to share code in the MMBase repository</h1></div><div><div class="authorgroup"><strong class="authorgroup">Author: </strong><span class="author"><span class="firstname">Nico</span> <span class="surname">Klasens</span></span><br /><strong class="authorgroup">Date: </strong>2005-08-31</div></div><div><div class="legalnotice"><a id="N10018" /><p>
+				This software is OSI Certified Open Source Software. OSI Certified is a certification mark of the Open
+				Source Initiative.
+			</p><p>
+				The license (Mozilla version 1.0) can be read at the MMBase site. See
+				<a xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.mmbase.org/license" target="_top">http://www.mmbase.org/license</a>
+			</p></div></div></div><hr /></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="section"><a href="3rdparty.html#readfirst">1. </a></span></dt><dt><span class="section"><a href="3rdparty.html#core_and_applications">2. Core and Applications</a></span></dt><dt><span class="section"><a href="3rdparty.html#mmbase_core">3. MMBase Core</a></span></dt><dt><span class="section"><a href="3rdparty.html#community_packages">4. MMBase Community Packages</a></span></dt><dt><span class="section"><a href="3rdparty.html#third_pary_packages">5. MMBase 3rd Party Packages</a></span></dt><dt><span class="section"><a href="3rdparty.html#infrastructure">6. Infrastructure and Organization</a></span></dt><dt><span class="section"><a href="3rdparty.html#become_third_party">7. How to become a 3rd Party Package</a></span></dt><dt><span class="section"><a href="3rdparty.html#open_source">8. Open Source</a></span></dt></dl></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="readfirst" />1. </h2></div></div></div><p>If you are planning to share code in the MMBase repository, please read this first.</p><p>
+			MMBase is a general purpose object oriented content management system. The sources are freely available
+			since april 2000. Since that time, MMBase has become a base for many systems which are mostly web-oriented.
+		</p><p>
+			What exactly is MMBase? How is its software organized, and how will it grow overtime? The number of
+			organizations involved with MMBase is increasing. This presents new opportunities to share and collaborate,
+			provided that questions like these are anwered.
+		</p><p>
+			This document gives an overview of the different MMBase-application types there are and how the
+			MMBase-community could be dealing with them.
+		</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="core_and_applications" />2. Core and Applications</h2></div></div></div><p>
+			MMBase is or can be divided in different parts. Some of the parts belong to the core of MMBase, some of the
+			parts are applications build upon this core.
+		</p><p>
+			<div><img src="general/media/architecture.png" /></div>
+		</p><p>
+			This section discusses the different parts, the community around these parts, the licenses that are being
+			used or can be used, etc.
+		</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="mmbase_core" />3. MMBase Core</h2></div></div></div><p>
+			MMBase core is the base of all MMBase-applications. We strive to keep the Core as small as possible. There's
+			an interface around the core, called MMCI, which is the preferred way for applications to use the core. This
+			interface must be stable and backwards compatible between different MMBase releases, to ensure compatibility
+			of MMBase-applications.
+		</p><p>
+			<span class="bold"><strong>Community</strong></span>
+			.
+		</p><p>The core is maintained and extended by the MMBase developers (and especially by the commitors).</p><p>
+			<span class="bold"><strong>License</strong></span>
+			.
+		</p><p>
+			The core uses the MPL-1.0 license. This license has been chosen to get as much freedom as possible.
+			Developers can use the sources to extend MMBase, companies can use the core to build their own system and
+			sell it to their customers.
+		</p><p>
+			Although the license allows to create proprietary changes, it's better to create changes with the backup of
+			the developers community. It's better for the continuation of MMBase and proprietary changes are difficult
+			to maintain between different MMBase releases.
+		</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="community_packages" />4. MMBase Community Packages</h2></div></div></div><p>
+			Community packages are packages which are being developed by the same developers community as the MMBase
+			Core. A Community packages can be started by the community, eg the mediaproject, or can be adopted by the
+			community, eg the editwizards.
+		</p><p>
+			Before an existing package can be adopted by the community, it has to be proposed to the community as an
+			'Hack' (sometimes followed by an'integration' project) or as a project. The community must decide whether or
+			not they are going to maintain this package. More information about proposing an Hack or a project see
+			guidelines section at mmbase.org http://www.mmbase.org/guidelines
+		</p><p>
+			A community package which is going to be started by the community must follow the project proposal
+			guidelines, which can also be found at http://www.mmbase.org/guidelines.
+		</p><p>
+			<span class="bold"><strong>Examples.</strong></span>
+		</p><p>Mediaproject, editwizards, taglib, dove, rmmci, xmlimporter, etc.</p><p>
+			<span class="bold"><strong>Community</strong></span>
+			.
+		</p><p>MMBase developers community</p><p>
+			<span class="bold"><strong>License</strong></span>
+			.
+		</p><p>
+			The MMBase Community Packages must use the MPL-1.0 license. This way sources can be mixed, package and core
+			can be packaged together without any trouble regarding licenses.
+		</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="third_pary_packages" />5. MMBase 3rd Party Packages</h2></div></div></div><p>
+			Packages being developed by external companies or organizations, which are build upon the MMBase Core. There
+			are two types of 3rd Party Packages: 1. Closed Source Packages 2. Open Source Packages We'd like to
+			encourage all companies to make their packages Open Source. But it's perfectly legal to create a closed
+			source package. If an package is very specialized for one use it's not always useful to make it open source
+			(although the source could be used to learn from).
+		</p><p>
+			<span class="bold"><strong>Community</strong></span>
+			.
+		</p><p>
+			These packages are being maintained by the community around the package. This can be a company or companies
+			which initially build the package. This community can be joined by other developers or organizations. It's
+			also possible this community will be small during the initial development and after a period of time other
+			organizations can join the community.
+		</p><p>
+			<span class="bold"><strong>License</strong></span>
+			.
+		</p><p>
+			All code submitted must follow the MPL. This may change later, but we want a discussion on licenses before
+			that will happen.
+		</p><p>
+			The rest of this document talks about the Open Source MMBase 3rd Party Packages. Stop reading this document
+			if you want to contribute to the MMBase Core or MMBase Community Packages. Go and read
+			<a xmlns:xlink="http://www.w3.org/1999/xlink" href="contribute.html" target="_top">How to contribute to the community</a>
+		</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="infrastructure" />6. Infrastructure and Organization</h2></div></div></div><p>
+			To support all different types of packages an infrastructure is needed. An infrastructure contains things
+			like cvs-repository, mailing list, homepage, bugtracker, etc.
+		</p><p>
+			Furthermore it's possible not all rules of the MMBase community apply on all of the different packages.
+		</p><p>
+			<span class="bold"><strong>Infrastructure</strong></span>
+		</p><p>
+			Most of the tools needed are already present for the MMBase Core. Because the MMBase Community Packages are
+			being developed by the same community, the same tools can be used for these packages.
+		</p><p>
+			The 3rd Party MMBase Packages require their own set of tools. Their own mailing list(s), cvs-repository,
+			homepage, bugtracker, documentation, etc. These facilities are not yet in place, but for the moment the 3rd
+			Party Packages are allowed to use the mailing list(s) and cvs-repository present for the Core and Community
+			Packages.
+		</p><p>
+			<span class="emphasis"><em>Repository</em></span>
+		</p><p>
+			Everyone is allowed to use the repository, but that does not mean that everyone is allowed to do everything.
+			Below are some guidelines everyone should obey to keep everyone happy. - please be kind and behave - please
+			confine yourself to your part
+		</p><p>
+			<span class="emphasis"><em>Mailing lists</em></span>
+		</p><p>
+			When you post to the mailing lists about a specific applications please prefix the subject with the
+			application name in square brackets [].
+		</p><p>
+			<span class="emphasis"><em>Homepage, bugtracker, documentation, distributions</em></span>
+		</p><p>
+			The rest of the infrastructure might become available in the future. we still have to work out a suitable
+			solution for these things.
+		</p><p>
+			<span class="bold"><strong>Organization</strong></span>
+		</p><p>
+			The MMBase Core and MMBase Community Packages share the same organization and guidelines. Information about
+			this can be found at the MMBase Developers Website http://www.mmbase.org/guidelines
+		</p><p>
+			The 3rd Party MMBase Packages will have their own organization and rules, which must be extended from the
+			MMBase Core organization and rules. This way the 3rd Party Packages and the MMBase Core are not too much on
+			two different roads. This is only needed for 3rd Party Packages which want to be recognized as one of the
+			'official MMBase 3rd Party Packages'.
+		</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="become_third_party" />7. How to become a 3rd Party Package</h2></div></div></div><div class="itemizedlist"><ul type="disc"><li>
+					All code submitted must follow the MPL. This may change later, but we want a discussion on licenses
+					before that will happen.
+				</li><li>
+					Third party code must be subject to code conventions, preferrably ours. This is a pragmatic
+					requirment so contributors know how they have to submit their patch.
+				</li><li>
+					The community (core committers) have to vote on allowing the package in CVS. The Vote has to be made
+					by an existing core committer.
+				</li><li>
+					A committer (not necessarily the same person who made the vote) needs to maintain the code. It is
+					possible to make someone a committer for the express purpose of maintaining 3rd-party code.
+				</li><li>As such, the package needs to have a committer supporting it.</li><li>
+					A package that is not maintained can be removed from CVS if nobody desires to maintain it further.
+				</li><li>
+					The release manager decides which packages are included in a distribution. Packages that follow the
+					build process as used by the core applications are more likely to be taken into consideration.
+				</li><li>
+					The core committers decide which package gets the status 'community-maintained'. A
+					community-maintained package no longer requires a specific committer to maintain it, though a core
+					committer will be typically assigned to overview and approve changes.
+				</li></ul></div><p>
+			Notice the difference in the usage core committer and committer in the rules above. Core committers
+			correspond to the role 'committers' as described in the guidelines (http://www.mmbase.org/guidelines). 3rd
+			party committers don't have to be core committers, but then they don't have the priviliges of a core
+			committer.
+		</p><p>
+			The core committer who made the vote for the package has to sponsor the package. This means that he is
+			allowed to add committers for that package and he has to watch the commits from these committers.
+		</p><p>
+			What does this mean when you want to use the infrastructure of the MMBase community? Send an email to the
+			developers mailing list and request that one of the core committers creates a Vote for you and your package.
+			When the vote passes then you will receive an account and module/directory to commit your package in. Your
+			package will be removed again if you or somebody else is not maintaining it. In the request to the mailing
+			list you have to motivate why you want to make the package open source and share the code with others. A 3rd
+			party package should be useful for others. A package which is highly customized for one person is in most
+			cases not interesting for others. This is very vague, but you can probably judge better if it should be
+			shared then we, as community, can.
+		</p><p>
+			The rules above don't require the 3rd party package to use our code conventions and build process, but we
+			recommend 3rd party package do. If a 3rd party package wants to become a community maintained package or
+			wants to be included in the distributtion then the package has to follow them. It is also in your advantage
+			when it uses the mmbase build process, because people are familiar with that.
+		</p><p>
+			Committers may lose there status if they break the rules. A committor receives a warning when he breaks a
+			rule (i.e. a CVS rule). After three warnings, Someone May take up contact with the committer to ask him to
+			resign. If the committer is not willing, a unanimous, non-negative call need succeed on the developer list.
+			The committer will be temporarily disallowed CVS access for the duration of the call.
+		</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="open_source" />8. Open Source</h2></div></div></div><p>
+			When is software Open Source? There are different definitions in use, but a general definition is provided
+			here: http://www.opensource.org/docs/definition.php
+		</p><p>In addition to this, we recommend the following best practices.</p><p>Recommendations:</p><div class="itemizedlist"><ul type="disc"><li><p>documentation included</p></li><li><p>license compatible with Mozilla Public License</p></li><li><p>contact-details available of maintainer</p></li></ul></div></div></div><hr xmlns="" /><p xmlns="">
+      This is part of the <a href="http://www.mmbase.org">MMBase</a> documentation.
+    </p><p xmlns="">
+      For questions and remarks about this documentation mail to: 
+      <a href="/cdn-cgi/l/email-protection#dcb8b3bfa9b1b9b2a8bda8b5b3b29cb1b1bebdafb9f2b3aebb"><span class="__cf_email__" data-cfemail="3e5a515d4b535b504a5f4a5751507e53535c5f4d5b10514c59">[email&#160;protected]</span></a></p><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script></body></html>

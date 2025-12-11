@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title>Notifications</title><link href="../../style/documentation.css" rel="stylesheet" type="text/css" /><meta content="DocBook XSL Stylesheets V1.72.0" name="generator" /><link xmlns="" type="image/x-icon" href="../../style/favicon.ico" rel="icon" /><link xmlns="" type="image/x-icon" href="../../style/favicon.ico" rel="shortcut icon" /><meta xmlns="" content="text/html; charset=utf-8" http-equiv="content-type" /></head><body><div xmlns="" class="navigation"><img alt="mmbase logo" src="../../style/logo.png" /><h2>Notifications</h2><p><a href="notifications.html#N10020">Introduction</a></p><p><a href="notifications.html#N10027">Notifyables</a></p><p><a href="notifications.html#N1004A">SMS Senders and Handlers</a></p><p><a href="notifications.html#N1005D">Mobile number validation</a></p><p><a href="notifications.html#N10064">Clustering</a></p><hr /><p><a href="http://www.mmbase.org">MMBase</a></p><p><a href="../../index.html">home</a></p></div><div class="article" lang="en"><div class="titlepage"><div><div><h1 class="title"><a id="N10001" />Notifications</h1></div><div><div class="authorgroup"><strong class="authorgroup">Author: </strong><span class="author"><span class="firstname">Michiel</span> <span class="surname">Meeuwissen</span></span><br /><strong class="authorgroup">Date: </strong>2007-11-12</div></div><div><div class="legalnotice"><a id="N10016" /><p>This software is OSI Certified Open Source Software. OSI Certified is a certification mark of the Open Source Initiative.</p><p>The license (Mozilla version 1.0) can be read at the MMBase site. See <a xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.mmbase.org/license" target="_top">http://www.mmbase.org/license</a>
+      </p></div></div></div><hr /></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="section"><a href="notifications.html#N10020">1. Introduction</a></span></dt><dt><span class="section"><a href="notifications.html#N10027">2. Notifyables</a></span></dt><dd><dl><dt><span class="section"><a href="notifications.html#N10036">2.1. Dates</a></span></dt><dt><span class="section"><a href="notifications.html#N10045">2.2. Contact information</a></span></dt></dl></dd><dt><span class="section"><a href="notifications.html#N1004A">3. SMS Senders and Handlers</a></span></dt><dt><span class="section"><a href="notifications.html#N1005D">4. Mobile number validation</a></span></dt><dt><span class="section"><a href="notifications.html#N10064">5. Clustering</a></span></dt><dd><dl><dt><span class="section"><a href="notifications.html#N10069">5.1. Notifications</a></span></dt><dt><span class="section"><a href="notifications.html#N1006E">5.2. Sending SMS</a></span></dt></dl></dd></dl></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="N10020" />1. Introduction</h2></div></div></div><p>
+      The MMBase 'notifications' component provides basic functionality to implement a notification
+      mechanism using MMBase objects. That means that you can make any object 'notifyable' by
+      linking a 'notifyables' object to it. Website visitors can then subscribe to those notifyables
+      and receive notifications if something happens with the notifyable. In practice this is for
+      example used to send Short Message Service text message a certain time before the commence of
+      certain TV program.
+    </p><p>
+      So besides the MMBase code to model 'notifications' this component also contains the
+      interfaces to send (and receive) SMS messages. An implemention is provided to communicate with
+      'CM-Telecom'.
+    </p></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="N10027" />2. Notifyables</h2></div></div></div><p>
+      This component provides only one builder ('notifyables') and one relation type
+      ('notifications'). It does not define what objects are related to users nor what object types
+      can be related to a notifyable.
+    </p><p>
+      The only thing that is required is that those two unspecified object types contain certain
+      functions to request some information.
+    </p><div class="figure"><a id="N1002E" /><p class="title"><b>Figure 1. Notifications Example Cloud</b></p><div class="figure-contents"><div class="mediaobject"><img src="objects.png" alt="Notifications Example Cloud" /></div></div></div><br class="figure-break" /><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="N10036" />2.1. Dates</h3></div></div></div><p>
+        The object about which notifications are to be sent, must be linked to an object of type
+        'notifyable' using the role 'related', and it must provide a function 'dates', which
+        provides a list of dates at which a notification must be sent. This function must accept
+        parameters 'since' and 'until', to limit the list. This can e.g. be done like so in the
+        builder XML under concern:
+      </p><a id="builderxml" /><pre class="programlisting">
+      ....
+    &lt;/field&gt;
+
+  &lt;/fieldlist&gt;
+  &lt;functionlist&gt;
+    &lt;function key="dates"&gt;
+      &lt;class&gt;nl.teleacnot.mmbase.functions.ProgrammeDates&lt;/class&gt;
+    &lt;/function&gt;
+  &lt;/functionlist&gt;
+
+&lt;/builder&gt;
+</pre><p>
+        Where the mentioned class can look like so:
+      </p><a id="builderxml" /><pre class="programlisting">
+      package nl.teleacnot.mmbase.functions;
+import org.mmbase.bridge.*;
+import org.mmbase.storage.search.*;
+import org.mmbase.bridge.util.Queries;
+import org.mmbase.util.DynamicDate;
+import java.util.*;
+
+/**
+ * Function wich determines for a certain t_programme node the dates for wich notifications must be
+ * issued.
+ *
+ * @author Michiel Meeuwissen
+ * @version $Id: notifications.xml,v 1.4 2007/12/07 13:35:13 michiel Exp $
+ **/
+public class ProgrammeDates  {
+
+    protected Node node;
+    protected Date since;
+    protected Date until;
+    {
+        try {
+            since = DynamicDate.getInstance("yesterday");
+            until = DynamicDate.getInstance("today + 100 year");
+        } catch (org.mmbase.util.dateparser.ParseException pe) {
+            // could not happen
+        }
+    }
+
+    public void setNode(Node n) {
+        node = n;
+    }
+
+    public void setSince(Date s) {
+        since = s;
+    }
+
+    public void setUntil(Date u) {
+        until = u;
+    }
+
+    public List&lt;Date&gt; dates() {
+        List&lt;Date&gt; result = new ArrayList&lt;Date&gt;();
+        Cloud cloud = node.getCloud();
+        NodeManager eps = cloud.getNodeManager("t_episode");
+        NodeManager trans = cloud.getNodeManager("t_transmission");
+        NodeQuery nq = Queries.createRelatedNodesQuery(node, eps, "posrel", "destination");
+        RelationStep rstep = nq.addRelationStep(trans);
+        nq.setNodeStep(rstep.getNext());
+        Queries.addConstraint(nq, Queries.createConstraint(nq, "begin", Queries.OPERATOR_BETWEEN, since, until, false));
+
+        NodeIterator i = trans.getList(nq).nodeIterator();
+        while (i.hasNext()) {
+            Node transmission = i.nextNode();
+            result.add(transmission.getDateValue("begin"));
+        }
+        return result;
+
+    }
+
+}
+</pre></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="N10045" />2.2. Contact information</h3></div></div></div><p>
+        Users create a relation of the type 'notifications' between their user object and the
+        notifyable object if they want to receive notifications. Necessary contact information is
+        requested from the user object using the function 'phone', for the mobile phone number to
+        which SMS text must be sent and 'email' which must return an email-address.
+      </p></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="N1004A" />3. SMS Senders and Handlers</h2></div></div></div><p>
+      One SMS Sender can be configured using the property 'class' in &lt;config
+      dir&gt;utils/sms_sender.xml. So there can be only one.
+    </p><p>
+      The file is watched, if you change it a new Sender wil be instantiated. This one instance is obtained by calling
+      org.mmbase.sms.Sender.getInstance().
+    </p><p>
+      The sender may offer the possibility to collect messages and send them in bulk. Use the method
+      'offer' is this allowed, mmbase-crontab can be used to periodically call 'trigger', to send pending messages.
+    </p><p>
+      For receival of SMS, multiple 'Handlers' can be configured though. Those are implementions of org.mmbase.sms.Handler.
+    </p><a id="sms_handlers" /><pre class="programlisting">
+&lt;?xml version="1.0"?&gt;
+&lt;!DOCTYPE util PUBLIC "-//MMBase//DTD util config 1.0//EN" "http://www.mmbase.org/dtd/util_1_0.dtd"&gt;
+&lt;util&gt;
+  &lt;properties&gt;
+    &lt;property name="nl.teleacnot.mmbase.sms.Handler" type="map"&gt;
+      &lt;entry&gt;
+        &lt;key&gt;prefix&lt;/key&gt;
+        &lt;value&gt;TELEAC &lt;/value&gt;
+      &lt;/entry&gt;
+    &lt;/property&gt;
+  &lt;/properties&gt;
+&lt;/util&gt;
+      </pre><p>
+        An SMS handler can decide to not handle the message, and leave it to the next one.
+      </p><p>
+        The SMS Handlers are called by the class org.mmbase.sms.Receiver. The receiver is offered
+        received messages with it's method 'offer', which is called by the implemention code for
+        actual retreival. E.g. in the case of CMTelecom this is a very simple JSP in
+        /mmbase/notifications/cmtelecom. Which can be actively called by their system. Other
+        implementations may work differntly.
+      </p></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="N1005D" />4. Mobile number validation</h2></div></div></div><p>
+      This component does not itself provide the functionality to fill in the phone number of
+      users. It should however be done, and the SMS-functionality present in this component can be
+      used to implement the 'validation' protocol which should normally be present.
+    </p><p>
+      An example you can find in nl.teleacnot.example package. (A Processor for a phone number field and a Handler).
+    </p></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="N10064" />5. Clustering</h2></div></div></div><p>
+      This application is aware of the fact that MMBase may be 'clustered'.
+    </p><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="N10069" />5.1. Notifications</h3></div></div></div><p>
+        Normally you should make sure that only precisely one servers of the MMBase cluster is
+        responsible for sending the notifications. This can be arranged using the 'active' property
+        in module/notifier.xml.
+      </p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="N1006E" />5.2. Sending SMS</h3></div></div></div><p>
+        You can also, if you like, make sure that precisely one of the servers of the cluster is
+        responsible for sending the actual SMS'es. This can be, but is not necessarly the same
+        server as the one responsible for maintaining the notifications. This is done with the
+        'active' property in utils/sms_sender.xml.
+      </p><p>
+        If you've done this, and an SMS-request is originating from one of the other servers, they
+        will use the MMBase event mechanism, and issue an SMSEvent. The server responsible for
+        sending SMS will pick it up. (So make sure it is only one, otherwise the SMS may be sent
+        multiple times).
+      </p></div></div></div><hr xmlns="" /><p xmlns="">
+      This is part of the <a href="http://www.mmbase.org">MMBase</a> documentation.
+    </p><p xmlns="">
+      For questions and remarks about this documentation mail to: 
+      <a href="/cdn-cgi/l/email-protection#89ede6eafce4ece7fde8fde0e6e7c9e4e4ebe8faeca7e6fbee"><span class="__cf_email__" data-cfemail="bfdbd0dccad2dad1cbdecbd6d0d1ffd2d2dddeccda91d0cdd8">[email&#160;protected]</span></a></p><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script></body></html>

@@ -1,0 +1,612 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title>Dove 1.1 XML API</title><link href="https://www.mmbase.org/mmdocs/applications/dove/build/style/documentation.css" rel="stylesheet" type="text/css" /><meta content="DocBook XSL Stylesheets V1.72.0" name="generator" /><link xmlns="" type="image/x-icon" href="../../style/favicon.ico" rel="icon" /><link xmlns="" type="image/x-icon" href="../../style/favicon.ico" rel="shortcut icon" /><meta xmlns="" content="text/html; charset=utf-8" http-equiv="content-type" /></head><body><div xmlns="" class="navigation"><img alt="mmbase logo" src="../../style/logo.png" /><h2>Dove 1.1 XML API</h2><p><a href="index.html#introduction">Introduction</a></p><p><a href="index.html#commands">Commands</a></p><p><a href="index.html#getdata">getdata</a></p><p><a href="index.html#getrelations">getrelations</a></p><p><a href="index.html#nesting">Nesting calls (getdata/getrelations)</a></p><p><a href="index.html#getnew">getnew</a></p><p><a href="index.html#getnewrelation">getnewrelation</a></p><p><a href="index.html#getconstraints">getconstraints</a></p><p><a href="index.html#getlist">getlist</a></p><p><a href="index.html#put">put</a></p><p><a href="index.html#configuration">Configuration</a></p><hr /><p><a href="http://www.mmbase.org">MMBase</a></p><p><a href="http://www.mmbase.org/mmdocs/applications/dove/build/index.html">home</a></p></div><div class="article" lang="en"><div class="titlepage"><div><div><h1 class="title"><a id="N10001" />Dove 1.1 XML API</h1></div><div><div class="authorgroup"><strong class="authorgroup">Author: </strong><span class="author"><span class="firstname">Pierre</span> <span class="surname">van Rooden</span></span><br /><strong class="authorgroup">Date: </strong>2002-07-20</div></div><div><p class="releaseinfo">MMBase 1.5 includes a beta version of Dove. Version 1.0 was released with MMBase 1.5.1. Version 1.1 is included with MMBase 1.6.</p></div><div><div class="legalnotice"><a id="N10016" /><p>This software is OSI Certified Open Source Software. OSI Certified is a certification mark of the Open Source Initiative.</p><p>The license (Mozilla version 1.0) can be read at the MMBase site. See <a xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.mmbase.org/license" target="_top">http://www.mmbase.org/license</a>
+      </p></div></div></div><hr /></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="section"><a href="index.html#introduction">1. Introduction</a></span></dt><dd><dl><dt><span class="section"><a href="index.html#passing_commands">1.1. Passing Commands</a></span></dt><dt><span class="section"><a href="index.html#security">1.2. Security</a></span></dt><dt><span class="section"><a href="index.html#errors">1.3. Errors</a></span></dt></dl></dd><dt><span class="section"><a href="index.html#commands">2. Commands</a></span></dt><dt><span class="section"><a href="index.html#getdata">3. getdata</a></span></dt><dt><span class="section"><a href="index.html#getrelations">4. getrelations</a></span></dt><dt><span class="section"><a href="index.html#nesting">5. Nesting calls (getdata/getrelations)</a></span></dt><dt><span class="section"><a href="index.html#getnew">6. getnew</a></span></dt><dt><span class="section"><a href="index.html#getnewrelation">7. getnewrelation</a></span></dt><dt><span class="section"><a href="index.html#getconstraints">8. getconstraints</a></span></dt><dt><span class="section"><a href="index.html#getlist">9. getlist</a></span></dt><dt><span class="section"><a href="index.html#put">10. put</a></span></dt><dt><span class="section"><a href="index.html#configuration">11. Configuration</a></span></dt></dl></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="introduction" />1. Introduction</h2></div></div></div><p>The Dove is a support class for MMBase, which adds a protocol for communication with, and passing commands to, the MMBase system using an XML format. The current implementation (<code class="classname">org.mmbase.applications.dove.Dove</code>) makes use of the <code class="interfacename">MMCI</code> to communicate with MMBase. Alternate implementations (i.e. versions that work on the core) can be implemented by extending the <code class="classname">AbstractDove</code> class. Every implementation should at the least support the XML format presented here, though it is possible that implementations add custom commands or functionality. Commands are run by passing an XML DOM root element to an instance of Dove (the request). The calling member function returns an <code class="interfacename">Element</code> that contains the result of the passed command (the response). This document focuses on the structure of the request and response XML (the Dove Communication API). The actual mechanics for instantiation of the Dove class and calling its member functions are documented in the Dove class API.</p><p>The version noted here is version 1.1, which is included with MMBase version 1.6 and higher.</p><div class="sidebar"><p class="title"><b>A Note On XML Validation</b></p><p>The XML you pass to the Dove is an already parsed tree, to support varying methods of obtaining the XML. This means that XML validation needs to be done by the calling code.</p><p>The current Dove implementation does not assume that the passed DOM tree is validated against the required DTD. Unsupported attributes are ignored, but the code does performs some syntax checks and returns error tags when it does not recognize a tag. Future implementations may forego this kind of 'validation', or may fail if it does not recognize attributes, so assuming this behavior is discouraged, and is not a part of the API specification.</p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Specific behavior of the default Dove implementation are included in this document as a note (like this).</p></div></div><div class="sidebar"><p class="title"><b>A Note on Syntax</b></p><p>The commands handled below will include a syntax description and, were appropriate, an example.</p><pre class="programlisting">The syntax descriptions will be in a DTD format, and shown as source text (like this).</pre><p>Only syntax relevant to the appropriate section will be shown (the actual DTD differs slightly as some elements are used in various places).</p><p>The examples are fictitious XML documents. To shorten the examples, the XML declaration and DOCTYPE elements are not included.</p><pre class="programlisting">The XML examples, or fractions thereof, are shown as source text (like this).</pre><p>This document deals with three versions of Dove: 1.0 beta (included in MMBase 1.5), 1.0 (included in MMBase 1.5.1), and 1.1. (MMBase 1.6).</p><p>Where appropriate, notes will be used to indicate which versions support certain functionality.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="passing_commands" />1.1. Passing Commands</h3></div></div></div><p>The root element of the request xml is the <code class="sgmltag-element">request</code> tag.</p><p>Each request tag contains at most one <code class="sgmltag-element">security</code> tag (containing user login information), and one or more dove command tags (each tag being one command). If more than one command is passed, the commands are handled in the order that they appear in the xml.</p><pre class="programlisting">
+&lt;!ELEMENT request (security?,(getdata|getnew|getnewrelation|getrelations| getconstraints|getlist|put)+) &gt;
+      </pre><p>The commands that should be comprehended are : <code class="sgmltag-element">getdata</code>, <code class="sgmltag-element">getnew</code>, <code class="sgmltag-element">getnewrelation</code>, <code class="sgmltag-element">getrelations</code>, <code class="sgmltag-element">getconstraints</code>, <code class="sgmltag-element">getlist</code>, and <code class="sgmltag-element">put</code>.</p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Custom Dove implementations may implement additional commands.</p></div><p>The command tags support an <code class="sgmltag-attribute">id</code> attribute. The attribute has no significance to the Dove, but is meant to support a client-generated id system. When an id attribute is provided, this attribute is also returned in the appropriate tag in the response.</p><p>The result of the commands are tallied and returned in an xml with as root the <code class="sgmltag-element">response</code> tag.</p><p>The body of the xml contains either an error tag (when connecting to MMBase failed), or a list of tags containing the results of the command passed, in the order that those commands were given. The response does not contain any security information, even if the request did.</p><pre class="programlisting">
+&lt;!ELEMENT response (getdata|getnew|getnewrelation|getrelations|getconstraints|getlist|put|error)+ &gt;
+      </pre><p>Each command contains the result of that command or an <code class="sgmltag-element">error</code> tag if the command failed.</p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>If Dove cannot handle the command, an <code class="sgmltag-element">error</code> tag is returned instead to stay compliant with the response dtd. It is recommended you validate a document before passing it to the Dove.</p></div><div class="sidebar"><p class="title"><b>How to Call Dove</b></p><p>The <code class="classname">org.mmbase.applications.dove.Dove</code> Java class contains the code that processes the xml tree. If you want to use the Dove from java code, you should first create a DOM tree, containing the command to run. You then instantiate Dove, using a DOM Document to be used for creating the response, and finally call the executeRequest method, passing the entity that contains the root of the request. For more information on calling the class we refer to the MMBase API documentation</p><p>If you want to call Dove remote, you can also install the DoveServlet (comments on configuring this servlet can be found in the sample web.xml that comes with MMBase). You can call this servlet using a html form containing an 'xml' field that should then contain the xml to parse and run. The result of the call is the xml response (in text format).</p></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="security" />1.2. Security</h3></div></div></div><p>It is possible to pass a <code class="sgmltag-element">security</code> tag to Dove, enabling the class to log in on MMBase. The tag accepts a <code class="sgmltag-attribute">name</code> and <code class="sgmltag-attribute">password</code> attribute, as well as a <code class="sgmltag-attribute">cloud</code> attribute containing the name and a <code class="sgmltag-attribute">method</code> attribute containing the login method name. These attributes are similar in meaning to the attributes of the cloud tag in the MMBase taglib (documented elsewhere). All attributes are optional. In general, name and password will be required unless the default method for authentication is overruled.</p><pre class="programlisting">
+&lt;!ELEMENT security EMPTY&gt;
+&lt;!ATTLIST security name NMTOKEN #IMPLIED &gt;
+&lt;!ATTLIST security password NMTOKEN #IMPLIED &gt;
+&lt;!ATTLIST security method CDATA 'name/password' &gt;
+&lt;!ATTLIST security cloud CDATA 'mmbase' &gt;
+      </pre><div class="example"><a id="N100C0" /><p class="title"><b>Example 1. Example:</b></p><div class="example-contents"><pre class="programlisting">
+&lt;request&gt;
+
+  &lt;security name="admin" password="admin2k" /&gt;
+  &lt;getdata&gt;&lt;object number="675" /&gt;&lt;/getdata&gt;
+
+&lt;/request&gt;
+      </pre></div></div><br class="example-break" /><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Dove does not allow anonymous access: if you do not provide a security login, you need to provide a secure MMCI cloud as an additional parameter when passing the XML.</p></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="errors" />1.3. Errors</h3></div></div></div><p>When the Dove fails to execute a command it returns an <code class="sgmltag-element">error</code> tag. An error tag contains a <code class="sgmltag-attribute">type</code> attribute that details the type of error, as follows:</p><div class="itemizedlist"><ul type="disc"><li><p><b>parser. </b>The xml given is invalid or does not follow the grammar. This likely means there is a bug in the client code.</p></li><li><p><b>server. </b>The code invoked is either not yet implemented or another, server-related, error occurred (such as no memory, bad configuration, etc.). Server errors entirely fail a request.</p></li><li><p><b>client. </b>The data requested could not be retrieved or values specified were invalid. I.e. a requested node does not exist (any more), or a put failed due to invalid data.</p></li></ul></div><p>The body of the tag contains a description of the actual error.</p><pre class="programlisting">
+&lt;!ENTITY % errortype (server,parser,client)&gt;
+&lt;!ELEMENT error (#PCDATA)&gt;
+&lt;!ATTLIST error type %errortype #REQUIRED &gt;
+      </pre><p>If the error occurs due to a security issue, only the error is returned (no command is executed).</p><div class="example"><a id="N100F0" /><p class="title"><b>Example 2. Example:</b></p><div class="example-contents"><pre class="programlisting">
+&lt;response&gt;
+  &lt;error type="client"&gt;Authentication error : password invalid&lt;/error&gt;
+&lt;/response&gt;
+        </pre></div></div><br class="example-break" /><p>If the error occurred while attempting to execute a command, it occurs at the location where the error occurred.</p><div class="example"><a id="N100F8" /><p class="title"><b>Example 3. Example:</b></p><div class="example-contents"><pre class="programlisting">
+&lt;response&gt;
+
+  &lt;getdata&gt;
+    &lt;object number="234"&gt;
+      &lt;error type="client"&gt;node not found&lt;/error&gt;
+    &lt;/object&gt;
+ &lt;/getdata&gt;
+
+&lt;/response&gt;
+        </pre></div></div><br class="example-break" /><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Except during a put, Dove attempts to continue execution when it runs into an error.</p></div></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="commands" />2. Commands</h2></div></div></div><p>The following pages list the commands that can be passed to the Dove.</p><p>An implementation should support the following commands:</p><div class="itemizedlist"><p class="title"><b>Dove Commands</b></p><ul type="disc"><li><p><b><code class="sgmltag-element">getdata</code>. </b>Retrieves an MMBase node</p></li><li><p><b><code class="sgmltag-element">getnew</code>. </b>Returns a new, empty node</p></li><li><p><b><code class="sgmltag-element">getnewrelation</code>. </b>Returns a new, empty relation node</p></li><li><p><b><code class="sgmltag-element">getrelations</code>. </b>Returns the relations of a node of a certain role</p></li><li><p><b><code class="sgmltag-element">getconstraints</code>. </b>Returns the constraints of a node type</p></li><li><p><b><code class="sgmltag-element">getlist</code>. </b>Returns a list of nodes following a constraint</p></li><li><p><b><code class="sgmltag-element">put</code>. </b>Passes changes to make to MMBase</p></li></ul></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="getdata" />3. getdata</h2></div></div></div><p>A <code class="sgmltag-element">getdata</code> command retrieves objects from MMBase by their number.</p><p>The command should contain one or more <code class="sgmltag-element">object</code> tags, each tag referencing an object through the <code class="sgmltag-attribute">number</code> attribute. If the referenced object can be found, the object, along with type and all its fields, is returned in the response. If retrieving the object fails, the returned response <code class="sgmltag-element">object</code> tag contains an <code class="sgmltag-element">error</code> tag describing the problem.</p><p>If you do not want to retrieve all the object's fields, you can specify the fields you want to retrieve by including <code class="sgmltag-element">field</code> tags in the body of the object tag. The field tags' <code class="sgmltag-attribute">name</code> attribute identifies the fields you want to retrieve. If at least one field tag is given, only the selected fields are returned. Note that you should not retrieve relation objects directly - use <code class="sgmltag-element">getrelations</code> instead.</p><pre class="programlisting">
+&lt;!ELEMENT getdata (object+) &gt;
+&lt;!ATTLIST getdata id ID #IMPLIED&gt;
+
+&lt;!ELEMENT object (field*)&gt;
+&lt;!ATTLIST object number NMTOKEN #REQUIRED &gt;
+
+&lt;!ELEMENT field EMPTY&gt;
+&lt;!ATTLIST field name NMTOKEN #REQUIRED &gt;
+  </pre><p>The response contains, aside from the fields, the type of the object.</p><pre class="programlisting">
+&lt;!ELEMENT getdata (object+) &gt;
+&lt;!ATTLIST getdata id ID #IMPLIED&gt;
+
+&lt;!ELEMENT object (field*)&gt;
+&lt;!ATTLIST object did ID #IMPLIED&gt;
+&lt;!ATTLIST object number NMTOKEN #REQUIRED &gt;
+&lt;!ATTLIST object type NMTOKEN #REQUIRED &gt;
+
+&lt;!ELEMENT field (#PCDATA) &gt;
+&lt;!ATTLIST field did ID #IMPLIED&gt;
+&lt;!ATTLIST field name NMTOKEN #REQUIRED &gt;
+  </pre><div class="example"><a id="N10169" /><p class="title"><b>Example 4. Example</b></p><div class="example-contents"><pre class="programlisting">
+&lt;request&gt;
+  &lt;getdata id="1"&gt;
+    &lt;object number="675" /&gt;
+  &lt;/getdata&gt;
+
+  &lt;getdata id="2"&gt;
+    &lt;object number="672" &gt;
+     &lt;field name="title" /&gt;
+    &lt;/object&gt;
+    &lt;object number="671" &gt;
+     &lt;field name="name" /&gt;
+     &lt;field name="url" /&gt;
+    &lt;/object&gt;
+  &lt;/getdata&gt;
+
+&lt;/request&gt;
+  </pre><p>The result of this command could look like this:</p><pre class="programlisting">
+&lt;response&gt;
+  &lt;getdata id="1"&gt;
+    &lt;object number="675" type="people"&gt;
+      &lt;field name="firstname"&gt;Harrison&lt;/field&gt;
+      &lt;field name="lastname"&gt;Ford&lt;/field&gt;
+      &lt;field name="email"&gt;<span class="__cf_email__" data-cfemail="1a727b6868736975747c75687e5a72757676636d75757e34797577">[email&#160;protected]</span>&lt;/field&gt;
+    &lt;/object&gt;
+  &lt;/getdata&gt;
+
+  &lt;getdata id="2"&gt;
+    &lt;object number="672" type="movies"&gt;
+     &lt;field name="title"&gt;Star Wars&lt;/field&gt;
+    &lt;/object&gt;
+    &lt;object number="671" type="urls"&gt;
+     &lt;field name="name" &gt;Star Wars Site&lt;/field&gt;
+     &lt;field name="url" &gt;http://www.starwars.com&lt;/field&gt;
+    &lt;/object&gt;
+  &lt;/getdata&gt;
+&lt;/response&gt;
+  </pre></div></div><br class="example-break" /></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="getrelations" />4. getrelations</h2></div></div></div><p>A <code class="sgmltag-element">getrelations</code> command obtains the relation objects belonging to the specified objects, filtered by a specified destination type or relation role.</p><p>The command should contain one or more <code class="sgmltag-element">object</code> tags, each tag referencing an object through the <code class="sgmltag-attribute">number</code> attribute. If the referenced object can be found, the object's relations are retrieved and returned.</p><p>An object tag may include one or more <code class="sgmltag-element">relation</code> tags, allowing to retrieve a narrow selection of relations, relating to a specified type of object or using a specified role. Restricting the selection is done by supplying a <code class="sgmltag-attribute">role</code> or a <code class="sgmltag-attribute">destinationtype</code> attribute (or both) to a relation tag.</p><p>By default, all fields of a relation are returned. If you only want to retrieve certain fields, you can do so by specifying these fields by including <code class="sgmltag-element">field</code> tags in the body of the relation tag. The field tags' <code class="sgmltag-attribute">name</code> attribute identifies the fields you want to retrieve. If at least one field tag is given, only the selected fields are returned.</p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>In Dove 1.0, a <code class="sgmltag-element">searchdir</code> attribute can be specified to limit the result
+      based on directionality. The value 'source' limits the returned relations to those that link TO the specified object FROM a 'source' object, 'destination' limits the relations to those that link FROM the specified object TO a 'destination object, and 'both' (the default) returns all relations, except those that would violate directionality (i.e. uni-directional relations).</p></div><pre class="programlisting">
+&lt;!ENTITY % searchdir "(source,destination,both)"&gt;
+
+&lt;!ELEMENT getrelations (object+) &gt;
+&lt;!ATTLIST getrelations id ID #IMPLIED&gt;
+
+&lt;!ELEMENT object (relation*)&gt;
+&lt;!ATTLIST object number NMTOKEN #REQUIRED &gt;
+
+&lt;!ELEMENT relation (field*)&gt;
+&lt;!ATTLIST relation role NMTOKEN #IMPLIED &gt;
+&lt;!ATTLIST relation searchdir %searchdir #IMPLIED &gt;
+&lt;!ATTLIST relation destinationtype NMTOKEN #IMPLIED &gt;
+
+&lt;!ELEMENT field (#PCDATA) &gt;
+&lt;!ATTLIST field name NMTOKEN #REQUIRED &gt;
+  </pre><p>The response contains the requested relation objects, wrapped by the object used to retrieve them. All additional fields of the relations are also returned.</p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>
+        The common relation fields <span class="database">snumber</span>, <span class="database">dnumber</span> and <span class="database">rnumber</span> are not returned as field elements, but as the attributes <code class="sgmltag-attribute">source</code>, <code class="sgmltag-attribute">destination</code>, and <code class="sgmltag-attribute">role</code>.These fields contain MMBase object numbers (snumber and dnumber of the relation). It is possible to check if the initiating node was the source or the destination of the relations, by checking whether its number is in the 'source' or in the 'destination' attribute. The role attribute contains the forward role (<span class="database">sname</span> field) of the relation.</p></div><pre class="programlisting">
+&lt;!ELEMENT getrelations (object+) &gt;
+&lt;!ATTLIST getrelations id ID #IMPLIED&gt;
+
+&lt;!ELEMENT object (relation*)&gt;
+&lt;!ATTLIST object number NMTOKEN #REQUIRED &gt;
+
+&lt;!ELEMENT relation (field*)&gt;
+&lt;!ATTLIST relation number NMTOKEN #REQUIRED &gt;
+&lt;!ATTLIST relation type NMTOKEN #REQUIRED &gt;
+&lt;!ATTLIST relation role NMTOKEN #REQUIRED &gt;
+&lt;!ATTLIST relation source NMTOKEN #REQUIRED &gt;
+&lt;!ATTLIST relation destination NMTOKEN #REQUIRED &gt;
+
+&lt;!ELEMENT field (#PCDATA) &gt;
+&lt;!ATTLIST field name NMTOKEN #REQUIRED &gt;
+  </pre><div class="example"><a id="N101C9" /><p class="title"><b>Example 5. Example:</b></p><div class="example-contents"><pre class="programlisting">
+&lt;request&gt;
+  &lt;getrelations id="1"&gt;
+    &lt;object number="675" /&gt;
+  &lt;/getrelations&gt;
+
+  &lt;getrelations id="2"&gt;
+    &lt;object number="672" &gt;
+      &lt;relation role="part" /&gt;
+      &lt;relation destinationtype="scenes" role="posrel"&gt;
+        &lt;field name="pos" /&gt;
+      &lt;/relation&gt;
+    &lt;/object&gt;
+  &lt;/getrelations&gt;
+
+&lt;/request&gt;
+  </pre><p>Which may result in the following response:</p><pre class="programlisting">
+&lt;response&gt;
+
+  &lt;getrelations id="1"&gt;
+    &lt;object number="675" type="people"&gt;
+      &lt;relation number="682" type="insrel" source="675" destination="681" role="related" /&gt;
+      &lt;relation number="684" type="insrel" source="675" destination="683" role="related" /&gt;
+      &lt;relation number="690" type="insrel" source="675" destination="678" role="actor" /&gt;
+    &lt;/object&gt;
+  &lt;/getrelations&gt;
+
+  &lt;getrelations id="2"&gt;
+    &lt;object number="672" type="movies"&gt;
+      &lt;relation number="677" type="insrel" source="672" destination="678" role="part" /&gt;
+      &lt;relation number="700" type="posrel" source="672" destination="699" role="posrel" &gt;
+        &lt;field name="pos" &gt;1&lt;/field&gt;
+      &lt;/relation&gt;
+      &lt;relation number="702" type="posrel" source="672" destination="701" role="posrel"&gt;
+        &lt;field name="pos" &gt;2&lt;/field&gt;
+      &lt;/relation&gt;
+      &lt;relation number="704" type="posrel" source="672" destination="703" role="posrel"&gt;
+        &lt;field name="pos" &gt;3&lt;/field&gt;
+      &lt;/relation&gt;
+    &lt;/object&gt;
+  &lt;/getrelations&gt;
+
+&lt;/response&gt;
+  </pre></div></div><br class="example-break" /></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="nesting" />5. Nesting calls (getdata/getrelations)</h2></div></div></div><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Deep nesting is possible only with Dove version 1.0 that is available with MMBase 1.5.1 and up.</p></div><p>Loading one object or set of relations at a time can be time consuming, especially if a lot of interrelated objects need to be loaded.</p><p>It is possible to define a load action of related objects in one command, by nesting objects and their relations.</p><p>The nested request should follow this DTD:</p><pre class="programlisting">
+&lt;!ELEMENT object ((field|relation)*)&gt;
+&lt;!ATTLIST object number NMTOKEN #IMPLIED &gt;
+
+&lt;!ELEMENT relation ((field|object)*)&gt;
+&lt;!ATTLIST relation searchdir %searchdir #IMPLIED &gt;
+&lt;!ATTLIST relation role NMTOKEN #IMPLIED &gt;
+&lt;!ATTLIST relation destinationtype NMTOKEN #REQUIRED &gt;
+</pre><p>and the nested response should follow this one:</p><pre class="programlisting">
+
+&lt;!ELEMENT object ((field|relation)*)&gt;
+&lt;!ATTLIST object number NMTOKEN #REQUIRED &gt;
+&lt;!ATTLIST object type NMTOKEN #REQUIRED &gt;
+
+&lt;!ELEMENT relation ((field|object)*)&gt;
+&lt;!ATTLIST relation number NMTOKEN #REQUIRED &gt;
+&lt;!ATTLIST relation type NMTOKEN #REQUIRED &gt;
+&lt;!ATTLIST relation role NMTOKEN #REQUIRED&gt;
+&lt;!ATTLIST relation source NMTOKEN #REQUIRED &gt;
+&lt;!ATTLIST relation destination NMTOKEN #REQUIRED &gt;
+
+</pre><div class="example"><a id="N101E9" /><p class="title"><b>Example 6. Example</b></p><div class="example-contents"><p>A possible combination of nesting objects and relations could look like this:</p><pre class="programlisting">
+&lt;request&gt;
+&lt;getdata id="1"&gt;
+    &lt;object number="672"&gt;
+
+      &lt;field name="title" /&gt;
+
+      &lt;relation role="part"&gt;
+        &lt;object &gt;
+          &lt;field name="name" /&gt;
+          &lt;relation destinationtype="people" role=actor" &gt;
+            &lt;object &gt;
+               &lt;field name="firstname" /&gt;
+               &lt;field name="lastname" /&gt;
+            &lt;/object&gt;
+          &lt;/relation&gt;
+        &lt;/object&gt;
+      &lt;/relation&gt;
+
+      &lt;relation destinationtype="scenes" role="posrel"&gt;
+        &lt;field name="pos" /&gt;
+        &lt;object&gt;
+          &lt;field name="title" /&gt;
+        &lt;/object&gt;
+      &lt;/relation&gt;
+
+    &lt;/object&gt;
+
+  &lt;/getdata&gt;
+
+&lt;/request&gt;
+  </pre><p>And this could be the response:</p><pre class="programlisting">
+&lt;response&gt;
+
+  &lt;getdata id="1"&gt;
+    &lt;object number="672" type="movies"&gt;
+
+     &lt;field name="title" &gt;
+      &lt;relation number="677" type="insrel" source="672" destination="678" role="part" &gt;
+        &lt;object number="678" type="elements"&gt;
+          &lt;field name="name" &gt;Han Solo&lt;/field&gt;
+          &lt;relation number="690" type="insrel" source="678" destination="675" role=actor" &gt;
+            &lt;object number="690" type="people" &gt;
+               &lt;field name="firstname" &gt;Harrison&lt;/field&gt;
+               &lt;field name="lastname" &gt;Ford&lt;/field&gt;
+            &lt;/object&gt;
+          &lt;/relation&gt;
+        &lt;/object&gt;
+      &lt;/relation&gt;
+
+      &lt;relation number="700" type="posrel" source="672" destination="699" role="posrel" &gt;
+        &lt;field name="pos" &gt;1&lt;/field&gt;
+        &lt;object number="699" type="scenes"&gt;
+          &lt;field name="title"&gt;Entering Mos Eisly&lt;/field&gt;
+        &lt;/object&gt;
+      &lt;/relation&gt;
+      &lt;relation number="702" type="posrel" source="672" destination="701" role="posrel"&gt;
+        &lt;field name="pos" &gt;2&lt;/field&gt;
+        &lt;object number="701" type="scenes"&gt;
+          &lt;field name="title"&gt;These are not the droids you are looking for&lt;/field&gt;
+        &lt;/object&gt;
+      &lt;/relation&gt;
+      &lt;relation number="704" type="posrel" source="672" destination="703" role="posrel"&gt;
+        &lt;field name="pos" &gt;3&lt;/field&gt;
+        &lt;object number="703" type="scenes"&gt;
+          &lt;field name="title"&gt;Boring conversation anyway&lt;/field&gt;
+        &lt;/object&gt;
+      &lt;/relation&gt;
+
+    &lt;/object&gt;
+  &lt;/getdata&gt;
+
+&lt;/response&gt;
+  </pre></div></div><br class="example-break" /></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="getnew" />6. getnew</h2></div></div></div><p>A <code class="sgmltag-element">getnew</code> command creates a new, empty object of a specified object type.</p><p>The new object is returned with a (system-generated) temporary object <code class="sgmltag-attribute">number</code>, and any fields for this object, with default values according to the system. This call is for generating normal objects - for generating relations use <code class="sgmltag-element">getnewrelation</code>.</p><p>The command requires a <code class="sgmltag-attribute">type</code> attribute that holds the type to generate</p><pre class="programlisting">
+&lt;!ELEMENT getnew EMPTY &gt;
+&lt;!ATTLIST getnew id ID #IMPLIED&gt;
+&lt;!ATTLIST getnew type NMTOKEN #REQUIRED&gt;
+</pre><p>The response contains the new object, in a fashion similar to getdata. The getnew element itself also contains the original type passed. All fields of the object are returned.</p><pre class="programlisting">
+&lt;!ELEMENT getnew (object|error) &gt;
+&lt;!ATTLIST getnew id ID #IMPLIED&gt;
+&lt;!ATTLIST getnew type NMTOKEN #REQUIRED&gt;
+
+&lt;!ELEMENT object (field*)&gt;
+&lt;!ATTLIST object number NMTOKEN #REQUIRED &gt;
+&lt;!ATTLIST object type NMTOKEN #REQUIRED &gt;
+
+&lt;!ELEMENT field (#PCDATA) &gt;
+&lt;!ATTLIST field name NMTOKEN #REQUIRED &gt;
+</pre><div class="example"><a id="N10216" /><p class="title"><b>Example 7. Example:</b></p><div class="example-contents"><pre class="programlisting">
+&lt;request&gt;
+  &lt;getnew type="people" /&gt;
+&lt;/request&gt;
+</pre><p>And the result may look like this:</p><pre class="programlisting">
+&lt;response&gt;
+
+  &lt;getnew id="1" type="people"&gt;
+    &lt;object number="n62967893564" type="people"&gt;
+      &lt;field name="firstname" /&gt;
+      &lt;field name="lastname" /&gt;
+      &lt;field name="email" /&gt;
+    &lt;/object&gt;
+  &lt;/getnew&gt;
+
+  &lt;/response&gt;
+</pre></div></div><br class="example-break" /></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="getnewrelation" />7. getnewrelation</h2></div></div></div><p>A <code class="sgmltag-element">getnewrelation</code> command creates a new, empty relation object with a specified role, source, and destination.</p><p>The new object is returned with a (system-generated) temporary object  <code class="sgmltag-attribute">number</code>, <code class="sgmltag-attribute">role</code>, <code class="sgmltag-attribute">source</code>, and <code class="sgmltag-attribute">destination</code>, and any additional fields for this object, with default values according to the system. This call is for generating relations - for normal objects use <code class="sgmltag-element">getnew</code>.</p><p>The command requires a <code class="sgmltag-attribute">role</code>, <code class="sgmltag-attribute">source</code>, and <code class="sgmltag-attribute">destination</code> attribute that holds information for the relation to generate.
+</p><pre class="programlisting">
+&lt;!ELEMENT getnewrelation EMPTY&gt;
+&lt;!ATTLIST getnewrelation id ID #IMPLIED&gt;
+&lt;!ATTLIST getnewrelation role NMTOKEN #REQUIRED &gt;
+&lt;!ATTLIST getnewrelation source NMTOKEN #REQUIRED &gt;
+&lt;!ATTLIST getnewrelation destination NMTOKEN #REQUIRED &gt;
+</pre><p>The response contains the new relation, in a fashion similar to getrelations. The getnewrelation element itself also contains the original attributes passed. All additional fields of the relation are returned. </p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p><span class="database">snumber</span>, <span class="database">dnumber</span> and <span class="database">rnumber</span> are not returned as fields, but as the attributes <code class="sgmltag-attribute">source</code>, <code class="sgmltag-attribute">destination</code>, and <code class="sgmltag-attribute">role</code>.</p></div><pre class="programlisting">
+&lt;!ELEMENT getnewrelation (relation|error)&gt;
+&lt;!ATTLIST getnewrelation id ID #IMPLIED&gt;
+&lt;!ATTLIST getnewrelation role NMTOKEN #REQUIRED &gt;
+&lt;!ATTLIST getnewrelation source NMTOKEN #REQUIRED &gt;
+&lt;!ATTLIST getnewrelation destination NMTOKEN #REQUIRED &gt;
+
+&lt;!ELEMENT relation (field*)&gt;
+&lt;!ATTLIST relation number NMTOKEN #REQUIRED &gt;
+&lt;!ATTLIST relation type NMTOKEN #REQUIRED &gt;
+&lt;!ATTLIST relation role NMTOKEN #REQUIRED &gt;
+&lt;!ATTLIST relation source NMTOKEN #REQUIRED &gt;
+&lt;!ATTLIST relation destination NMTOKEN #REQUIRED &gt;
+
+&lt;!ELEMENT field (#PCDATA) &gt;
+&lt;!ATTLIST field name NMTOKEN #REQUIRED &gt;
+</pre><div class="example"><a id="N1026F" /><p class="title"><b>Example 8. Example:</b></p><div class="example-contents"><pre class="programlisting">
+&lt;request&gt;
+  &lt;getnewrelation role="posrel" source="134" destination="n72647968" /&gt;
+&lt;/request&gt;
+</pre><p>And the result:</p><pre class="programlisting">
+&lt;response&gt;
+
+  &lt;getnewrelation role="posrel" source="134" destination="n72647968" /&gt;
+    &lt;relation number="n62967893568" role="posrel" type="posrel"
+              source="134" destination="n72647968" &gt;
+      &lt;field name="pos" &gt;0&lt;/field&gt;
+    &lt;/relation&gt;
+  &lt;/getnewrelation&gt;
+
+&lt;/response&gt;
+</pre></div></div><br class="example-break" /></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="getconstraints" />8. getconstraints</h2></div></div></div><p>A <code class="sgmltag-element">getconstraints</code> command obtains constraint information for an object type.</p><p>The type should be specified in the <code class="sgmltag-attribute">type</code> attribute. An optional <code class="sgmltag-attribute">xml:lang</code> attribute can be specified to indicate the preferred language of any gui information (help text, prompts, etc.).  A Dove implementation that supports this will return data in the preferred language where possible. the language specified should be in the <a xmlns:xlink="http://www.w3.org/1999/xlink" href="http://lcweb.loc.gov/standards/iso639-2/" target="_top">ISO 639-1</a> format, such as 'en', 'nl', or the like.</p><pre class="programlisting">
+&lt;!ELEMENT getconstraints (object+) &gt;
+&lt;!ATTLIST getconstraints id ID #IMPLIED&gt;
+&lt;!ATTLIST getconstraints type NMTOKEN #REQUIRED&gt;
+&lt;!ATTLIST getconstraints xml:lang NMTOKEN "en"&gt;
+</pre><p>The response contains various tags containing basic information about the object type, the fields of the type, and any allowed relations.</p><p>Tags supported in API 1.0 are <code class="sgmltag-element">singularname</code>, <code class="sgmltag-element">pluralname</code>, and <code class="sgmltag-element">description</code>.</p><p>The <code class="sgmltag-element">fields</code> tag lists all editable fields of an object. Each <code class="sgmltag-element">field</code> has its own tag, with a <code class="sgmltag-attribute">name</code> attribute and a number of subtags : <code class="sgmltag-element">guiname</code>, <code class="sgmltag-element">guitype</code>, <code class="sgmltag-element">maxlength</code> and <code class="sgmltag-element">required</code>.</p><p>The guitype of a field has a mime-type like format of the form datatype/presentationtype.</p><p>The datatype part is one of string, int, long, float, double, datetime, or binary.</p><p>The presentationtype may vary (common types are line, text, date, or image).</p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>The <code class="sgmltag-element">description</code> subtag of a field is available only in version 1.0 of the Dove.</p></div><pre class="programlisting">
+&lt;!ELEMENT getconstraints (error|(singularname,pluralname,description,fields,relations))+) &gt;
+&lt;!ATTLIST getconstraints id ID #IMPLIED&gt;
+&lt;!ATTLIST getconstraints type NMTOKEN #REQUIRED &gt;
+&lt;!ATTLIST getconstraints xml:lang NMTOKEN "en" &gt;
+
+&lt;!ELEMENT singularname (#PCDATA) &gt;
+&lt;!ATTLIST singularname xml:lang NMTOKEN "en" &gt;
+
+&lt;!ELEMENT pluralname (#PCDATA) &gt;
+&lt;!ATTLIST pluralname xml:lang NMTOKEN "en" &gt;
+
+&lt;!ELEMENT description (#PCDATA) &gt;
+&lt;!ATTLIST description xml:lang NMTOKEN "en" &gt;
+
+&lt;!ELEMENT fields (field*) &gt;
+
+&lt;!ELEMENT relations (relation*) &gt;
+
+&lt;!ELEMENT relation EMPTY &gt;
+&lt;!ATTLIST relation role NMTOKEN #REQUIRED&gt;
+&lt;!ATTLIST relation destinationtype NMTOKEN #REQUIRED &gt;
+
+&lt;!ELEMENT field (guiname,description,guitype,maxlength,required)&gt;
+&lt;!ATTLIST field name NMTOKEN #REQUIRED &gt;
+
+&lt;!ELEMENT guiname (#PCDATA) &gt;
+&lt;!ATTLIST guiname xml:lang NMTOKEN "en" &gt;
+
+&lt;!ELEMENT guitype (#PCDATA) &gt;
+
+&lt;!ELEMENT maxlength (#PCDATA) &gt;
+
+&lt;!ELEMENT required (#PCDATA) &gt;
+</pre><div class="example"><a id="N102C8" /><p class="title"><b>Example 9. Example:</b></p><div class="example-contents"><pre class="programlisting">
+&lt;request&gt;
+
+  &lt;getconstraints type="people" xml:lang="nl"/&gt;
+
+&lt;/request&gt;
+</pre><p>And a possible result:</p><pre class="programlisting">
+&lt;response&gt;
+
+ &lt;getconstraints type="people" xml:lang="nl"&gt;
+    &lt;singularname xml:lang="nl"&gt;Persoon&lt;/singularname&gt;
+    &lt;pluralname xml:lang="nl"&gt;Personen&lt;/pluralname&gt;
+    &lt;description xml:lang="nl"&gt;Persoonsgegevens.&lt;/description&gt;
+    &lt;fields&gt;
+      &lt;field name="firstname"&gt;
+         &lt;guiname xml:lang="nl"&gt;Voornaam&lt;/guiname&gt;
+         &lt;description&gt;Voornaam van de persoon&lt;/description&gt;
+         &lt;guitype&gt;string/line&lt;/guitype&gt;
+         &lt;maxlength&gt;20&lt;/maxlength&gt;
+         &lt;required&gt;FALSE&lt;/required&gt;
+      &lt;/field&gt;
+      &lt;field name="lastname"&gt;
+         &lt;guiname xml:lang="nl"&gt;Achternaam&lt;/guiname&gt;
+         &lt;description&gt;Achternaam van de persoon&lt;/description&gt;
+         &lt;guitype&gt;string/line&lt;/guitype&gt;
+         &lt;maxlength&gt;50&lt;/maxlength&gt;
+         &lt;required&gt;TRUE&lt;/required&gt;
+      &lt;/field&gt;
+      &lt;field name="email"&gt;
+         &lt;guiname xml:lang="nl"&gt;Email adres&lt;/guiname&gt;
+         &lt;description&gt;Email adres van de persoon&lt;/description&gt;
+         &lt;guitype&gt;string/line&lt;/guitype&gt;
+         &lt;maxlength&gt;35&lt;/maxlength&gt;
+         &lt;required&gt;FALSE&lt;/required&gt;
+      &lt;/field&gt;
+    &lt;/fields&gt;
+    &lt;relations&gt;
+      &lt;relation destinationtype="images" role="related" /&gt;
+      &lt;relation destinationtype="movies" role="actor" /&gt;
+    &lt;/relations&gt;
+  &lt;/getconstraints&gt;
+
+&lt;/response&gt;
+</pre></div></div><br class="example-break" /></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="getlist" />9. getlist</h2></div></div></div><p>The <code class="sgmltag-element">getlist</code>command is used to retrieve lists of nodes using a set of criteria , such as nodetype and field content. The tag contains a set of <code class="sgmltag-element">query</code> tags, each specifying the constraints to retrieve nodes with.</p><p>Each query element should have a <code class="sgmltag-attribute">xpath</code> attribute to indicate the nodemanager to run the list on, and optionally a <code class="sgmltag-attribute">where</code> attribute that contains the field-constraints.</p><p>The <code class="sgmltag-attribute">xpath</code> value is a simplified xpath of the format "/*@nodemanagername", such as "/*@people". To do a multilevel query, make a list of nodemanagers seperated by "/" such as "/*@people/roles". It is possible that in future implementations more versatile xpaths can be used</p><p>The <code class="sgmltag-attribute">where</code> attribute uses a SQL syntax to check a field, such as "name LIKE '%a%'". It is in all respects the same as the constraints attribute as used in the mm:listnodes tag of the MMBase taglib (described elsewhere).</p><p>Fields to retrieve can be limited in the same way as with a  <code class="sgmltag-element">getdata</code> command: by specifying the fields in an <code class="sgmltag-element">object</code> tag. Note that when doing a multilevel query, you must specify an <code class="sgmltag-element">object</code> tag with at least one <code class="sgmltag-element">field</code>.</p><pre class="programlisting">
+&lt;!ELEMENT getlist (query+) &gt;
+&lt;!ATTLIST getlist id ID #IMPLIED&gt;
+
+&lt;!ELEMENT query (object?)&gt;
+&lt;!ATTLIST query xpath CDATA #REQUIRED &gt;
+&lt;!ATTLIST query where CDATA #IMPLIED &gt;
+
+&lt;!ELEMENT object (field*)&gt;
+
+&lt;!ELEMENT field EMPTY&gt;
+&lt;!ATTLIST field name NMTOKEN #REQUIRED &gt;
+</pre><p>The response contains a list of the <code class="sgmltag-element">query</code> tags, each filled with <code class="sgmltag-element">object</code> tags (and their <code class="sgmltag-element">field</code> tags) that follow the constraints.
+</p><pre class="programlisting">
+&lt;!ELEMENT getlist (query+|error) &gt;
+&lt;!ATTLIST getlist id ID #IMPLIED&gt;
+
+&lt;!ELEMENT query (object?|error)&gt;
+&lt;!ATTLIST query xpath CDATA #REQUIRED &gt;
+&lt;!ATTLIST query where CDATA #IMPLIED &gt;
+
+&lt;!ELEMENT object ((field|relation)*)&gt;
+&lt;!ATTLIST object number NMTOKEN #REQUIRED &gt;
+&lt;!ATTLIST object type NMTOKEN #REQUIRED &gt;
+
+&lt;!ELEMENT field (#PCDATA)&gt;
+&lt;!ATTLIST field name NMTOKEN #REQUIRED &gt;
+</pre><p /><div class="example"><a id="N10315" /><p class="title"><b>Example 10. Example:</b></p><div class="example-contents"><pre class="programlisting">
+&lt;request&gt;
+
+  &lt;getlist id="7"&gt;
+    &lt;query xpath="/*@people" where="gender ='M'"&gt;
+      &lt;object&gt;
+        &lt;field name="firstname" /&gt;
+        &lt;field name="lastname" /&gt;
+        &lt;field name="email" /&gt;
+      &lt;/object&gt;
+    &lt;/query&gt;
+  &lt;/getlist&gt;
+
+&lt;/request&gt;
+</pre><p>The result of this query could look something like this:</p><pre class="programlisting">
+&lt;response&gt;
+
+  &lt;getlist id="7"&gt;
+    &lt;query xpath="/*@people" where="firstname LIKE '%a%'"&gt;
+      &lt;object number="675" type="people"&gt;
+        &lt;field name="firstname"&gt;Harrison&lt;/field&gt;
+        &lt;field name="lastname"&gt;Ford&lt;/field&gt;
+        &lt;field name="email"&gt;<span class="__cf_email__" data-cfemail="7d151c0f0f140e12131b120f193d15121111040a121219531e1210">[email&#160;protected]</span>&lt;/field&gt;
+      &lt;/object&gt;
+      &lt;object number="234" type="people"&gt;
+        &lt;field name="firstname"&gt;Mark&lt;/field&gt;
+        &lt;field name="lastname"&gt;Hammil&lt;/field&gt;
+        &lt;field name="email"&gt;<span class="__cf_email__" data-cfemail="046965766f3536447d656c6b6b2a676b69">[email&#160;protected]</span>&lt;/field&gt;
+      &lt;/object&gt;
+      &lt;object number="296" type="people"&gt;
+        &lt;field name="firstname"&gt;Carry&lt;/field&gt;
+        &lt;field name="lastname"&gt;Fisher&lt;/field&gt;
+        &lt;field name="email"&gt;<span class="__cf_email__" data-cfemail="a1c2c7c8d2c9e1d8c0c9cece8fc2cecc">[email&#160;protected]</span>&lt;/field&gt;
+      &lt;/object&gt;
+    &lt;/query&gt;
+  &lt;/getlist&gt;
+
+&lt;/response&gt;
+</pre></div></div><br class="example-break" /><div class="example"><a id="N10320" /><p class="title"><b>Example 11. Example with a multilevel query:</b></p><div class="example-contents"><pre class="programlisting">
+&lt;request&gt;
+
+  &lt;getlist id="7"&gt;
+    &lt;query xpath="/*@people/roles" where="people.gender ='M'"&gt;
+      &lt;object&gt;
+        &lt;field name="people.firstname" /&gt;
+        &lt;field name="role.description" /&gt;
+      &lt;/object&gt;
+    &lt;/query&gt;
+  &lt;/getlist&gt;
+
+&lt;/request&gt;
+</pre><p>The result of this query could look something like this:</p><pre class="programlisting">
+&lt;response&gt;
+
+  &lt;getlist id="7"&gt;
+    &lt;query xpath="/*@people/roles" where="people.gender ='M' "&gt;
+      &lt;object number="675" type="virtualnodes_1085647783628"&gt;
+        &lt;field name="people.firstname"&gt;Harrison&lt;/field&gt;
+        &lt;field name="role.description"&gt;Actor&lt;/field&gt;
+      &lt;/object&gt;
+    &lt;/query&gt;
+  &lt;/getlist&gt;
+
+&lt;/response&gt;
+</pre></div></div><br class="example-break" /></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="put" />10. put</h2></div></div></div><p>The <code class="sgmltag-element">put</code> command is used to update MMBase by sending a set of nodes and relations to add or change. Each put command contains two node lists: the <code class="sgmltag-element">original</code> tag contains a set of (original) objects that should be changed or deleted, the <code class="sgmltag-element">new</code> tag contains a corresponding set of object with the needed changes, as well as a set of objects or relations that are new and need to be added.</p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>Changes made by the put command are created through a transaction. This means that if an error occurs (i.e. because changes were invalid), nothing is changed, maintaining the consistency of the system. This same mechanism also means that large updates through Dove are discouraged as they are quite slow and eat resources.
+      </p></div><p>The <code class="sgmltag-element">object</code> and <code class="sgmltag-element">relation</code> tags in original follow the general format (specifying a <code class="sgmltag-attribute">number</code> attribute and <code class="sgmltag-element">field</code> tags) and should be existing nodes - the contents of the fields specified in this list should match data in the database. If data is specified that is incorrect, an error is generated by the system, dictating an invalid attempt to change the data</p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>This check is used as a way to prevent edits from concurrent users from crossing each other: If two users attempt changes on the same object at the same time, one of them will fail, which ensures that data does not become corrupted or invalid.
+      </p></div><p>Each object or relation in the original list should have a <code class="sgmltag-attribute">status</code> attribute which indicates what should happen to the object: 'change' (edit content) or 'delete' (remove the object from the cloud).</p><p>The <code class="sgmltag-element">new</code> tag lists all objects that should either be changed or added - objects with a status of 'delete' should not be included in this list. New objects in this list should have the status 'new'. All data mentioned here is changed or added - note that if a field is not mentioned, the content of that field (either default or existing content) is unchanged.</p><pre class="programlisting">
+&lt;!ENTITY % putstatus "(change,delete,new)"&gt;
+
+&lt;!ELEMENT put (original,new) &gt;
+&lt;!ATTLIST put id ID #IMPLIED&gt;
+
+&lt;!ELEMENT original ((object|relation)*) &gt;
+&lt;!ELEMENT new ((object|relation)*) &gt;
+
+&lt;!ELEMENT object ((field|relation)*)&gt;
+&lt;!ATTLIST object number NMTOKEN #IMPLIED &gt;
+&lt;!ATTLIST object status %putstatus #IMPLIED&gt;
+
+&lt;!ELEMENT relation ((field|object)*)&gt;
+&lt;!ATTLIST relation role NMTOKEN #IMPLIED &gt;
+&lt;!ATTLIST relation searchdir %searchdir #IMPLIED &gt;
+&lt;!ATTLIST relation destinationtype NMTOKEN #REQUIRED &gt;
+&lt;!ATTLIST relation status %putstatus #IMPLIED&gt;
+
+&lt;!ELEMENT field (#PCDATA)&gt;
+&lt;!ATTLIST field name NMTOKEN #REQUIRED &gt;
+&lt;!ATTLIST field href CDATA #IMPLIED &gt;
+</pre><p>If the out is successful, the <code class="sgmltag-element">response</code> tag contains a result list of <code class="sgmltag-element">object</code> and <code class="sgmltag-element">relation</code> tags in the <code class="sgmltag-element">new</code> tag.</p><p>This list consists of all changed and added nodes - deleted nodes are not included.</p><pre class="programlisting">
+&lt;!ELEMENT put (new|error) &gt;
+&lt;!ATTLIST put id ID #IMPLIED&gt;
+
+&lt;!ELEMENT new ((object|relation)*) &gt;
+
+&lt;!ELEMENT object ((field|relation)*)&gt;
+&lt;!ATTLIST object number NMTOKEN #REQUIRED &gt;
+&lt;!ATTLIST object type NMTOKEN #REQUIRED &gt;
+
+&lt;!ELEMENT relation ((field|object)*)&gt;
+&lt;!ATTLIST relation number NMTOKEN #REQUIRED &gt;
+&lt;!ATTLIST relation type NMTOKEN #REQUIRED &gt;
+&lt;!ATTLIST relation role NMTOKEN #REQUIRED&gt;
+&lt;!ATTLIST relation source NMTOKEN #REQUIRED &gt;
+&lt;!ATTLIST relation destination NMTOKEN #REQUIRED &gt;
+
+&lt;!ELEMENT field (#PCDATA)&gt;
+&lt;!ATTLIST field name NMTOKEN #REQUIRED &gt;
+
+</pre><div class="example"><a id="N10370" /><p class="title"><b>Example 12. Example:</b></p><div class="example-contents"><pre class="programlisting">
+&lt;request&gt;
+
+  &lt;put&gt;
+    &lt;original&gt;
+      &lt;object number="675" status="change"&gt;
+        &lt;field name="firstname"&gt;Harrison&lt;/field&gt;
+        &lt;field name="lastname"&gt;Ford&lt;/field&gt;
+        &lt;field name="email"&gt;<span class="__cf_email__" data-cfemail="0e666f7c7c677d616068617c6a4e66616262777961616a206d6163">[email&#160;protected]</span>&lt;/field&gt;
+      &lt;/object&gt;
+      &lt;object number="296" status="delete"&gt;
+        &lt;field name="firstname"&gt;Carry&lt;/field&gt;
+        &lt;field name="lastname"&gt;Fisher&lt;/field&gt;
+        &lt;field name="email"&gt;<span class="__cf_email__" data-cfemail="3e5d58574d567e475f565151105d5153">[email&#160;protected]</span>&lt;/field&gt;
+      &lt;/object&gt;
+    &lt;/original&gt;
+    &lt;new&gt;
+      &lt;object number="675"&gt;
+        &lt;field name="email"&gt;<span class="__cf_email__" data-cfemail="eb838a999982988485ab8a8487c5888486">[email&#160;protected]</span>&lt;/field&gt;
+      &lt;/object&gt;
+      &lt;object status="new"&gt;
+        &lt;field name="firstname"&gt;Alec&lt;/field&gt;
+        &lt;field name="lastname"&gt;Guinness&lt;/field&gt;
+        &lt;field name="email"&gt;n.a.&lt;/field&gt;
+      &lt;/object&gt;
+    &lt;/new&gt;
+  &lt;/put&gt;
+
+&lt;/request&gt;
+</pre><p /><pre class="programlisting">
+&lt;response&gt;
+
+  &lt;put&gt;
+    &lt;new&gt;
+      &lt;object number="675"&gt;
+        &lt;field name="firstname"&gt;Harrison&lt;/field&gt;
+        &lt;field name="lastname"&gt;Ford&lt;/field&gt;
+        &lt;field name="email"&gt;<span class="__cf_email__" data-cfemail="cda5acbfbfa4bea2a38daca2a1e3aea2a0">[email&#160;protected]</span>&lt;/field&gt;
+      &lt;/object&gt;
+      &lt;object number="1423"&gt;
+        &lt;field name="firstname"&gt;Alec&lt;/field&gt;
+        &lt;field name="lastname"&gt;Guinness&lt;/field&gt;
+        &lt;field name="email"&gt;n.a.&lt;/field&gt;
+      &lt;/object&gt;
+    &lt;/new&gt;
+  &lt;/put&gt;
+
+&lt;/response&gt;
+</pre></div></div><br class="example-break" /></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="configuration" />11. Configuration</h2></div></div></div><p>
+      Since MMBase-1.8.1 (also backported to 1.7.5), dove can be configured with an xml property
+      file in &lt;mmbase config dir&gt;/utils/dove.xml. The only recognized property at the moment
+      is 'changes' which indicates what must happen if changes in the cloud are detected
+      ('exception' to indicate an error, 'ignore' to ignore or 'warn' to log a warning). See the
+      example dove.xml for more information. The file is watched, so if you change properties, they
+      should be taken into effect a few seconds later.
+    </p></div></div><hr xmlns="" /><p xmlns="">
+      This is part of the <a href="http://www.mmbase.org">MMBase</a> documentation.
+    </p><p xmlns="">
+      For questions and remarks about this documentation mail to: 
+      <a href="/cdn-cgi/l/email-protection#096d666a7c646c677d687d6066674964646b687a6c27667b6e"><span class="__cf_email__" data-cfemail="4a2e25293f272f243e2b3e2325240a2727282b392f6425382d">[email&#160;protected]</span></a></p><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script></body></html>

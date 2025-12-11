@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title>Images and Attachments</title><link href="../style/documentation.css" rel="stylesheet" type="text/css" /><meta content="DocBook XSL Stylesheets V1.72.0" name="generator" /><link xmlns="" type="image/x-icon" href="../style/favicon.ico" rel="icon" /><link xmlns="" type="image/x-icon" href="../style/favicon.ico" rel="shortcut icon" /><meta xmlns="" content="text/html; charset=utf-8" http-equiv="content-type" /></head><body><div xmlns="" class="navigation"><img alt="mmbase logo" src="../style/logo.png" /><h2>Images and Attachments</h2><p><a href="images-and-attachments.html#introduction">Introduction</a></p><p><a href="images-and-attachments.html#imageservlet">Images and ImageServlet</a></p><p><a href="images-and-attachments.html#xslt">XSLT</a></p><p><a href="images-and-attachments.html#builders">More about the builders, 'servlet builders'.</a></p><p><a href="images-and-attachments.html#servlets">More about the implementation of the servlets.</a></p><hr /><p><a href="http://www.mmbase.org">MMBase</a></p><p><a href="../index.html">home</a></p></div><div class="article" lang="en"><div class="titlepage"><div><div><h1 class="title"><a id="N10001" />Images and Attachments</h1></div><div><div class="authorgroup"><strong class="authorgroup">Author: </strong><span class="author"><span class="firstname">Michiel</span> <span class="surname">Meeuwissen</span></span><br /><strong class="authorgroup">Date: </strong>2005-05-09</div></div><div><div class="legalnotice"><a id="N10015" /><p>This software is OSI Certified Open Source Software. OSI Certified is a certification mark of the Open Source Initiative.</p><p>The license (Mozilla version 1.0) can be read at the MMBase site. See <a xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.mmbase.org/license" target="_top">http://www.mmbase.org/license</a>
+      </p></div></div></div><hr /></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="section"><a href="images-and-attachments.html#introduction">1. Introduction</a></span></dt><dt><span class="section"><a href="images-and-attachments.html#imageservlet">2. Images and ImageServlet</a></span></dt><dd><dl><dt><span class="section"><a href="images-and-attachments.html#conversion">2.1. Image conversion</a></span></dt><dt><span class="section"><a href="images-and-attachments.html#height_and_width">2.2. Image height and width</a></span></dt><dt><span class="section"><a href="images-and-attachments.html#attachments">2.3. Attachments</a></span></dt></dl></dd><dt><span class="section"><a href="images-and-attachments.html#xslt">3. XSLT</a></span></dt><dt><span class="section"><a href="images-and-attachments.html#builders">4. More about the builders, 'servlet builders'.</a></span></dt><dt><span class="section"><a href="images-and-attachments.html#servlets">5. More about the implementation of the servlets.</a></span></dt><dd><dl><dt><span class="section"><a href="images-and-attachments.html#servdb">5.1. Introduction, servdb</a></span></dt><dt><span class="section"><a href="images-and-attachments.html#bridgeservlets">5.2. Bridge servlet, handle servlet, image servlet</a></span></dt><dt><span class="section"><a href="images-and-attachments.html#configuration">5.3. Configuration</a></span></dt></dl></dd></dl></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="introduction" />1. Introduction</h2></div></div></div><p>
+      This document describes how you have to deal with images and attachments in MMBase. We will
+      start with a simple description of what these things are for MMBase and how you can use them,
+      and will end with some implementation details an MMBase developer might need to know.
+    </p></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="imageservlet" />2. Images and ImageServlet</h2></div></div></div><p>
+      Lets start with the most simple thing, which is needed in almost every MMBase installation. Images
+      are in MMBase just another form of content, so they can be stored in a builder (a.k.a. 'node
+      manager'). This builder is named `images' in the MMBase distribution, and can be installed by
+      deploying the resources' application. Normally the image itself will be stored as a blob in the
+      database, though MMBase can be configured to do it differently. Of course normally the
+      image-builder will also feature the meta information about the image.
+    </p><p>
+      But there is more to it then this. There must e.g. be a way to present the image to the
+      visitor of your web site. For the meta information about the image this is of course no
+      problem, you can do that just as you would with other MMBase node fields. If you use the
+      MMBase taglib you would for example list the related images like this:
+      <pre class="programlisting">
+&lt;mm:relatednodes type="images"&gt;
+   &lt;img src="????" 
+	height="&lt;mm:field name="height" /&gt;" width="&lt;mm:field name="width" /&gt;" 
+	alt="&lt;mm:field name="title" /&gt;" /&gt;&lt;mm:field name="description" /&gt;&lt;br /&gt;
+&lt;/mm:relatednodes&gt;
+</pre>    
+    </p><p>
+      As you know, you cannot use the image blob on you HTML page, but you need an URL which presents
+      it. So that is why in the previous example I just typed '????'. Let's explain now how this
+      issue is solved in MMBase, how MMBase can provide this '????'.
+    </p><p>
+      The answer is that we have created a servlet for you to do this. This servlet takes a
+      node-number as its argument. It can then retrieve the node from MMBase and searches for a
+      field 'handle' in this node, and the content of this is used to response the
+      http request. Other fields of the node, such as 'itype' and 'title' are used to decorate the
+      http response with the right headers, such as the content-type (which for an image is
+      something else then for an HTML-page) and the content-disposition header (to supply a nice
+      suggestion for a file name).
+    </p><p>
+      In 'web.xml' it is configured which URLs correspond to this servlet. The suggestion of the
+      distro is '/img.db' which means that then the image of node 123 is available on the url:
+      http://yourhost/context/img.db?123. I like to map the image servlet to "/images/*", and then
+      the image 123 is available on http://yourhost/context/images/123, which I find to look a bit
+      better. 'yourhost' is the name of your web server and 'context' is the application context you
+      have started MMBase in (it can be empty, then MMBase is running in the 'root' context, but
+      this is not generally true).
+    </p><p>
+      Well, you know that you do not need to know explicitly the host name of your server when you
+      make your html page, because you can refer to the image relatively in the 'img' tag. It is
+      also not very convenient to use an url like &lt;img src="/context/images/123" /&gt; because
+      'context' can change (you can move the page to another MMBase instance in another context),
+      and even the 'images/' part can vary between MMBase installations, because it can be configured
+      to which URL the image-servlet is mapped by the application server.
+    </p><p>
+      That's why in MMBase there are functions to retrieve this information for you automatically.
+      If you use the MMBase Taglib there is the 'image' tag for this:
+      <pre class="programlisting">
+&lt;mm:relatednodes type="images"&gt;
+   &lt;img src="&lt;mm:image /&gt;"
+	height="&lt;mm:field name="height" /&gt;" width="&lt;mm:field name="width" /&gt;" 
+	alt="&lt;mm:field name="title" /&gt;" /&gt;&lt;mm:field name="description" /&gt;&lt;br /&gt;
+&lt;/mm:relatednodes&gt;
+</pre>    
+      So, this image tag finds out for you in which context your MMBase is running and to which URL's
+      the servlet is mapped and it then produces the right URL.
+    </p><p>
+      If you do not use the MMBase taglib, then the same thing can be done. Here is an example
+      using the 'bridge'.
+      <pre class="programlisting">
+NodeListIterator i = node.getRelatedNodes("images").nodeListIterator();
+while(i.hasNext()) {
+  Node image = i.nextNode();
+  out.println("&lt;img src=\"" + image.getFunctionValue("servletpath", null) + image getNumber() + "\"
+      alt=\"" + image.getStringValue("title") + "\"/&gt;" + image.getStringValue("description") +
+      "/&gt;&lt;br /&gt;");
+}
+</pre>
+
+      This does about the same as the above taglib example.
+    </p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>
+        The taglib example is really a bit more advanced. For example it tries to add user information to
+        the URL if necessary, and it tries to put a file name in the URL if that is possible for the
+        servlet (which helps some browsers). I advice to use the image-tag if you can.
+      </p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="conversion" />2.1. Image conversion</h3></div></div></div><p>
+        As mentioned, images can be converted to other images. This is a very useful feature, because you
+        often need smaller versions of an image, or perhaps a version of the image which is re-styled in
+        another way to fit in the look and feel of your web site. These things can be automated by MMBase
+        to a large extend, which makes the life for content editors easier, because for images it
+        suffices to provide one (high quality) image, and MMBase can handle the conversion of this image
+        to versions needed on the web site.
+      </p><p>
+        Converted images are stored in a special builder named 'icaches' (cached images), so they are
+        much the same as the source images, the only difference being that they are automatically
+        generated.
+      </p><p>
+        So for the image servlet is does not make much difference if it has to serve a 'cached' image or
+        an 'original' image. 
+      </p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>
+          The image servlet does however find out if the request node is a cached image, because in that
+          case it has to search the meta-information, which is needed to provide sensible http response
+          headers, in the original image.
+        </p></div><p>
+        But how does MMBase decide which 'icache' nodes must be created, and how can you know which are
+        available, and to which original image they belong?
+      </p><p>
+        The answer is that there is a function in the images builder which accepts 'conversion commands',
+        and returns the node number of the 'icache' node which is associated with this original image and
+        those commands. If such a node cannot be found, it will be created.
+      </p><p>
+        The 'conversion commands' are passed in a string referred to as 'template'. This string contains
+        the commands separated by the + character. The syntax of the individual commands is very similar
+        to the command line options of the 'convert' command of ImageMagick, because that program is
+        commonly plugged in to perform the actual conversion. 
+      </p><p>
+        A very simple example of such a conversion template is "geometry(100x200)", which is the command
+        to resize the image to fit into a rectangle of 100 x 200 pixels. So, the number of the icache
+        node which is a conversion by this template of the image presented by the Node 'image' can be
+        requested from the bridge like this:
+      <pre class="programlisting">
+Node image;
+...
+List arguments = new ArrayList();
+argument.add("geometry(100x200)");
+int iCacheNodeNumber = image.getFunctionValue("cache", arguments).intValue();
+</pre>
+        Of course this node number can then be fed to the image servlet, on precisely the same way as
+        you would do for a normal image.
+      </p><p>
+        In the MMBase taglib this functionality is also present in the before-mentioned image tag, and
+        can be triggered by using the 'template' attribute. Showing the '100x200' version of the related
+        images therefore would look like this:
+      <pre class="programlisting">
+&lt;mm:relatednodes type="images"&gt;
+   &lt;img src="&lt;mm:image template="geometry(100x200)" /&gt;" alt="&lt;mm:field name="title" /&gt;" /&gt;&lt;mm:field name="description" /&gt;&lt;br /&gt;
+&lt;/mm:relatednodes&gt;
+</pre>    
+      </p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>
+          MMBase provides an abbreviation for this vastly used command 'geometry' which is simply 's' (for
+          size), so normally you would encounter:
+      <pre class="programlisting">
+   &lt;img src="&lt;mm:image template="s(100x200)" /&gt;" alt="&lt;mm:field name="title" /&gt;" /&gt;&lt;mm:field name="description" /&gt;&lt;br /&gt;
+</pre>
+          Which is precisely the same, only shorter.
+        </p></div><p>
+        Lets give also an example of a template which consists of more than one command, e.g. a 'size'
+        command plus a rotate command:
+      <pre class="programlisting">
+&lt;mm:image template="s(100x200)+r(90)" /&gt;
+</pre>
+        The order of the commands can be significant, and you can supply the same
+        command more then once.
+      </p><p>
+        TODO: overview of MMBase specific commands. Fonts and Texts. JAI implementation. 
+      </p><p>
+        We refer to the documentation of ImageMagick for a complete description of all commands. Also in
+        the image tag entry of the MMBase taglib reference guide there are given some examples.
+      </p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="height_and_width" />2.2. Image height and width</h3></div></div></div><p>
+        Until now we've said nothing about the 'height' and 'width' of images. In HTML you actually
+        need to specify those in the height and width attributes of the img tag. Since MMBase-1.8
+        height and width are fields of the two image-builders (images and icaches). These fields are
+        automaticly filled by MMBase, so you should never have to worry about it.
+      </p><p>
+        The image-tag however, provided only the URL of a cached image. So in the previous chapter
+        the issue was ignored. It would be fixed if you have somehow access to the actual 'icaches'
+        node. This is this indeed possible (using a 'nodefunction' tag), but this is not very
+        convenient and there for there are 2 alternatives in the mm:image tag.
+      </p><p>
+        The first alternative is the 'mode' attribute on mm:image. When its value is 'attributes' it
+        will not only produce the URL for the image, but it will produce the 3 relevant attributes
+        for a XHTML img-tag. Like this:
+	<pre class="programlisting">
+&lt;mm:relatednodes type="images"&gt;
+   &lt;img &lt;mm:image mode="attributes" template="s(100)" /&gt;
+	alt="&lt;mm:field name="title" /&gt;" /&gt;&lt;mm:field name="description" /&gt;&lt;br /&gt;
+&lt;/mm:relatednodes&gt;
+</pre>
+  So then you don't have to specify the 'src' attribute itself either, because it is provided by the image-tag now.
+      </p><p>
+        You can also specify 'img' as a value for the 'mode' of the image-tag, which will, of
+        course, produce an entire img-tag. You would probably end up with something like:
+        <pre class="programlisting">
+&lt;mm:relatednodes type="images"&gt;
+   &lt;mm:image mode="img" template="s(100)" /&gt;&lt;mm:field name="description" /&gt;&lt;br /&gt;
+&lt;/mm:relatednodes&gt;
+</pre>
+      </p><p>
+        The second alternative is that the mm:image tag produces a 'dimension' variable which can be
+        accessed using JSP2's Expression Language. This variable is available in the body of the
+        mm:image tag. The URL is available as ${_} (as with any 'Writer' tag). One could end up with something like:
+        <pre class="programlisting">
+&lt;mm:relatednodes type="images" id="image" &gt;
+   &lt;mm:image template="s(100)"&gt;
+     &lt;img src="${_}" width="${dimension.width}" height="${dimension.height}" title="${image.title}" alt="${image.title}"  /&gt;&lt;mm:field name="description" /&gt;&lt;br /&gt;
+   &lt;/mm:image&gt;
+&lt;/mm:relatednodes&gt;
+</pre>
+	
+      </p><p>
+        In MMBase-1.8, the creating of the converted image is actually 'lazy', so the icaches object
+        is created without the byte-array first, which will only be filled on actual request of the
+        client. This however has little influence on the height and width of the icaches object,
+        because those are 'predicted', and are therefore available immediately, also when the actual
+        conversion has not yet taken place.
+      </p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="attachments" />2.3. Attachments</h3></div></div></div><p>
+        Other types of data blobs can of course, just as images, be stored in MMBase. We call them generally
+        'attachments'. There is in fact no need to make any difference between images and attachments. The
+        'attachments' builder from the MMBase distro does indeed share the 'handle' field with the 'images'
+        builder, but it also has some other fields which are lacking in the default images builder (filename,
+        size, mimetype). Because of these small differences there is variant for the image servlet, the
+        attachments-servlet.
+      </p><p>
+        It works exactly the same as for images. You could even use the image-tag to create urls to
+        the attachment-servlet. That would be a bit silly though, so there is also an 'attachment'
+        tag. It does exactly the same. As mentioned though, Images can be converted into other
+        images (they can be resized, turned etc.). This is of course not valid for attachments, so
+        the 'template' attribute cannot be used on the attachment tag.
+      </p><p>
+        For every day usage you know enough now. The following sections will be more technical.
+      </p></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="xslt" />3. XSLT</h2></div></div></div><p>
+      Sometimes you want to generate output using XSLT. This happens for example in the Editwizard
+      implementation and you can also do it on a JSP page using the `mm:formatter' tag. Generally,
+      as in these two examples, the source XML would describe the fields of the MMBase nodes only,
+      like e.g. &lt;field name="number"&gt;123&lt;/field&gt;. So, the same problem as in JSP/taglib
+      arises, namely, how to convert this to an actual URL for the image or the attachment? The
+      mm:image tag is not available in XSL.
+    </p><p>
+      One could start with simply creating URL's using the number. You only need to know what the
+      URLs of the servlets are then. These could possibly be passed as a parameter into the XSL, or
+      could simply be hard-coded in your custom XSL.
+    </p><p>
+      The problem would then be solved at least for attachments. For images, the problem is again
+      more complex, because generally you would not include also the 'icaches' node in the XML.
+    </p><p>
+      The solution which was used in Editwizards and also in the default XSLTs used by mm:formatter
+      is to use Xalan extensions, which actually boils down to the possibility to call java
+      functions from inside XSL. The draw-back of course is that this creates a Xalan dependency (or
+      at least on similar products, e.g. also the XSLT processor of Resin supports this), and worse,
+      that it would become quite hard to perform the XSLT not on the server itself.
+    </p><p>
+      For this to work the utility class org.mmbase.bridge.util.xml.NodeFunction was created, which
+      can be installed in your XSL like this:
+      <pre class="programlisting">
+&lt;xsl:stylesheet  
+    xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+    xmlns:node="org.mmbase.bridge.util.xml.NodeFunction"
+    ....
+
+      </pre>
+      and then be used like this:
+      <pre class="programlisting">
+&lt;img src ="{node:function($cloud, ./o:field[@name='number'], 'servletpath(,cache(s(100x100&amp;gt;)))')}" 
+      
+      </pre>
+
+      We refer to the javadoc  of       
+      <a xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.mmbase.org/api/org/mmbase/bridge/util/xml/NodeFunction.html" target="_top">NodeFunction</a>
+      for more information on how to use it.      
+    </p></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="builders" />4. More about the builders, 'servlet builders'.</h2></div></div></div><p>
+      It has become clear that the images and attachments builders are more than simple dumb MMBase
+      builders ('Dummy). They do provide extra functionality like 'servletpath' and 'cache' functions.
+      In the builder xml of Images and Attachments you can see this because another class is configured
+      (by the 'class' tag (or 'classfile' in older XML's))
+    </p><p>
+      The general feature of images and attachments nodes is that they need to be associated with a
+      Servlet. Therefore the abstract builder 'ServletBuilder' was introduced which provides the
+      general functionality for these kind of things. It provides the mechanism to determine the right
+      URL to the right Servlet for a certain 'function' (ImageServlet provides the function 'images',
+      AttachmentServlet provided 'attachments').
+    </p><p>
+      The images, icaches and attachments servlets are all extensions of this abstract servlet
+      builder. I suggest that if you need to create a builder which is associated to a servlet too, you
+      do it like this.
+    </p></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="servlets" />5. More about the implementation of the servlets.</h2></div></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="servdb" />5.1. Introduction, servdb</h3></div></div></div><p>
+        Before MMBase 1.6 the function of the Image Servlet was performed by the generic MMBase
+        servlet 'servdb'. 'Servdb' also accepts the 'template' as an argument next to the original image
+        node number. In that way it could serve a converted image. An URL to servdb could therefore
+        look like:
+        <pre class="programlisting">
+          &lt;img src="/img.db?123+s(100x200)" /&gt;
+          </pre>
+        This works fine, but it has a few disadvantages. First of all in this way you actually had to
+        consider the 'context' yourself. In the above example it was supposed to be root, but it gets
+        uglier if you want to let it work more generally.  Furthermore it was mandatory to map the
+        servlet to 'img.db' (not a major problem, but it's a pity). It was also possible by doing
+        requests on this servlet to use up a lot of resources on the server (anyone could trigger any
+        conversion). 'servdb' did also not consider the MMBase security mechanism (which was created
+        later), so it was not possible to protect the read rights of images. Using servdb, every image
+        can be viewed by everyone who can do requests on it.
+      </p><p>
+        All this lead to the new 'image servlet' implementation, which together with the 'servlet
+        builders' (and 'image tag'), solves all of these problems.
+      </p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="bridgeservlets" />5.2. Bridge servlet, handle servlet, image servlet</h3></div></div></div><p>
+        Protecting read rights has nothing do with images. When you want to honor MMBase security, the
+        only thing you have to do is implement your stuff using the bridge. Therefore the
+        'BridgeServlet' was created. It provides the functionality to get the Cloud (perhaps using the
+        session, if needed). It can be used to implement any MMBase servlet which actually serves
+        data from the MMBase database.
+      </p><p>
+        As mentioned before Image servlet performs some tasks to recognize a node
+        as an icache node, and knows about the specific fields of an image-node. Attachments are about
+        the same, but they do not need the icache recognition and do have some other fields. They both
+        do share the functionality of searching an 'handle' field and responding its bytes. Therefore
+        the 'HandleServlet' base class was created, which extends from BridgeServlet and which is
+        extended by ImageServlet and AttachmentServlet.
+      </p><p>
+        Since MMBase 1.8, the Image servlet also triggers the icache conversion if it detects that
+        the 'handle' field of the requests icaches object is still unfilled. For that, the format of
+        the 'ckey' field was changed a bit, so that it is possible now to use it to initiate the
+        conversion.
+      </p><p>
+        This means that a request on the image-server will block until the image-conversion is
+        ready. In stead of the page on which appeares the URL to the image-server, as happened in
+        earlier MMBase versions.
+      </p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="configuration" />5.3. Configuration</h3></div></div></div><p>
+        The following configurations are possible.
+      </p></div></div></div><hr xmlns="" /><p xmlns="">
+      This is part of the <a href="http://www.mmbase.org">MMBase</a> documentation.
+    </p><p xmlns="">
+      For questions and remarks about this documentation mail to: 
+      <a href="/cdn-cgi/l/email-protection#7d19121e08101813091c091412133d10101f1c0e1853120f1a"><span class="__cf_email__" data-cfemail="0c68636f79616962786d786563624c61616e6d7f6922637e6b">[email&#160;protected]</span></a></p><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script></body></html>

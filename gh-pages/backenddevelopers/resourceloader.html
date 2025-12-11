@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title>The MMBase Resource loader</title><link href="../style/documentation.css" rel="stylesheet" type="text/css" /><meta content="DocBook XSL Stylesheets V1.72.0" name="generator" /><link xmlns="" type="image/x-icon" href="../style/favicon.ico" rel="icon" /><link xmlns="" type="image/x-icon" href="../style/favicon.ico" rel="shortcut icon" /><meta xmlns="" content="text/html; charset=utf-8" http-equiv="content-type" /></head><body><div xmlns="" class="navigation"><img alt="mmbase logo" src="../style/logo.png" /><h2>The MMBase Resource loader</h2><p><a href="resourceloader.html#N10021">What is a Resourceloader?</a></p><p><a href="resourceloader.html#N1004A">Reading one specific Resource</a></p><p><a href="resourceloader.html#N10055">Fall back mechanism and shadowing</a></p><p><a href="resourceloader.html#N1005C">Multiple resources</a></p><p><a href="resourceloader.html#N10061">Resource writing, and existance checking.</a></p><p><a href="resourceloader.html#N10068">Resource builder</a></p><p><a href="resourceloader.html#N1006D">Resource editor</a></p><hr /><p><a href="http://www.mmbase.org">MMBase</a></p><p><a href="../index.html">home</a></p></div><div class="article" lang="en"><div class="titlepage"><div><div><h1 class="title"><a id="N10001" />The MMBase Resource loader</h1></div><div><div class="authorgroup"><strong class="authorgroup">Author: </strong><span class="author"><span class="firstname">Michiel</span> <span class="surname">Meeuwissen</span></span><br /><strong class="authorgroup">Date: </strong>2005-12-09</div></div><div><div class="legalnotice"><a id="N10018" /><p>This software is OSI Certified Open Source Software. OSI Certified is a certification mark of the Open Source Initiative.</p><p>The license (Mozilla version 1.0) can be read at the MMBase site. See <a xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.mmbase.org/license" target="_top">http://www.mmbase.org/license</a></p></div></div></div><hr /></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="section"><a href="resourceloader.html#N10021">1. What is a Resourceloader?</a></span></dt><dt><span class="section"><a href="resourceloader.html#N1004A">2. Reading one specific Resource</a></span></dt><dt><span class="section"><a href="resourceloader.html#N10055">3. Fall back mechanism and shadowing</a></span></dt><dt><span class="section"><a href="resourceloader.html#N1005C">4. Multiple resources</a></span></dt><dt><span class="section"><a href="resourceloader.html#N10061">5. Resource writing, and existance checking.</a></span></dt><dt><span class="section"><a href="resourceloader.html#N10068">6. Resource builder</a></span></dt><dt><span class="section"><a href="resourceloader.html#N1006D">7. Resource editor</a></span></dt></dl></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="N10021" />1. What is a Resourceloader?</h2></div></div></div><p>
+      As every application, MMBase has very many configuration options. Most of these configurations
+      are defined by means of XML Documents. Naively, one associates XML documents with files, and
+      the XML Document objects are created by opening those files from the file system.
+    </p><p>
+      MMBase is however based on java and java servlet technology, where the more generic concept of
+      'resource' may be used in stead of files. E.g. a 'jar' is a compressed file containing a set
+      of 'resources' which can be used rather like files in java code. A complete 'web application'
+      can be packed into a so called 'war' ('web application archive') file. A war is a special kind of jar file with the
+      purpose to contain all necessary resources for a web application.
+    </p><p>
+      A typical example of a resource is a java class. The 'ClassLoader' of a java web application
+      knows how to load these from all jars in WEB-INF/lib and from all files in
+      WEB-INF/classes. You do that with the method 'getResource(String name)' of ClassLoader. This
+      returns an URL object by the name of the resource.
+      <pre class="programlisting">getClass().getClassLoader().getResource("java/lang/String.class").toString());</pre>
+      Such an URL typically looks like this then:
+      <pre class="screen">jar:file:/System/Library/Frameworks/JavaVM.framework/Versions/1.5.0/Classes/classes.jar!/java/lang/String.class</pre>
+    </p><p>
+      Actually ClassLoaders are not restricted to loading classes, but they can load any type of
+      'resource', as long as they are presented in the 'CLASS PATH' of the JVM. Which in practice
+      means that these resources must be either present in a 'jar' in WEB-INF/lib or as a file in
+      WEB-INF/classes. You can e.g. place configuration like so.
+      The result of <pre class="programlisting">getClass().getClassLoader().getResource("oscache.properties").toString());</pre>
+      <pre class="screen">file:/Users/mmbase/mmbase18/WEB-INF/classes/oscache.properties</pre>
+    </p><p>
+      Resources that cannot be loaded by the ClassLoader of a web application but are part of the
+      web-application, can be loaded with the 'getResource(String)' method on the ServletContext
+      object.
+      E.g. lets get the same resource, but now on this way. Like this, with a jsp scriptlet:
+      <pre class="programlisting">pageContext.getServletContext().getResource("/WEB-INF/classes/oscache.properties")</pre>
+      <pre class="screen">jndi:/localhost/mm18/WEB-INF/classes/oscache.properties</pre>.
+    </p><p>
+      So, there are several methods to load resources, and every method has its own advantages and
+      disadvantages. A file can easily be changed and 'watched' for changes, a classloader has a
+      provision for 'multiple' resources with the same name (every jar can contain a copy of the same file),
+      and the servletContext method can access resources, even if the 'war' is still packed .
+    </p><p>
+      The idea of the MMBase Resource Loader is now, that MMBase decides which way of loading a
+      certain resource is the best. A good way is a way that works, so methods that don't work are
+      ignored. If for example the MMBase resource 'builders/core/object.xml' is not available as a
+      File (which we like most, because they can easily be changed and updated), then the resource
+      can be accessed as such. If it is not available as a file, then it tries to do it with a
+      ClassLoader or with a ServletContext. For more details, see also <a xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.mmbase.org/api/org/mmbase/util/ResourceLoader.html" target="_top">the javadoc of
+      org.mmbase.util.ResourceLoader</a>
+    </p><p>
+      The MMBase Resource Loader itself extends from ClassLoader. So, it works like a Class Loader, and it
+      basicly serves to produces URL's or InputStreams for you. We add a few convience methods like
+      getting a Document immediately (because we have to deal with XML so much...)
+    </p></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="N1004A" />2. Reading one specific Resource</h2></div></div></div><p>
+        MMBase resources come in several different flavours, whith which different ResourceLoader
+        instances are associated. The most important one is the 'ConfigurationLoader', because we
+        mainly think of configuration.
+        <pre class="programlisting">ResourceLoader configLoader = ResourceLoader.getConfigurationRoot();</pre>
+
+        There are also ResourceLoaders for resolving relative to the web-application root, or the
+        file system root. Furthermore new ResourceLoaders can be instantiated which are relative to
+        one of these staticly defined root ResourceLoaders:
+        <pre class="programlisting">ResourceLoader builderLoader = ResourceLoader.getConfigurationRoot().getChildResourceLoader("builders");</pre>
+      </p></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="N10055" />3. Fall back mechanism and shadowing</h2></div></div></div><p>
+        Because a resource with certain name can be represented with several URL's, corresponding to
+        the several strategies which are applied by the ResourceLoader, a kind of conflict
+        resolution mechanism is required. If multiple resources with the same name are available,
+        then they have a certain order, and the first one is obtained when you request one Resource.
+      </p><p>
+        The precise mechanism is documented in the javadoc of ResourceLoader.
+      </p></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="N1005C" />4. Multiple resources</h2></div></div></div><p>
+      The implementor can also decide that conflict resolution is not actually needed, but that
+      simply all URL's can be used. The resulting resources can probably be merged. A lot of
+      configuration XML's for example merely state a list of things ('all caches', 'all datatypes', 'all
+      functionset' etc), so it is quite trivial to deal with a multiple of such XML Documents
+      (Create one List containing all those things).
+    </p></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="N10061" />5. Resource writing, and existance checking.</h2></div></div></div><p>
+      As said, resource-loading is based on URL's. Urls also have a way to acquire an output stream,
+      so they can actually also be used to write something to a certain Resource.
+    </p><p>
+      Therefore a resource URL is never null, because even if it doesn't exist, you may want to
+      create it. You can check however if a resource exists, by checking getDoInput on a connection
+      to that URL, or getDoOutput to check for write possibility. This is a bit different from the
+      standard class loader implementation, which returns 'null' as the URL for non-existing
+      resources.
+    </p></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="N10068" />6. Resource builder</h2></div></div></div><p>
+      If the application server has no (sufficient) write-access to the file-system, then, because
+      ResourceLoader is not necessarily out of luck when it wants to write a resource, because being
+      an MMBase tool it can of course relatively easily use MMBase nodes to store blobs. It can use
+      the 'resources' builder for that (if installed). It works by using bridge, and class-security,
+      to gain rights, for writing.
+    </p></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="N1006D" />7. Resource editor</h2></div></div></div><p>
+      In the mmbase/admin pages a 'resource' editor can be found. It can be used to browse through
+      existing resources, and even to edit them. Whether one wants to actually use this tool is
+      disputable, but at least it serves as a good example of the features of the MMBase Resource Loader.
+    </p></div></div><hr xmlns="" /><p xmlns="">
+      This is part of the <a href="http://www.mmbase.org">MMBase</a> documentation.
+    </p><p xmlns="">
+      For questions and remarks about this documentation mail to: 
+      <a href="/cdn-cgi/l/email-protection#ef8b808c9a828a819b8e9b868081af82828d8e9c8ac1809d88"><span class="__cf_email__" data-cfemail="20444f43554d454e544154494f4e604d4d424153450e4f5247">[email&#160;protected]</span></a></p><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script></body></html>

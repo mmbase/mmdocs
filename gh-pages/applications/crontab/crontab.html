@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title>MMBase Crontab</title><link href="../../style/documentation.css" rel="stylesheet" type="text/css" /><meta content="DocBook XSL Stylesheets V1.72.0" name="generator" /><link xmlns="" type="image/x-icon" href="../../style/favicon.ico" rel="icon" /><link xmlns="" type="image/x-icon" href="../../style/favicon.ico" rel="shortcut icon" /><meta xmlns="" content="text/html; charset=utf-8" http-equiv="content-type" /></head><body><div xmlns="" class="navigation"><img alt="mmbase logo" src="../../style/logo.png" /><h2>MMBase Crontab</h2><p><a href="crontab.html#introduction">Introduction</a></p><p><a href="crontab.html#installation">Installation</a></p><p><a href="crontab.html#configuration">Configuration</a></p><hr /><p><a href="http://www.mmbase.org">MMBase</a></p><p><a href="../../index.html">home</a></p></div><div class="article" lang="en"><div class="titlepage"><div><div><h1 class="title"><a id="N10001" />MMBase Crontab</h1></div><div><div class="authorgroup"><strong class="authorgroup">Author: </strong><span class="author"><span class="firstname">Michiel</span> <span class="surname">Meeuwissen</span></span><br /><strong class="authorgroup">Date: </strong>2004-09-23</div></div><div><div class="legalnotice"><a id="N10016" /><p>This software is OSI Certified Open Source Software. OSI Certified
+      is a certification mark of the Open Source Initiative.</p><p>The license (Mozilla version 1.0) can be read at the MMBase site.
+      See <a xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.mmbase.org/license" target="_top">http://www.mmbase.org/license</a></p></div></div></div><hr /></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="section"><a href="crontab.html#introduction">1. Introduction</a></span></dt><dt><span class="section"><a href="crontab.html#installation">2. Installation</a></span></dt><dt><span class="section"><a href="crontab.html#configuration">3. Configuration</a></span></dt></dl></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="introduction" />1. Introduction</h2></div></div></div><p>
+      The crontab functionality is of course heavily inspired by UNIX' crontab. This means that you
+      can schedule jobs with it. You specify when it must run by a string like: "*/3 5-23 * * *"
+      which means every three minutes, but not during the night, or "0 7 * * *" which means every
+      day at 7 am.
+    </p></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="installation" />2. Installation</h2></div></div></div><p>
+      To install the MMBase crondaemon, you have to place mmbase-crontab.jar, which will activate
+      the crontab module (crontab.xml). You can then optionally also deploy the MMBaseCronTab
+      application (with the cronjobs builder).  If you want to only use the builder and not the
+      module, you can place a crontab.xml in config/modules containing
+      &lt;status&gt;inactive&lt;/status&gt;. You can also simply not use the module, because it doesn't harm.
+    </p></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="configuration" />3. Configuration</h2></div></div></div><p>
+      You specify what must be run by the class-name of a class implementing 'Runnable', or optionally,
+      implementing the specialized interface CronJob. The CronJob interface extends Runnable but also
+      alows for code to be run when the con-daemon stops or when it starts (a String can be provided for
+      configuration). You must implement such a class and put the class-file e.g. in WEB-INF/classes.
+    </p><p>
+      In combination with the 'ClassSecurity' feature you can easily implement CronJobs using the bridge
+      interfaces, so you might want to privilege your class in &lt;mmbase-config&gt;security/classauthentication.xml.
+    </p><p>
+      You can schedule it in two ways now. Make either a cronjobs object or edit
+      &lt;mmbase-config&gt;modules/crontab.xml, or &lt;mmbase-config&gt;utils/crontab.xml.
+      For the module the format is as follows:
+      <pre class="programlisting">
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE module PUBLIC "-//MMBase//DTD module config 1.0//EN" "http://www.mmbase.org/dtd/module_1_0.dtd"&gt;
+&lt;module maintainer="mmbase.org" version="0"&gt;
+  &lt;status&gt;active&lt;/status&gt;
+  &lt;class&gt;org.mmbase.applications.crontab.modules.CrontabModule&lt;/class&gt;
+  &lt;properties&gt;
+    &lt;property name="memorystats"&gt;* * * * *|org.mmbase.applications.crontab.MMBaseStatsJob||Memory|short&lt;/property&gt;
+  &lt;/properties&gt;
+&lt;/module&gt;
+</pre>
+      The format for 'crontab.xml' in the utils directory is very similar (find the example).
+      Every property in these files consists of 5 fields, seperated by the pipe (|) symbol. They have the following use:
+      <div class="itemizedlist"><ul type="disc"><li><p>Timeformat. This is the standard 'crontab' format used in unix, so therefore we refer to the <a xmlns:xlink="http://www.w3.org/1999/xlink" href="https://www.rt.com/man/crontab.5.html" target="_top">UNIX crontab manual page</a> for more information.</p></li><li><p>The class that will be executed. This class should implement the 'org.mmbase.applications.crontab.CronJob' interface, of which the 'run()' method will be called whenever it is time to run the cronjob.</p></li><li><p>Description of the job (optional).</p></li><li><p>A configuration string (optional). This string is available to the job class instance, so you can make generic cronjob implementations that can be used for multiple jobs.</p></li><li><p>The type of the job (optional). This can be one of the following: 
+          <div class="itemizedlist"><ul type="circle"><li><p>short. This means that the job is short, and that the current thread can execute it. No new thread will be spawned, but it is only suitable for jobs that are quickly done. Otherwise, other jobs will have to wait until this job is completed.</p></li><li><p>canbemore. This means that a new Thread will be spawned to run the job. It doesn't check if there already was a thread from a previous execution that is still running, so it can in theory blow up your application server. If the job execution time exceeds the interval in which new jobs are spawned, this will result in a thread bomb.</p></li><li><p>mustbeone. This is the default, and means that a new Thread will be spanwed to run the job, but only if the job wasn't still running from the previous invocation. This means that a job might be skipped when the previous one is still running.</p></li></ul></div>
+          </p></li><li><p>
+	    On which server to run.
+	  </p><p>
+	    This is a regular expression (defaults to ".*") to which the
+	    current value of MMBase.getMMBase().getMachineName() must match. This makes it possible
+	    to have the same config-files on different servers, without having the same jobs running
+	    on them too.
+	  </p></li></ul></div>
+    </p></div></div><hr xmlns="" /><p xmlns="">
+      This is part of the <a href="http://www.mmbase.org">MMBase</a> documentation.
+    </p><p xmlns="">
+      For questions and remarks about this documentation mail to: 
+      <a href="/cdn-cgi/l/email-protection#c4a0aba7b1a9a1aab0a5b0adabaa84a9a9a6a5b7a1eaabb6a3"><span class="__cf_email__" data-cfemail="7f1b101c0a121a110b1e0b1610113f12121d1e0c1a51100d18">[email&#160;protected]</span></a></p><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script></body></html>

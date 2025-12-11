@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title>MMBase Builder Configuration</title><link href="../style/documentation.css" rel="stylesheet" type="text/css" /><meta content="DocBook XSL Stylesheets V1.72.0" name="generator" /><link xmlns="" type="image/x-icon" href="../style/favicon.ico" rel="icon" /><link xmlns="" type="image/x-icon" href="../style/favicon.ico" rel="shortcut icon" /><meta xmlns="" content="text/html; charset=utf-8" http-equiv="content-type" /></head><body><div xmlns="" class="navigation"><img alt="mmbase logo" src="../style/logo.png" /><h2>MMBase Builder Configuration</h2><p><a href="builders.html#N1002A">Introduction</a></p><p><a href="builders.html#N1003F">Builder XML Format</a></p><hr /><p><a href="http://www.mmbase.org">MMBase</a></p><p><a href="../index.html">home</a></p></div><div class="article" lang="en"><div class="titlepage"><div><div><h1 class="title"><a id="N10001" />MMBase Builder Configuration</h1></div><div><div class="authorgroup"><strong class="authorgroup">Authors: </strong><span class="author"><span class="firstname">Pierre</span> <span class="surname">van Rooden</span>, </span><span class="author"><span class="firstname">Michiel</span> <span class="surname">Meeuwissen</span></span><br /><strong class="authorgroup">Date: </strong>2005-12-18</div></div><div><div class="legalnotice"><a id="N10020" /><p>This software is OSI Certified Open Source Software. OSI Certified is a certification mark of the Open Source Initiative.</p><p>The license (Mozilla version 1.0) can be read at the MMBase site. See <a xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.mmbase.org/license" target="_top">http://www.mmbase.org/license</a>
+      </p></div></div></div><hr /></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="section"><a href="builders.html#N1002A">1. Introduction</a></span></dt><dt><span class="section"><a href="builders.html#N1003F">2. Builder XML Format</a></span></dt><dd><dl><dt><span class="section"><a href="builders.html#N1004B">2.1. &lt;builder&gt;</a></span></dt><dd><dl><dt><span class="section"><a href="builders.html#N10073">2.1.1. &lt;status&gt;</a></span></dt><dt><span class="section"><a href="builders.html#N10087">2.1.2. &lt;class&gt;</a></span></dt><dt><span class="section"><a href="builders.html#N100A5">2.1.3. &lt;searchage&gt;</a></span></dt><dt><span class="section"><a href="builders.html#N100BB">2.1.4. &lt;names&gt;</a></span></dt><dd><dl><dt><span class="section"><a href="builders.html#N100C4">&lt;singular&gt;</a></span></dt><dt><span class="section"><a href="builders.html#N100D9">&lt;plural&gt;</a></span></dt><dt><span class="section"><a href="builders.html#N100EE">&lt;names&gt;</a></span></dt></dl></dd><dt><span class="section"><a href="builders.html#N100F6">2.1.5. &lt;descriptions&gt;</a></span></dt><dd><dl><dt><span class="section"><a href="builders.html#N100FF">&lt;description&gt;</a></span></dt><dt><span class="section"><a href="builders.html#N10114">&lt;descriptions&gt;</a></span></dt></dl></dd><dt><span class="section"><a href="builders.html#N1011C">2.1.6. &lt;properties&gt;</a></span></dt><dd><dl><dt><span class="section"><a href="builders.html#N10126">&lt;property&gt;</a></span></dt><dt><span class="section"><a href="builders.html#N10134">&lt;properties&gt;</a></span></dt></dl></dd><dt><span class="section"><a href="builders.html#N1013C">2.1.7. &lt;fieldlist&gt;</a></span></dt><dd><dl><dt><span class="section"><a href="builders.html#N10142">&lt;field&gt;</a></span></dt><dd><dl><dt><span class="section"><a href="builders.html#N10148">&lt;descriptions&gt;</a></span></dt><dt><span class="section"><a href="builders.html#N1016E">&lt;gui&gt;</a></span></dt><dt><span class="section"><a href="builders.html#N101A2">&lt;editor&gt;</a></span></dt><dt><span class="section"><a href="builders.html#N101CD">&lt;db&gt;</a></span></dt></dl></dd><dt><span class="section"><a href="builders.html#N1026E">A full field example</a></span></dt></dl></dd></dl></dd></dl></dd></dl></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="N1002A" />1. Introduction</h2></div></div></div><p>By installing applications or adding your own builder files you can expand the object types that can be used in MMBase.
+    </p><p>Active builders are stored in the <code class="filename">builders</code> directory of the MMbase configuration directory. New MMBase installations only contain the core builders.  In order to add an object type, you need to add a builder xml, with the name <code class="filename">objecttype.xml</code> somewhere in the builders directory.</p><p>You can make use of subdirectories to divide your builders in groups for easier maintenance. Note that the MMBase core builders are located under <code class="filename">core</code>, and that the applications by default install new builders under <code class="filename">applications</code>.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="N1003F" />2. Builder XML Format</h2></div></div></div><p>A builder file uses the following general format:
+    </p><pre class="programlisting">
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;builder 
+    xmlns="http://www.mmbase.org/xmlns/builder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.mmbase.org/xmlns/builder
+                        http://www.mmbase.org/xmlns/builder.xsd"
+    name="..." maintainer="..." version="..." extends="..."&gt;
+  &lt;status&gt;...&lt;/status&gt;
+  &lt;class&gt;...&lt;/class&gt;
+  &lt;searchage&gt;...&lt;/searchage&gt;
+  &lt;names&gt;
+    &lt;singular xml:lang="..."&gt;...&lt;/singular&gt;
+    ...
+    &lt;plural xml:lang="..."&gt;...&lt;/plural&gt;
+    ...
+  &lt;/names&gt;
+  &lt;descriptions&gt;
+    &lt;description xml:lang="..."&gt;...&lt;/description&gt;
+    ...
+  &lt;/descriptions&gt;
+  &lt;properties&gt;
+    &lt;property name="..."&gt;...&lt;/property&gt;
+    ...
+  &lt;/properties&gt;
+  &lt;fieldlist&gt;
+    &lt;field&gt;
+      &lt;descriptions&gt;
+        &lt;description xml:lang="..."&gt;...&lt;/description&gt;
+        ...
+      &lt;/descriptions&gt;
+      &lt;gui&gt;
+        &lt;guiname xml:lang="..."&gt;...&lt;/guiname&gt;
+        ...
+      &lt;/gui&gt;
+      &lt;editor&gt;
+        &lt;positions&gt;
+          &lt;input&gt;...&lt;/input&gt;
+          &lt;list&gt;...&lt;/list&gt;
+          &lt;search&gt;...&lt;/search&gt;
+        &lt;/positions&gt;
+      &lt;/editor&gt;
+      &lt;datatype base="..." xmlns="http://www.mmbase.org/xmlns/datatypes"&gt;
+         ... (like in datatypes.xml)...
+      &lt;/datatype&gt;
+      &lt;db&gt;
+        &lt;name&gt;...&lt;/name&gt;
+        &lt;type state="..." notnull="..." key="..."&gt;...&lt;/type&gt;
+      &lt;/db&gt;
+    &lt;/field&gt;
+    ... 
+  &lt;/fieldlist&gt;
+&lt;/builder&gt;
+    </pre><p>Most builders include less information than given here - since they can extend from each other, you only need to supply information that overrides the default, or when you add information such as fields.
+    </p><p>The following sections explains the use and intention of each tag in detail.
+    </p><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="N1004B" />2.1. &lt;builder&gt;</h3></div></div></div><p>The builder tag is the main tag. It's attributes define the builder's identity and place in the builder hierarchy. It is the parent of all other tags.
+      </p><div class="variablelist"><dl><dt><span class="term">name</span></dt><dd>The name of the builder, which should currently be equal to the name of the builder file, without extension.</dd><dt><span class="term">maintainer</span></dt><dd><p>The maintainer of the builder. This attribute is mandatory, and should contain the name of the organization maintaining the builder. This is generally a domain name. For the core builders this value is <span class="emphasis"><em>mmbase.org</em></span></p></dd><dt><span class="term">version</span></dt><dd>The version number of the builder</dd><dt><span class="term">extends</span></dt><dd>The name of a builder that this builder extends. If you do not specify a builder, you should fully describe the builder (include all tags). If you do specify a parent builder, you need only describe new or changed tags or attributes. The default builder that is extended is <span class="emphasis"><em>object</em></span>.</dd></dl></div><div class="example"><a id="N1006E" /><p class="title"><b>Example 1. Example Builder Tag</b></p><div class="example-contents"><pre class="programlisting">
+&lt;builder name="people" maintainer="mycompany.com" version="1" extends="object"&gt;
+...
+&lt;/builder&gt;
+         </pre></div></div><br class="example-break" /><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a id="N10073" />2.1.1. &lt;status&gt;</h4></div></div></div><a id="status" /><p>The status tag determines whether a builder is active or not. Valid values are <code class="constant">active</code> and <code class="constant">inactive</code>.</p><p>You generally do not specify this tag unless you want to turn a builder off</p><div class="example"><a id="N10082" /><p class="title"><b>Example 2. Example Status Tag</b></p><div class="example-contents"><pre class="programlisting">
+&lt;status&gt;active&lt;/status&gt;
+         </pre></div></div><br class="example-break" /></div><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a id="N10087" />2.1.2. &lt;class&gt;</h4></div></div></div><a id="class" /><p>The java class used by this builder to administrate nodes of that builder type.</p><p>Specify this tag if you have custom behavior defined for an object type.</p><p>The default value for a builder that extends the core builder <span class="emphasis"><em>object</em></span> is <code class="classname">org.mmbase.module.builders.Dummy</code>.</p><p>The default value for a builder that extends the core relation builder <span class="emphasis"><em>insrel</em></span> is <code class="classname">org.mmbase.module.corebuilders.InsRel</code>.</p><div class="example"><a id="N100A0" /><p class="title"><b>Example 3. Example Class Tag</b></p><div class="example-contents"><pre class="programlisting">
+&lt;class&gt;com.mycompany.mmbase.builders.MyPeople&lt;/class&gt;
+         </pre></div></div><br class="example-break" /></div><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a id="N100A5" />2.1.3. &lt;searchage&gt;</h4></div></div></div><a id="searchage" /><p>The value given here is used in a number of generic editors, as a default value for the maximum age in days when searching for objects in MMBase.</p><p>Since this value is not available through the MMBase Bridge interface, this value is mostly used in older editors, that directly access the core system (such as SCAN).</p><p>The default value for a builder that extends the core builder <span class="emphasis"><em>object</em></span> is <code class="constant">1000</code>.</p><div class="example"><a id="N100B6" /><p class="title"><b>Example 4. Example Searchage Tag</b></p><div class="example-contents"><pre class="programlisting">
+&lt;searchage&gt;50&lt;/searchage&gt;
+         </pre></div></div><br class="example-break" /></div><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a id="N100BB" />2.1.4. &lt;names&gt;</h4></div></div></div><a id="names" /><p>This section is used to supply gui (graphical user interface) names for the builder. The information is generally used in generic editors, as well as the default value for use in the editwizards.</p><p>You can include gui names for different languages. the system picks the correct name depending on its currently specified locale.</p><div class="section" lang="en"><div class="titlepage"><div><div><h5 class="title"><a id="N100C4" />&lt;singular&gt;</h5></div></div></div><a id="singular" /><p>A singular presentation of the builder object type, such as 'Person' or 'Company'.</p><div class="variablelist"><dl><dt><span class="term">xml:lang</span></dt><dd>The language for this name in <a xmlns:xlink="http://www.w3.org/1999/xlink" href="http://lcweb.loc.gov/standards/iso639-2/" target="_top">ISO 639-1</a> format. The default value is <code class="constant">en</code>.</dd></dl></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h5 class="title"><a id="N100D9" />&lt;plural&gt;</h5></div></div></div><a id="plural" /><p>A plural presentation of the builder object type, such as 'People' or 'Companies'.</p><div class="variablelist"><dl><dt><span class="term">xml:lang</span></dt><dd>The language for this name in <a xmlns:xlink="http://www.w3.org/1999/xlink" href="http://lcweb.loc.gov/standards/iso639-2/" target="_top">ISO 639</a> format. The default value is <code class="constant">en</code>.</dd></dl></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h5 class="title"><a id="N100EE" />&lt;names&gt;</h5></div></div></div><div class="example"><a id="N100F1" /><p class="title"><b>Example 5. Example Names Tag</b></p><div class="example-contents"><pre class="programlisting">
+&lt;names&gt;
+  &lt;singular xml:lang="en"&gt;Person&lt;/singular&gt;
+  &lt;singular xml:lang="nl"&gt;Persoon&lt;/singular&gt;
+  &lt;plural xml:lang="en"&gt;People&lt;/plural&gt;
+  &lt;plural xml:lang="nl"&gt;Personen&lt;/plural&gt;
+&lt;/names&gt;
+            </pre></div></div><br class="example-break" /></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a id="N100F6" />2.1.5. &lt;descriptions&gt;</h4></div></div></div><a id="descriptions" /><p>This section is used to supply a description or help text for the builder. It may include information on the type of objects, specific behavior,and how it should be used.</p><p>You can include descriptions for different languages. the system picks the correct description depending on its currently specified locale.</p><div class="section" lang="en"><div class="titlepage"><div><div><h5 class="title"><a id="N100FF" />&lt;description&gt;</h5></div></div></div><a id="description" /><p>A description of the builder object type.</p><div class="variablelist"><dl><dt><span class="term">xml:lang</span></dt><dd>The language for this description in <a xmlns:xlink="http://www.w3.org/1999/xlink" href="http://lcweb.loc.gov/standards/iso639-2/" target="_top">ISO 639-1</a> format. The default value is <code class="constant">en</code>.</dd></dl></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h5 class="title"><a id="N10114" />&lt;descriptions&gt;</h5></div></div></div><div class="example"><a id="N10117" /><p class="title"><b>Example 6. Example Descriptions Tag</b></p><div class="example-contents"><pre class="programlisting">
+&lt;descriptions&gt;
+  &lt;description xml:lang="en"&gt;Name and address information regarding contacts of our company.&lt;/description&gt;
+  &lt;description xml:lang="nl"&gt;Naam and adres gegevens van contactpersonen van ons bedrijf.&lt;/description&gt;
+&lt;/descriptions&gt;
+            </pre></div></div><br class="example-break" /></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a id="N1011C" />2.1.6. &lt;properties&gt;</h4></div></div></div><a id="properties" /><p>A list of name-value pairs, used by the java class specified in <span class="emphasis"><em>class</em></span> as configuration parameters. You normally only specify properties for objects with specific behavior (such as Images).</p><div class="section" lang="en"><div class="titlepage"><div><div><h5 class="title"><a id="N10126" />&lt;property&gt;</h5></div></div></div><a id="property" /><p>One single property name-value pair</p><div class="variablelist"><dl><dt><span class="term">name</span></dt><dd>The name of the property.</dd></dl></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h5 class="title"><a id="N10134" />&lt;properties&gt;</h5></div></div></div><div class="example"><a id="N10137" /><p class="title"><b>Example 7. Example Properties Tag</b></p><div class="example-contents"><pre class="programlisting">
+&lt;properties&gt;
+  &lt;property name="employeedbname"&gt;mysql:employees&lt;/property&gt;
+&lt;/properties&gt;
+            </pre></div></div><br class="example-break" /></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a id="N1013C" />2.1.7. &lt;fieldlist&gt;</h4></div></div></div><a id="fieldlist" /><p /><div class="section" lang="en"><div class="titlepage"><div><div><h5 class="title"><a id="N10142" />&lt;field&gt;</h5></div></div></div><a id="field" /><p /><div class="section" lang="en"><div class="titlepage"><div><div><h6 class="title"><a id="N10148" />&lt;descriptions&gt;</h6></div></div></div><a id="field_descriptions" /><p>This tag is used to supply a description or help text for the field. It may include information on the type of objects, specific behavior,and how it should be used. This description is used (among other places) in the editwizards.</p><p>You can include descriptions for different languages. The system picks the correct description depending on its currently specified locale.</p><div class="section" lang="en"><div class="titlepage"><div><div><h6 class="title"><a id="N10151" />&lt;description&gt;</h6></div></div></div><a id="field_description" /><p>A description of the field.</p><div class="variablelist"><dl><dt><span class="term">xml:lang</span></dt><dd>The language for this description in <a xmlns:xlink="http://www.w3.org/1999/xlink" href="http://lcweb.loc.gov/standards/iso639-2/" target="_top">ISO 639-1</a> format. The default value is <code class="constant">en</code>.</dd></dl></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h6 class="title"><a id="N10166" />&lt;descriptions&gt;</h6></div></div></div><div class="example"><a id="N10169" /><p class="title"><b>Example 8. Example Descriptions Tag</b></p><div class="example-contents"><pre class="programlisting">
+&lt;descriptions&gt;
+  &lt;description xml:lang="en"&gt;First name or initials of our contact.&lt;/description&gt;
+  &lt;description xml:lang="nl"&gt;Voornaam of initialen van de contactpersoonen.&lt;/description&gt;
+&lt;/descriptions&gt;
+                </pre></div></div><br class="example-break" /></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h6 class="title"><a id="N1016E" />&lt;gui&gt;</h6></div></div></div><a id="field_gui" /><p>This section contains gui (graphical user interface) information for the field. The information is generally used in generic editors, as well as the default value for use in the editwizards.</p><p>This tag includes gui names for different languages to represent a label for the field. The system picks the correct name depending on its currently specified locale.</p><p>It can also contain one guitype, which explains how the field should be rendered or edited.</p><div class="section" lang="en"><div class="titlepage"><div><div><h6 class="title"><a id="N10179" />&lt;guiname&gt;</h6></div></div></div><a id="field_guiname" /><p>A text to use as label for the field, such as 'First Name'.</p><div class="variablelist"><dl><dt><span class="term">xml:lang</span></dt><dd>The language for this label in <a xmlns:xlink="http://www.w3.org/1999/xlink" href="http://lcweb.loc.gov/standards/iso639-2/" target="_top">ISO 639-1</a> format. The default value is <code class="constant">en</code>.</dd></dl></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h6 class="title"><a id="N1018E" />&lt;datatype&gt;</h6></div></div></div><a id="field_datatype" /><p>
+                The data type used to determine how a field should be rendered or edited. There
+                are a number of predefined values for the base attribute (defined in
+                config/datatypes.xml).
+              </p><div class="example"><a id="N10195" /><p class="title"><b>Example 9. Example DataType Tag</b></p><div class="example-contents"><pre class="programlisting">
+ &lt;datatype base="date" xmlns="http://www.mmbase.org/xmlns/datatypes"&gt;
+     &lt;default value="today + 100 year" /&gt;
+     &lt;minInclusive enforce="never" value="yesterday" /&gt;
+     &lt;maxInclusive enforce="always" value="today + 100 year" /&gt;
+ &lt;/datatype&gt;
+ &lt;db&gt;
+    &lt;name&gt;end&lt;/name&gt;
+    &lt;type key="false" notnull="false" state="persistent"&gt;DATETIME&lt;/type&gt;
+ &lt;/db&gt;
+                </pre></div></div><br class="example-break" /></div><div class="section" lang="en"><div class="titlepage"><div><div><h6 class="title"><a id="N1019A" />&lt;guitype&gt;</h6></div></div></div><div class="example"><a id="N1019D" /><p class="title"><b>Example 10. Example Gui Tag</b></p><div class="example-contents"><pre class="programlisting">
+&lt;gui&gt;
+  &lt;guiname xml:lang="en"&gt;First name&lt;/guiname&gt;
+  &lt;guiname xml:lang="nl"&gt;Voornaam&lt;/guiname&gt;
+&lt;/gui&gt;
+                </pre></div></div><br class="example-break" /></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h6 class="title"><a id="N101A2" />&lt;editor&gt;</h6></div></div></div><a id="field_editor" /><p>Determines settings for this field when used in a generic editor.</p><div class="section" lang="en"><div class="titlepage"><div><div><h6 class="title"><a id="N101A9" />&lt;positions&gt;</h6></div></div></div><a id="field_positions" /><p>Lists the positions of a field in certain types of forms.</p><div class="section" lang="en"><div class="titlepage"><div><div><h6 class="title"><a id="N101B0" />&lt;input&gt;</h6></div></div></div><a id="field_edit" /><p>Position of the field in an edit screen. -1 means the field cannot be edited.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h6 class="title"><a id="N101B7" />&lt;list&gt;</h6></div></div></div><a id="field_list" /><p>Position of the field in an object list. -1 means the field will not occur in a list.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h6 class="title"><a id="N101BE" />&lt;search&gt;</h6></div></div></div><a id="field_search" /><p>Position of the field in a search form. -1 means the field cannot be searched on.</p></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h6 class="title"><a id="N101C5" />Example Editor Tag</h6></div></div></div><div class="example"><a id="N101C8" /><p class="title"><b>Example 11. Example Editor Tag</b></p><div class="example-contents"><pre class="programlisting">
+&lt;editor&gt;
+  &lt;positions&gt;
+    &lt;input&gt;4&lt;/input&gt;
+    &lt;list&gt;-1&lt;/list&gt;
+    &lt;search&gt;4&lt;/search&gt;
+  &lt;/positions&gt;
+&lt;/editor&gt;
+                </pre></div></div><br class="example-break" /></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h6 class="title"><a id="N101CD" />&lt;db&gt;</h6></div></div></div><a id="field_db" /><p /><div class="section" lang="en"><div class="titlepage"><div><div><h6 class="title"><a id="N101D3" />&lt;name&gt;</h6></div></div></div><a id="field_name" /><p>The symbolic name of this field. The symbolic name is used to refer to the field in programming code or in a taglib or SCAN template. It is also used to map the field to a field in a database table.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h6 class="title"><a id="N101DA" />&lt;type&gt;</h6></div></div></div><a id="field_type" /><p>the MMBASE type of the field. This determines, among other things, validation rules and the type of the field in the database.</p><p>Possible attributes are:</p><div class="variablelist"><dl><dt><span class="term"><a id="field_state" />state</span></dt><dd><p>Either <code class="constant">persistent</code>, <code class="constant">system</code> or <code class="constant">virtual</code>.</p><p>A <code class="constant">persistent</code> or <code class="constant">system</code> field is stored in the database, a <code class="constant">virtual</code> field is generated live and not stored.</p><p>A <code class="constant">system</code> field cannot be altered except by the MMBase system.</p></dd><dt><span class="term"><a id="field_notnull" />notnull</span></dt><dd>Value can be <code class="constant">true</code> or <code class="constant">false</code>. If <code class="constant">true</code>, this field cannot be empty. This is not currently enforced except by the editwizards.</dd><dt><span class="term"><a id="field_key" />key</span></dt><dd>Value can be <code class="constant">true</code> or <code class="constant">false</code>. If <code class="constant">true</code>, this field must be unique.</dd></dl></div><p>Possible values are:</p><div class="variablelist"><dl><dt><span class="term">STRING</span></dt><dd>A text string.</dd><dt><span class="term">INTEGER</span></dt><dd>An integer field.</dd><dt><span class="term">LONG</span></dt><dd>A long (large integer) field.</dd><dt><span class="term">FLOAT</span></dt><dd>A real field. Real is rather short - use DOUBLE if possible.</dd><dt><span class="term">DOUBLE</span></dt><dd>A double real field.</dd><dt><span class="term">NODE</span></dt><dd>A reference to another object, internally represented as that object's number.</dd><dt><span class="term">BINARY</span></dt><dd>A binary field such as an image.</dd><dt><span class="term">XML</span></dt><dd>A field containing an xml document.</dd><dt><span class="term">BOOLEAN</span></dt><dd>True or false, yes or no etc.</dd><dt><span class="term">DATETIME</span></dt><dd>A definite date/time.</dd></dl></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h6 class="title"><a id="N10266" />Example</h6></div></div></div><div class="example"><a id="N10269" /><p class="title"><b>Example 12. Example db Tag</b></p><div class="example-contents"><pre class="programlisting">
+&lt;db&gt;
+  &lt;name&gt;firstname&lt;/name&gt;
+  &lt;type state="persistent" size="255" key="false" notnull="false"&gt;STRING&lt;/type&gt;
+&lt;/db&gt;
+                </pre></div></div><br class="example-break" /></div></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h5 class="title"><a id="N1026E" />A full field example</h5></div></div></div><div class="example"><a id="N10271" /><p class="title"><b>Example 13. Example Builder Config</b></p><div class="example-contents"><pre class="programlisting">
+&lt;fieldlist&gt;
+  &lt;field&gt;
+    &lt;descriptions&gt;
+      &lt;description xml:lang="en"&gt;First name or initials of our contact.&lt;/description&gt;
+      &lt;description xml:lang="nl"&gt;Voornaam of initialen van de contactpersoonen.&lt;/description&gt;
+    &lt;/descriptions&gt;
+    &lt;gui&gt;
+      &lt;guiname xml:lang="en"&gt;First name&lt;/guiname&gt;
+      &lt;guiname xml:lang="nl"&gt;Voornaam&lt;/guiname&gt;
+    &lt;/gui&gt;
+    &lt;editor&gt;
+      &lt;positions&gt;
+        &lt;input&gt;4&lt;/input&gt;
+        &lt;list&gt;-1&lt;/list&gt;
+        &lt;search&gt;4&lt;/search&gt;
+      &lt;/positions&gt;
+    &lt;/editor&gt;
+    &lt;datatype base="line" xmlns="http://www.mmbase.org/xmlns/datatypes" /&gt;&lt;!-- no newlines in names --&gt;
+    &lt;db&gt;
+      &lt;name&gt;firstname&lt;/name&gt;
+      &lt;type state="persistent" size="255" key="false" notnull="false"&gt;STRING&lt;/type&gt;
+    &lt;/db&gt;
+  &lt;/field&gt;
+&lt;/fieldlist&gt;
+            </pre></div></div><br class="example-break" /></div></div></div></div></div><hr xmlns="" /><p xmlns="">
+      This is part of the <a href="http://www.mmbase.org">MMBase</a> documentation.
+    </p><p xmlns="">
+      For questions and remarks about this documentation mail to: 
+      <a href="/cdn-cgi/l/email-protection#84e0ebe7f1e9e1eaf0e5f0edebeac4e9e9e6e5f7e1aaebf6e3"><span class="__cf_email__" data-cfemail="294d464a5c444c475d485d4046476944444b485a4c07465b4e">[email&#160;protected]</span></a></p><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script></body></html>

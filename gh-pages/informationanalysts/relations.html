@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title>Relations in MMBase</title><link href="../style/documentation.css" rel="stylesheet" type="text/css" /><meta content="DocBook XSL Stylesheets V1.72.0" name="generator" /><link xmlns="" type="image/x-icon" href="../style/favicon.ico" rel="icon" /><link xmlns="" type="image/x-icon" href="../style/favicon.ico" rel="shortcut icon" /><meta xmlns="" content="text/html; charset=utf-8" http-equiv="content-type" /></head><body><div xmlns="" class="navigation"><img alt="mmbase logo" src="../style/logo.png" /><h2>Relations in MMBase</h2><p><a href="relations.html#mmbase">Relations in MMBase</a></p><p><a href="relations.html#fields">
+      Creating a relation object type with the fields that are necessary in the
+      relation
+    </a></p><p><a href="relations.html#role">Assign a role to the in the list of relation definitions (reldef)</a></p><p><a href="relations.html#allowed_relations">
+      Enter the source-relation-destination information into the list of allowed relations
+      (typerel)
+    </a></p><p><a href="relations.html#create">Create relations</a></p><p><a href="relations.html#use">Use relations</a></p><hr /><p><a href="http://www.mmbase.org">MMBase</a></p><p><a href="../index.html">home</a></p></div><div class="article" lang="en"><div class="titlepage"><div><div><h1 class="title"><a id="N10001" />Relations in MMBase</h1></div><div><div class="authorgroup"><strong class="authorgroup">Authors: </strong><span class="author"><span class="firstname">Henk</span> <span class="surname">Hangyi</span>, </span><span class="author"><span class="firstname">Michiel</span> <span class="surname">Meeuwissen</span></span><br /><strong class="authorgroup">Date: </strong>2003-05-14</div></div><div><div class="legalnotice"><a id="N1001A" /><p>
+        This software is OSI Certified Open Source Software. OSI Certified is a certification mark
+        of the Open Source Initiative.
+      </p><p>
+        The license (Mozilla version 1.0) can be read at
+        the MMBase site. See <a xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.mmbase.org/license" target="_top">http://www.mmbase.org/license</a>
+      </p></div></div><div /></div><hr /></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="section"><a href="relations.html#mmbase">1. Relations in MMBase</a></span></dt><dt><span class="section"><a href="relations.html#fields">2. 
+      Creating a relation object type with the fields that are necessary in the
+      relation
+    </a></span></dt><dd><dl><dt><span class="section"><a href="relations.html#insrel">2.1. The base relation type (insrel)</a></span></dt><dt><span class="section"><a href="relations.html#posrel">2.2. The posrel.xml builder.</a></span></dt></dl></dd><dt><span class="section"><a href="relations.html#role">3. Assign a role to the in the list of relation definitions (reldef)</a></span></dt><dt><span class="section"><a href="relations.html#allowed_relations">4. 
+      Enter the source-relation-destination information into the list of allowed relations
+      (typerel)
+    </a></span></dt><dt><span class="section"><a href="relations.html#create">5. Create relations</a></span></dt><dt><span class="section"><a href="relations.html#use">6. Use relations</a></span></dt></dl></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="mmbase" />1. Relations in MMBase</h2></div></div></div><p>
+      MMBase is an object oriented content management system. I.e. text, images and other content
+      are stored in objects, objects are connected by relations, relations are objects
+      themselves. The most basic relation of these, is the relation that can be used to connect two objects,
+      but does not contain any content itself. This relation which does not contain any
+      additional information is normally called "related". Often it is not enough to make
+      a relation between two objects. For instance, when adding news items to a magazine one also
+      needs a way of telling in which sequence the newsitems should occur. In MMBase one can use
+      the "posrel" relation for this purpose. The "posrel" not only connects two
+      objects, but it also allows you to store an integer value in this relation. To this end you
+      use the "pos" field of the relation. In general, you can create relations with
+      whatever fields you need for your content model. For instance, when connecting employees to
+      departments one can use a relation which contains an extra String field to store information
+      on the function(s) an employee has in his/her department(s).
+      
+    </p><p>
+      This document provides information on how to create and use relations. Before you can actually
+      start creating relations between MMBase objects, you must assert that this relation can be
+      understood by MMBase.  This means that you must assert the following three things.
+    </p><div class="orderedlist"><ol type="1"><li><p>
+          A relation object type (`builder') with the fields that are necessary in the relation must be
+          created. If a suitable object type already exist, then you can immediately go to the next
+          step. The base type for relation types is called `insrel'.
+        </p></li><li><p>
+          Assign a `role' to the relation in the list of relation definitions (`reldef'). The same
+          builder could be assigned to more than one role. Normally the role `related' exists and is
+          assigned to the base relation object type (`insrel'). The role `posrel' is normally
+          assigned to a relation object type `posrel' which extends the base relation type insrel, and
+          adds the `pos' field.
+        </p></li><li><p>
+          It must be defined which source-type/role/destination-type combinations are allowed by
+          MMBase. You do this by entering `typrel' entries. You can define here e.g. that relations from
+          `news' to `people' with the role `author' is possible.
+        </p></li></ol></div><p>
+      The following image provides a graphical representation of these steps. In the sections that
+      follow the details of each step will be described.</p><div class="screenshot"><div><img src="media/relations.png" /></div></div><p>This document assumes that you are familiar with the following concepts:</p><div class="orderedlist"><ol type="1"><li><p>
+          Objects and and object types (`builders'). If not, please read the "Builder
+          configuration file " in the "Administrators " section.
+        </p></li><li><p>
+          Applications. If not, please read the "Application " manual in the
+          "Administrators " section.
+        </p></li></ol></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="fields" />2. 
+      Creating a relation object type with the fields that are necessary in the
+      relation
+    </h2></div></div></div><p>
+      Like normal objects, relations are of a certain type (`are created by a certain builder'). We
+      will have a closer look at two standard object type definitions used for relations: insrel
+      (defined in insrel.xml) and posrel (defined in posrel.xml).
+    </p><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="insrel" />2.1. The base relation type (insrel)</h3></div></div></div><p>
+        The insrel.xml builder definition defines the base type for relation objects. A relation
+        object connects to other objects witch each other. One of the other objects is named the
+        source and the other is the destination.  Have a look at the insrel.xml builder in
+        /config/builders/core/. The insrel.xml builder differs from builders of regular objects in
+        the following ways.
+      </p><div class="orderedlist"><ol type="1"><li><p>&lt;classfile&gt;org.mmbase.module.corebuilders.InsRel&lt;/classfile&gt;</p><p>The functionality of the insrel relation is defined by the Java class InsRel</p></li><li><p>&lt;field&gt; snumber</p><p>Object number of this relation's source object</p></li><li><p>&lt;field&gt; dnumber</p><p>Object number of this relation's destination object</p></li><li><p>&lt;field&gt; rnumber</p><p>
+            Reference to the 'role' object of reldef (see next section).
+          </p></li><li><p>&lt;field&gt; dir</p><p>
+            The `directionality' of this relation, can be uni or bi-directional (0 or 1). This can
+            possibly override the same value which was associated with the role object, but is
+            mainly present here too, to make the SQL queries perform better (because no direct
+            connection to the reldef table is needed then).
+          </p><p>
+            Directionality only tells something about the visibility of the relation. A unidirectional
+            relation is not visible from the destination node.
+          </p></li></ol></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="posrel" />2.2. The posrel.xml builder.</h3></div></div></div><p>
+        Have a look at the posrel.xml builder in the MyNews application. The posrel.xml builder
+        extends the insrel.xml builder with the field `pos'. When connecting two objects by using
+        the posrel relations, you can use this pos field to store an integer value. The posrel
+        relation also uses the Insrel class for some additional functionality.
+      </p><p>
+        By extending the insrel.xml builder with more and different fields, you can construct
+        whatever relation you like to use.
+      </p></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="role" />3. Assign a role to the in the list of relation definitions (reldef)</h2></div></div></div><p>
+      In the previous section we saw what a builder for a relation looks like. You can use these
+      builders to create relations. Every relation instance also has a certain role. The existing
+      roles are defined in the `reldef' table.  In this reldef object type you have to set the
+      following fields.
+    </p><div class="orderedlist"><ol type="1"><li><p>role (sname)</p><p>The name of the role which is assigned.</p></li><li><p>target-role (dname)</p><p>
+          The role as seen from the destination node. This can be used in combination with the role,
+          to further specify it.
+        </p></li><li><p>dir</p><p>
+          Whether the relation is visible both from the source and the target (bidirectional) or the
+          relation is only visible from the source (unidirectional). It does <span class="emphasis"><em>not</em></span>
+          define the direction of the relation.
+        </p></li><li><p>sguiname</p><p>
+          The name of the source node in this role. This is used in (generic) editors.
+        </p></li><li><p>dguiname</p><p>
+          The name of the destination node in this role. This is used in (generic) editors.
+        </p></li><li><p>builder</p><p>
+          The builder which defines the data to store the relation, and optionally adds some
+          specific functionality to it (by the java class).
+        </p></li></ol></div><div class="example"><a id="example_roles" /><p class="title"><b>Example 1. Roles (reldef)</b></p><div class="example-contents"><div class="screenshot"><div><img src="media/reldef.jpg" /></div></div><p>In the screenshot above their are four relations defined.</p><div class="orderedlist"><ol type="1"><li><p>Related/Related</p><p>This is the default relation that can be used to connect two objects</p></li><li><p>Posrel/Posrel</p><p>This is the relation that contains an integer field in the relation. It is based on the posrel.xml builder.</p></li><li><p>Parent/Child</p><p>
+            This relation is based on the insrel.xml builder. Seen
+          from the source the relation is called "child ", seen from the target the
+          relation is called "parent ".</p></li><li><p>Body</p><p>
+            This relation is based on the posrel.xml builder and thus contains an integer
+            field. Seen from the source the relation is called "member ", seen from the
+            target the relation is called "(body) (hidden) "</p></li></ol></div><p>
+         As you see, a single builder can be used to define more than one relation. In the example
+         above, both the Related and the Parent/Child relation are based on insrel.xml. Defining
+         relations with different names is handy when two objects are connected to each-other for
+         different reasons. E.g. a magazine is connected to a person via an author and via a
+         publisher relation, where both author and publisher are defined by using the
+         insrel.xml.
+      </p></div></div><br class="example-break" /></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="allowed_relations" />4. 
+      Enter the source-relation-destination information into the list of allowed relations
+      (typerel)
+    </h2></div></div></div><p>
+      In the previous section we saw how we can define relation roles in MMBase. Principally you could be
+      ready now to create actual relation instances. You could take two object and connect them by a
+      `role'. The role defines also the relation builder, and therefore the extra fields which can be
+      filled in the relation object itself.
+    </p><p>
+      But MMBase enforces us to explicitely define what kind of relations are possible. For example you
+      have to explicitely state that relations between news nodes and people nodes with the role `author'
+      are allowed.
+    </p><p>
+      This extra requirement makes generic editors a lot simpler, because MMBase can offer only the
+      possibility to relate people to news articles (and what else is defined), and there is no need to
+      add buttons for every permutation of object types and roles, which would make such editors very
+      complex.
+    </p><p>
+      The other advantage is that database queries can be optimized using this information about which
+      relations are possible. So, though it could be tempting to allow the relation from any object to
+      any object (because of `inheritance' this is perfectly possible), it would be inadvisable to do
+      so. Generally you should limit yourself to relation types which you are actually going to
+      use. Using `inheritance' in allowed relation definitions is possible, but use it sparingly.
+    </p><p>
+      When `following' relations in the front-end, this on default tries to follow them in `both'
+      directions (if both are possible). If the object type on both sides of your allowed relation type
+      is the same, you could therefore consider making the relations unidirectional. Otherwise in the
+      resulting queries lots of `OR' constraints may arise which is generally very bad for
+      performance. The option is to specify the `search direction' on every query you do between to
+      objects of the same type.
+    </p><p>
+      For the same reason you should also avoid to allow the same relation in both directions. It's
+      better to allow the `author' relation only from news to people, and not also from people to news.
+    </p><p>
+      If you have a look at the typerel objects, which define the allowed relations, in generic editors,
+      you see that you can set the following fields.
+    </p><div class="orderedlist"><ol type="1"><li><p>snumber</p><p>
+          The builder which objects function as the source for this relation.
+        </p></li><li><p>dnumber</p><p>
+          The builder which objects function as the destination for this relation.
+        </p></li><li><p>rnumber</p><p>
+          The number of the `role' object used to connect the source to the destination.
+        </p></li><li><p>max</p><p>
+          The maximum number of relations between the source and its destination objects.
+        </p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>
+            Although you can set the number of relations, the functionality to check on this
+            maximum and signal a warning if the maximum is reached is not yet implemented in
+            MMBase. You can safely ignore this field.
+          </p></div></li></ol></div><div class="example"><a id="example_typerel" /><p class="title"><b>Example 2. Allowed relations types (typerel)</b></p><div class="example-contents"><div class="screenshot"><div><img src="media/typerel.jpg" /></div></div><p>
+        The image above provides the typerel objects present in an MMBase installation after the
+        Resources and the MyNews applications are installed.
+      </p><div class="orderedlist"><ol type="1"><li><p>Related/Related</p><p>This is the default relation that can be used to connect two objects</p></li><li><p>Posrel/Posrel</p><p>This is the relation that contains an integer field in the relation. It is based on the posrel.xml builder.</p></li><li><p>Parent/Child</p><p>
+            This relation is based on the insrel.xml builder. Seen from the source the relation is
+            called "child ", seen from the target the relation is called "parent
+            ".
+          </p></li><li><p>Body</p><p>
+            This relation is based on the posrel.xml builder and thus contains an integer
+            field. Seen from the source the relation is called "member ", seen from the
+            target the relation is called "(body) (hidden) "</p></li></ol></div><p>
+        As you see, a single builder can be used to define more than one relation. In the
+        example above, both the Related and the Parent/Child relation are based on
+        insrel.xml. Defining relations with different names is handy when two objects are connected to
+        each-other for different reasons. E.g. a magazine is connected to a person via an author and
+        via a publisher relation, where both author and publisher are defined by using the
+        insrel.xml.
+      </p></div></div><br class="example-break" /><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>
+        The field names for the builders and relations are called snumber, dnumber and rnumber,
+        because the builders are specified by the object numbers from the typedef table and the
+        relations are specified by the object numbers from the reldef table. In generic editors you
+        should however see nice drop down boxes.
+      </p></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="create" />5. Create relations</h2></div></div></div><p>
+      Every interface to the MMBase cloud provides its own way for creating relations. We will have a
+      look at how we can relate people to news in the MyNews application.
+    </p><p>
+      In the previous section we saw that after the Resources and the MyNews application are installed,
+      the list of allowed relation types contains for instance the relation from people to news. When
+      selecting somebody from the list of people, the following screen appears. New newsitems can be
+      added to this person by clicking on the plus-signs in the right column in the row which starts with
+      News.
+    </p><div class="screenshot"><div><img src="media/people.jpg" /></div></div><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>
+        The posrel builder is extended from the insrel builder. This means that each creation of a
+        posrel also means a creation of an insrel.
+      </p></div><p>
+      The following list provides an overview of where to look for information on how to create
+      relations in the other interfaces.
+    </p><div class="orderedlist"><ol type="1"><li><p>JSP-templates</p><p>
+          See the &lt;mm:maycreaterelation /&gt; and
+          &lt;mm:createrelation /&gt; in the MMBase taglib reference in the Templaters and Designers
+          section.
+        </p></li><li><p>XML-templates</p><p>
+          See the &lt;getnewrelation /&gt; in the Dove XML API in the Developers section
+        </p></li><li><p>Editwizards</p><p>
+          See the &lt;action type= "create " /&gt; in the &lt;list /&gt; tag in the
+          Editwizard documentation under the Templaters and Designers section.</p></li></ol></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="use" />6. Use relations</h2></div></div></div><p>
+      Every interface also provides its own way for using relations. In the mmeditors one can use
+      the arrow-signs to view the relation and the related objects. See for instance the image shown
+      in the previous section. When clicking on the arrow-sign before "MMBase goes Open Source
+      " one can view the relation that connects the person "Rob " to the "MMBase
+      goes Open Source " newsitem. When clicking on the arrow-sign after "MMBase goes Open
+      Source " one goes directly to the related newsitem.
+    </p><p>
+      Information about using
+      relations in other interfaces to the MMBase cloud is listed below:
+    </p><div class="orderedlist"><ol type="1"><li><p>JSP-templates</p><p>
+          See the &lt;mm:list /&gt; and &lt;mm:listrelations /&gt; in the MMBase taglib reference in
+          the Templaters and Designers section.
+        </p></li><li><p>XML-templates</p><p>See the &lt;getrelations /&gt; in the Dove XML API in the Developers section</p></li><li><p>Editwizards</p><p>See the &lt;list /&gt; tag in the Editwizard documentation under the Templaters and Designers section.</p></li></ol></div></div></div><hr xmlns="" /><p xmlns="">
+      This is part of the <a href="http://www.mmbase.org">MMBase</a> documentation.
+    </p><p xmlns="">
+      For questions and remarks about this documentation mail to: 
+      <a href="/cdn-cgi/l/email-protection#50343f33253d353e243124393f3e103d3d323123357e3f2237"><span class="__cf_email__" data-cfemail="a4c0cbc7d1c9c1cad0c5d0cdcbcae4c9c9c6c5d7c18acbd6c3">[email&#160;protected]</span></a></p><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script></body></html>

@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title>The Event Framework Technical Reference</title><link href="../style/documentation.css" rel="stylesheet" type="text/css" /><meta content="DocBook XSL Stylesheets V1.72.0" name="generator" /><meta name="description" content="Technical reference for [the new framework that was added as part of the queryResult cache release strategy project]" /><link xmlns="" type="image/x-icon" href="../style/favicon.ico" rel="icon" /><link xmlns="" type="image/x-icon" href="../style/favicon.ico" rel="shortcut icon" /><meta xmlns="" content="text/html; charset=utf-8" http-equiv="content-type" /></head><body><div xmlns="" class="navigation"><img alt="mmbase logo" src="../style/logo.png" /><h2>The Event Framework Technical Reference</h2><p><a href="eventframework.html#introduction">Introduction</a></p><p><a href="eventframework.html#architecture">Architecture</a></p><p><a href="eventframework.html#roll_your_own">Roll your own event type</a></p><p><a href="eventframework.html#N1005F">Node and relation events: what has changed</a></p><hr /><p><a href="http://www.mmbase.org">MMBase</a></p><p><a href="../index.html">home</a></p></div><div class="article" lang="en"><div class="titlepage"><div><div><h1 class="title"><a id="N10001" />The Event Framework Technical Reference</h1></div><div><div class="authorgroup"><strong class="authorgroup">Author: </strong><span class="author"><span class="firstname">Ernst</span> <span class="surname">Bunders</span></span><br /><strong class="authorgroup">Date: </strong>2005-12-09</div></div><div><div class="legalnotice"><a id="N10027" /><p>This software is OSI Certified Open Source Software. OSI Certified
+      is a certification mark of the Open Source Initiative.</p><p>The license (Mozilla version 1.0) can be read at the MMBase site.
+      See <a xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.mmbase.org/license" target="_top">http://www.mmbase.org/license</a></p></div></div><div /><div><div class="abstract"><p class="title"><b>Abstract</b></p><p>Technical reference for [the new framework that was added as part
+      of the queryResult cache release strategy project]</p></div></div></div><hr /></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="section"><a href="eventframework.html#introduction">1. Introduction</a></span></dt><dt><span class="section"><a href="eventframework.html#architecture">2. Architecture</a></span></dt><dt><span class="section"><a href="eventframework.html#roll_your_own">3. Roll your own event type</a></span></dt><dd><dl><dt><span class="section"><a href="eventframework.html#create_Event">3.1. Event</a></span></dt><dt><span class="section"><a href="eventframework.html#create_EventListener">3.2. EventListener</a></span></dt><dt><span class="section"><a href="eventframework.html#create_EventBroker">3.3. EventBroker</a></span></dt></dl></dd><dt><span class="section"><a href="eventframework.html#N1005F">4. Node and relation events: what has changed</a></span></dt><dd><dl><dt><span class="section"><a href="eventframework.html#N10064">4.1. Classes and interfaces</a></span></dt><dt><span class="section"><a href="eventframework.html#N10071">4.2. Node and relation event flow</a></span></dt><dd><dl><dt><span class="section"><a href="eventframework.html#N10076">4.2.1. Local node change</a></span></dt><dt><span class="section"><a href="eventframework.html#N1008E">4.2.2. Remote node change</a></span></dt></dl></dd></dl></dd></dl></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="introduction" />1. Introduction</h2></div></div></div><p>The introduction of a new event model is part of the query cache
+    release strategy project. Because the current MMBase node events yield to
+    little information for advanced query invalidation rules, we needed a more
+    detailed node and relation change event. NodeEvent and RelationEvent
+    objects were introduced to cover this.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="architecture" />2. Architecture</h2></div></div></div><p>The core of the system is the EventManager. A singleton instance of
+    this class is instantiated at startup time. This event manager is being
+    loaded with brokers for a number of (MMBase) events. These are: NodeEvent,
+    RelationEvent, and Event (by means of the AllEventBroker, used by the
+    clustering application). If you want MMBase to load other event brokers as
+    well, add them to the cluster manager configuration file eventManager.xml
+    in the config directory. The event manager manages the brokers (one for
+    each event type), and accepts listeners for these event types, as well as
+    events (of any supported type) to pass on to the brokers. The event
+    manager tries to find an event broker for every listener that is
+    registered with it, and passes it on to the broker (that actually manages
+    the listeners for it's event type`). are So what happens when an event is
+    fired? 1 some code calls EventManager.propagateEvent(Event event). All
+    event classes need to extend from event, so it can be any event. 2 the
+    event manager iterates over it's event brokers, and asks each one if it
+    can broker for this event (which mean it can deliver it to the right
+    listeners. 3 The event broker (a specialization of AbstractEventBroker)
+    calls canBrokerForEvent(Event event), (one of AbstractEventBroker's
+    abstract methods you have to override to create an actual broker) to
+    discover if this event is for him. 4 if so, the broker iterates over it's
+    listeners, and propagates the event.</p><div><img src="media/eventframework.jpg" /></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="roll_your_own" />3. Roll your own event type</h2></div></div></div><p>It is easy to add your own type of event. These can be MMBase
+    related events or events that are pertinent to some application/extension
+    you created. The great bonus is that your events are delivered across your
+    mmbase cluster.</p><p>For every type of event you have to have two classes and one
+    interface: an EventBroker, an Event and an EventListener interface.</p><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="create_Event" />3.1. Event</h3></div></div></div><p>Your event class has to extend org.mmbase.core.event.Event. This
+      serves as a base type and also keeps track of the location in the
+      cluster that the event originated from. One of the big advantages of
+      using MMBase to send your application events is that they are send to
+      all mmbase nodes in your network (that are configured to receive each
+      others multicast messages), so it is more easy to write scalable web
+      applications. (See for more information the document about mmbase
+      clustering). To take advantage of this you have to make shure that the
+      event is serializable though.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="create_EventListener" />3.2. EventListener</h3></div></div></div><p>The EventListener interface has to extend
+      org.mmbase.core.event.EventListener. It has to define one method that
+      will be called by your event broker. (so what ever method name you
+      choose is up to you, just make sure it accepts an instance of your event
+      object and your event broker calls it).</p><p>Every class that wants to be notified of your type of event has to
+      implement this interface and implement it's methods.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="create_EventBroker" />3.3. EventBroker</h3></div></div></div><p>First you need a broker for you event type. The function of an
+      event broker is to manage all listeners for your event type. It also
+      determines for the event manager if it can handle an event. Event
+      brokers have to be registered with the event manager. This is all you
+      have to do to make it accept listeners for your event type, and notify
+      them.</p><p>To create your own event broker simply extend AbstractEventBroker
+      and implement the abstract methods. For an example it is a good idea to
+      take a look ad NodeEventBroker.</p></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="N1005F" />4. Node and relation events: what has changed</h2></div></div></div><p>This section tells you what you need to know about node and relation
+    changes, how to use them, and how they all bounce and bounce inside MMBase
+    these days.</p><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="N10064" />4.1. Classes and interfaces</h3></div></div></div><p>This section tells you what you need to know about node and
+      relation changes, how to use them, and how they all bounce and bounce
+      inside MMBase these days.</p><p>Some things have changed in respect to the previous implementation
+      using the org.mmbase.module.core.MMBaseObserver interface. This
+      interface provided different methods for local and remote node changes.
+      It was felt that this is not very useful; the usual practice seems to be
+      to create one method to handle both types of events. It is still
+      possible to determine if an event was local or remote by comparing the
+      machine name of the event to the local one.</p><p>On the other hand was the information about the event provided to
+      these methods very poor. This was the main motivation to change the
+      event model.</p><p>The new org.mmbase.core.event.NodeEventListener and
+      org.mmbase.core.event.RelationEventListener interfaces create a
+      distinction between node and relation events. The classes
+      org.mmbase.core.event.NodeEvent and org.mmbase.core.event.RelationEvent
+      (and through them the events) provide much more information than
+      before.</p><p>When you register a NodeEventListener or a RelationEventListener
+      with the EventManager all node or relation events are propagated to it.
+      This is many times what you want. In stead you want to listen to the
+      events for nodes of a specific type. To make it as easy as it was before
+      to register listeners to node and/or relation events of a specific
+      builder, Some wrapper classes were created for NodeEventListener and
+      RelationEventListener instances, that will filter the events for you
+      (take a look at org.mmbase.core.event.TypedNodeEventListenerWrapper and
+      org.mmbase.core.event.TypedRelationEventListenerWrapper. But you don't
+      even have to use those directly. Both the MMBase and MMObjectBuilder
+      classes have convenience methods to register your listeners. Take a look
+      at Mmbase.addNodeRelatedEventsListener(String builder, Object listener)
+      and MMObjectBuilder.addEventListener(Object listener). The object is
+      your class implementing either NodeEventListener or
+      RelationEventListener or both (discovered through introspection).
+      Wrappers are created accordingly and registered as listeners.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="N10071" />4.2. Node and relation event flow</h3></div></div></div><p>This section provides insight into what happens when node and
+      relation events are fired.</p><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a id="N10076" />4.2.1. Local node change</h4></div></div></div><p>This section describes what happens when a local node or
+        releation changes.</p><div class="orderedlist"><ol type="1"><li><p>Nodes are committed to the database by the StorageManager.
+            When this has happened ChangeManager.commit() is called. Just as
+            the StorageManager is there to handle all changes to the database
+            when a node changes, the ChangeManager has this responsibility
+            towards MMBase (i.e. Make sure every 'client' that needs to know
+            about the change does do).</p></li><li><p>The ChangeManager creates a NodeEvent instance and
+            propagates it to the EventManager. If the changed node is a
+            specialization of Insrel, a RelationEvent is subsequently created
+            and propagated to the EventManager
+            (EventManager.propagateEVent(Event)).</p></li><li><p>The EventManager will find the brokers that can handle
+            events of this type, and the event will be propagated to the
+            broker's listeners. In case of a node or relation event, those
+            include the builder matching the type of the event, the Obsterver
+            instance for the event type. Mind you, for a node event the 'type'
+            of the event is the builder of the node, while for a relation
+            event it's type is both the relation source type as the relation
+            destination type. The ClusterManager will receive the event
+            regardless of it's type.</p></li><li><p>The builder (all builders implement the NodeEventListener
+            and the RelationEventListener) receiving the event will update
+            it's node caches.</p><p>The Observer receiving the event will iterate over all
+            queries it holds reference to and evaluate the event against it to
+            discover it the query must be flushed (for more information about
+            QueryCache#Observer see the 'QueryCache Release Strategy'
+            document).</p><p>The ClusterManager implements the AllEventListener, so it
+            will be notified for any and all event types. It will first check
+            if the event is local. If this is so, it will serialize the event,
+            and send it across the network to other nodes in the MMBase
+            cluster.</p></li></ol></div><div><img src="media/eventflow-send.jpg" /></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a id="N1008E" />4.2.2. Remote node change</h4></div></div></div><p>This section describes what happens when a node changes
+        somewhere in the cluster.<div class="orderedlist"><ol type="1"><li><p>An event has been fired somewhere in the cluster. It was
+              serialized and send across the network, and has been picked up
+              by the local ClusterManager. The event is desiralized and
+              propagated to the EventManager.</p></li><li><p>The EventManager will handle the event as in 4.2.1, item
+              3. Note that the ClusterManager will receive the event it just
+              propagated to the EventManager again. That is why the
+              ClusterManager checks if events are local before serializing
+              them and sending them into the network.</p></li></ol></div></p><div><img src="media/eventflow-receive.jpg" /></div></div></div></div></div><hr xmlns="" /><p xmlns="">
+      This is part of the <a href="http://www.mmbase.org">MMBase</a> documentation.
+    </p><p xmlns="">
+      For questions and remarks about this documentation mail to: 
+      <a href="/cdn-cgi/l/email-protection#b0d4dfd3c5ddd5dec4d1c4d9dfdef0ddddd2d1c3d59edfc2d7"><span class="__cf_email__" data-cfemail="b5d1dad6c0d8d0dbc1d4c1dcdadbf5d8d8d7d4c6d09bdac7d2">[email&#160;protected]</span></a></p><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script></body></html>

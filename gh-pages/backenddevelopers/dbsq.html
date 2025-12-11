@@ -1,0 +1,730 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title>SearchQuery introduction</title><link href="../style/documentation.css" rel="stylesheet" type="text/css" /><meta content="DocBook XSL Stylesheets V1.72.0" name="generator" /><link xmlns="" type="image/x-icon" href="../style/favicon.ico" rel="icon" /><link xmlns="" type="image/x-icon" href="../style/favicon.ico" rel="shortcut icon" /><meta xmlns="" content="text/html; charset=utf-8" http-equiv="content-type" /></head><body><div xmlns="" class="navigation"><img alt="mmbase logo" src="../style/logo.png" /><h2>SearchQuery introduction</h2><p><a href="dbsq.html#N10021">Background</a></p><p><a href="dbsq.html#N1004C">Resources</a></p><p><a href="dbsq.html#N10056">Package descriptions</a></p><p><a href="dbsq.html#N10073">Query objects</a></p><p><a href="dbsq.html#N10108">Query handlers</a></p><p><a href="dbsq.html#N101E2">Sample program listings</a></p><hr /><p><a href="http://www.mmbase.org">MMBase</a></p><p><a href="../index.html">home</a></p></div><div class="article" lang="en"><div class="titlepage"><div><div><h1 class="title"><a id="N10001" />SearchQuery introduction</h1></div><div><div class="authorgroup"><strong class="authorgroup">Author: </strong><span class="author"><span class="firstname">Rob</span> <span class="surname">van Maris</span></span><br /><strong class="authorgroup">Date: </strong>2002-12-05</div></div><div><div class="legalnotice"><a id="N10018" /><p>This software is OSI Certified Open Source Software. OSI Certified
+      is a certification mark of the Open Source Initiative.</p><p>The license (Mozilla version 1.0) can be read at the MMBase site.
+      See <a xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.mmbase.org/license" target="_top">http://www.mmbase.org/license</a></p></div></div></div><hr /></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="section"><a href="dbsq.html#N10021">1. Background</a></span></dt><dt><span class="section"><a href="dbsq.html#N1004C">2. Resources</a></span></dt><dt><span class="section"><a href="dbsq.html#N10056">3. Package descriptions</a></span></dt><dd><dl><dt><span class="section"><a href="dbsq.html#N10059">3.1. <code class="classname">org.mmbase.storage.search</code></a></span></dt><dt><span class="section"><a href="dbsq.html#N10065">3.2. <code class="classname">org.mmbase.storage.search.implementation</code></a></span></dt><dt><span class="section"><a href="dbsq.html#N1006B">3.3. <code class="classname">org.mmbase.storage.search.implementation.database</code></a></span></dt></dl></dd><dt><span class="section"><a href="dbsq.html#N10073">4. Query objects</a></span></dt><dd><dl><dt><span class="section"><a href="dbsq.html#N10076">4.1. Interfaces</a></span></dt><dt><span class="section"><a href="dbsq.html#N100BB">4.2. Implementation</a></span></dt><dt><span class="section"><a href="dbsq.html#N100C2">4.3. Code samples</a></span></dt></dl></dd><dt><span class="section"><a href="dbsq.html#N10108">5. Query handlers</a></span></dt><dd><dl><dt><span class="section"><a href="dbsq.html#N1010C">5.1. SearchQueryHandler interface</a></span></dt><dt><span class="section"><a href="dbsq.html#N10136">5.2. Retrieving search results</a></span></dt><dt><span class="section"><a href="dbsq.html#N10176">5.3. BasicQueryHandler</a></span></dt><dt><span class="section"><a href="dbsq.html#N1018E">5.4. Code samples</a></span></dt></dl></dd><dt><span class="section"><a href="dbsq.html#N101E2">6. Sample program listings</a></span></dt><dd><dl><dt><span class="section"><a href="dbsq.html#N101E5">6.1. <code class="classname">QuerySampleCode</code></a></span></dt><dt><span class="section"><a href="dbsq.html#N101EC">6.2. <code class="classname">QueryHandlerSampleCode</code></a></span></dt></dl></dd></dl></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="N10021" />1. Background</h2></div></div></div><p>The database search queries project was started to address the
+    following needs:</p><div class="itemizedlist"><ul type="disc"><li><p>deliver search queries inside MMBase in a uniform and
+        device-independent manner</p></li><li><p>provide mechanisms to process these queries in a device-specific
+        way that ensures optimal performance</p></li></ul></div><p>The plan of action for the project defined these three stages, that
+    have now been completed:</p><div class="orderedlist"><ol type="1"><li><p>Introduction a <code class="classname">SearchQuery</code> object,
+        capable of representing all kind of search queries supported by
+        standard relational databases.</p></li><li><p>Introduction of an extension mechanism to enable use of
+        additional, vendor specific, database functionality.</p></li><li><p>Integration of the <code class="classname">SearchQuery</code> into
+        existing MMBase code.</p></li></ol></div><p>This article introduces design and implementation of the resulting
+    <code class="classname">SearchQuery</code> API's.</p><p>If you're looking for the shortest path to code-level
+    understanding, try skipping the next sections for the moment, and jump
+    straight to the "<a href="dbsq.html#query_codesamples">code samples</a>"
+    sections right away. </p><p>Either way, once you understand the relevant code samples, the
+    javadoc documentation provides the API details you'll need to go from
+    there.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="N1004C" />2. Resources</h2></div></div></div><div class="itemizedlist"><ul type="disc"><li><p>Sourcecode of JUnit tests is available from \dbsq\test\src in
+        CVS module speeltuin.</p></li><li><p>Sourcecode of the code samples is available from \dbsq\src in
+        CVS module speeltuin.</p></li></ul></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="N10056" />3. Package descriptions</h2></div></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="N10059" />3.1. <code class="classname">org.mmbase.storage.search</code></h3></div></div></div><p>Interfaces for query objects, query handlers and dependent
+      objects. </p><p>Query objects represent search requests, query handlers process
+      requests represented by query objects. (More on this further on.)</p><p>The query interfaces specify the interfaces exposed by query
+      objects, in order for query handlers to retrieve the query data. This
+      will enable query handlers to be implemented independent from query
+      implementations.</p><p>Note that these interfaces do not specify how query objects are
+      constructed, see next section.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="N10065" />3.2. <code class="classname">org.mmbase.storage.search.implementation</code></h3></div></div></div><p>Classes implementing the query interfaces described in the
+      previous section. These also provide methods to construct queries.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="N1006B" />3.3. <code class="classname">org.mmbase.storage.search.implementation.database</code></h3></div></div></div><p>Implementation classes that rely on a database providing the
+      storage. This includes the basic query handler implementation.</p><p>The basic query handler delegates generation of SQL statements to
+      a dedicated handler, the SQL handler.</p></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="N10073" />4. Query objects</h2></div></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="N10076" />4.1. Interfaces</h3></div></div></div><p>Search queries are defined by these interfaces:</p><div class="itemizedlist"><ul type="disc"><li><p><code class="classname">SearchQuery</code>: the query</p></li><li><p><code class="classname">Step</code>: a query step, generalizes the
+          notion of a table</p></li><li><p><code class="classname">StepField</code>: a step field, generalizes
+          the notion of a field from a table</p></li><li><p><code class="classname">RelationStep</code>: a <code class="classname">Step</code>
+          defining a relation between two steps.</p></li><li><p><code class="classname">SortOrder</code>: a sorting order</p></li><li><p><code class="classname">Constraint</code>: a constraint</p></li><li><p><code class="classname">CompositeConstraint</code>: a number of
+          constraints, combined using AND or OR.</p></li><li><p><code class="classname">Constraint</code> subinterfaces for specific
+          constraint types.</p></li></ul></div><p>In all cases, the interface provides:</p><div class="orderedlist"><ol type="1"><li><p>Accessor methods, to retrieve the query data.</p></li><li><p><code class="methodname">equals()</code> and
+          <code class="methodname">hashCode()</code> methods, enabling queries and
+          parts of queries to be compared to each other. This is anticipates
+          future developments, like caching of queries.</p></li><li><p>A <code class="methodname">toString()</code> method, provided for
+          debugging purposes.</p></li></ol></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="N100BB" />4.2. Implementation</h3></div></div></div><p>The implementation classes provide methods to construct query
+      objects. See next section for examples.</p><p>It may seem that the interfaces have been provided in anticipation
+      of a number of different implementations. This is in fact not the case,
+      as I can't think of a reason why one (basic) implementation should
+      not suffice. On the other hand, a number of different query handlers
+      seems likely. The interfaces are provided as a stable and clearcut
+      specification of the interaction between query and query handler,
+      allowing future enhancements to the query implementation to evolve,
+      without breaking the query handler implementation.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="N100C2" />4.3. Code samples</h3></div></div></div><p>These code samples concentrate on how query objects represent
+      search query requests analogous to SQL92 SELECT statements. To see how
+      to retrieve actual nodes using query objects, refer to the <a href="dbsq.html#query_handlers_codesamples">code samples</a> in the "<a href="dbsq.html#query_handlers">Query handlers</a>" sections.</p><p>In these examples, the represented queries are shown in SQL92
+      form, ignoring vendor specific issues like reserved words and deviating
+      syntax. (Actual query handlers will take these into account as well.)</p><p>An example of creating a simple query with one step and one field:</p><pre class="programlisting">        MMBase mmbase = MMBase.getMMBase();
+        MMObjectBuilder images = mmbase.getBuilder("images");
+        InsRel insrel = mmbase.getInsRel();
+        MMObjectBuilder pools = mmbase.getBuilder("pools");
+
+        // Create query.
+        BasicSearchQuery query = new BasicSearchQuery();
+        BasicStep step1 = query.addStep(images);
+        FieldDefs imagesTitle = images.getField("title");
+        BasicStepField field1 = query.addField(step1, imagesTitle);
+</pre><pre class="screen"> Result:
+        SELECT title FROM &lt;basename&gt;_images images
+</pre><p>Add a related step.</p><pre class="programlisting">        InsRel insrel = mmbase.getInsRel();
+        MMObjectBuilder pools = mmbase.getBuilder("pools");
+        BasicRelationStep step2 = query.addRelationStep(insrel, pools);
+        step2.setDirectionality(RelationStep.DIRECTIONS_DESTINATION);
+</pre><pre class="screen"> Result:
+        SELECT images.title
+        FROM &lt;basename&gt;_images images,
+            &lt;basename&gt;_insrel insrel,
+            &lt;basename&gt;_pools pools
+        WHERE (images.number=insrel.snumber
+        AND pools.number=insrel.dnumber)
+</pre><p>Add another field.</p><pre class="programlisting">        BasicStep step3 = (BasicStep) step2.getNext();
+        FieldDefs poolsName = pools.getField("name");
+        BasicStepField field2 = query.addField(step3, poolsName);
+</pre><pre class="screen"> Result:
+        SELECT images.title,
+            pools.name
+        FROM &lt;basename&gt;_images images,
+            &lt;basename&gt;_insrel insrel,
+            &lt;basename&gt;_pools pools
+        WHERE (images.number=insrel.snumber
+        AND pools.number=insrel.dnumber)
+</pre><p>Add nodenumber constraint.</p><pre class="programlisting">        step3.addNode(100);
+</pre><pre class="screen"> Result:
+        SELECT images.title,
+            pools.name
+        FROM &lt;basename&gt;_images images,
+            &lt;basename&gt;_insrel insrel,
+            &lt;basename&gt;_pools pools
+        WHERE pools.number IN (100)
+        AND (images.number=insrel.snumber
+        AND pools.number=insrel.dnumber)</pre><p>Add field value constraint.</p><pre class="programlisting">        BasicFieldValueConstraint constraint
+            = new BasicFieldValueConstraint(field1, "Logo");
+        query.setConstraint(constraint);
+</pre><pre class="screen"> Result:
+        SELECT images.title,
+            pools.name
+        FROM &lt;basename&gt;_images images,
+            &lt;basename&gt;_insrel insrel,
+            &lt;basename&gt;_pools pools
+        WHERE pools.number IN (100)
+        AND (images.number=insrel.snumber
+        AND pools.number=insrel.dnumber)
+        AND images.title='Logo'
+</pre><p>Add sort order.</p><pre class="programlisting">        BasicSortOrder sortOrder = query.addSortOrder(field1);
+</pre><pre class="screen"> Result:
+        SELECT images.title,
+            pools.name
+        FROM &lt;basename&gt;_images images,
+            &lt;basename&gt;_insrel insrel,
+            &lt;basename&gt;_pools pools
+        WHERE pools.number IN (100)
+        AND (images.number=insrel.snumber
+        AND pools.number=insrel.dnumber)
+        AND images.title='Logo'
+        ORDER BY title ASC
+</pre><p>An example of creating an aggregating query counting a single
+      field:</p><pre class="programlisting">        query = new BasicSearchQuery(true);
+        step1 = query.addStep(images);
+        FieldDefs imagesNumber = images.getField("number");
+        BasicAggregatedField field1a = query.addAggregatedField(
+            step1, imagesNumber, AggregatedField.AGGREGATION_TYPE_COUNT);
+        field1a.setAlias("number_count");
+</pre><pre class="screen"> Result:
+        SELECT COUNT(number) AS number_count
+        FROM &lt;basename&gt;_images images
+</pre><p>Add grouping on a second field.</p><pre class="programlisting">        BasicAggregatedField field2a = query.addAggregatedField(
+            step1, imagesTitle, AggregatedField.AGGREGATION_TYPE_GROUP_BY);
+</pre><pre class="screen"> Result:
+        SELECT COUNT(number) AS number_count,
+            title
+        FROM &lt;basename&gt;_images images
+        GROUP BY title
+</pre><p>The complete <a href="dbsq.html#query_codelisting">listing</a> of
+      the sample program can be found at the end of this article.</p></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="N10108" />5. Query handlers</h2></div></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="N1010C" />5.1. SearchQueryHandler interface</h3></div></div></div><p>Now that we can create query objects, we need a way to deliver
+      these to the database layer.</p><p>For this purpose, the databaselayer should provide an object
+      implementing the <code class="classname">SearchQueryHandler</code> interface,
+      that can process queries.</p><pre class="programlisting">package org.mmbase.storage.search;
+
+public interface SearchQueryHandler {
+
+    public List getNodes(SearchQuery query, MMObjectBuilder builder)
+    throws SearchQueryException;
+</pre><p>Method <code class="methodname">getNodes()</code> executes the search,
+      and returns the result as a list of nodes of the type corresponding to
+      the specified builder. I.e. either real nodes (<code class="classname">MMObjectNode</code>
+      instances), clusternodes (<code class="classname">ClusterNode</code> instances)
+      or resultnodes (<code class="classname">ResultNode</code> instances). More on
+      this in the next section.</p><p>In addition, a method is provided to test if the underlying
+      storage supports a certain type of constraint:</p><pre class="programlisting">    public int getSupportLevel(Constraint constraint, SearchQuery query)
+    throws SearchQueryException;
+</pre><p>Four levels of support are defined:</p><pre class="programlisting">    public final static int SUPPORT_NONE = 0;
+    public final static int SUPPORT_WEAK = 1;
+    public final static int SUPPORT_NORMAL = 2;
+    public final static int SUPPORT_OPTIMAL = 3;
+</pre><p>A similar method is provided to test support for other features of
+      a search query:</p><pre class="programlisting">    public int getSupportLevel(int feature, SearchQuery query)
+    throws SearchQueryException;
+</pre><p>This method takes as argument one of these constraints:</p><pre class="programlisting">    public final static int FEATURE_MAX_NUMBER = 1;
+    public final static int FEATURE_OFFSET = 2;
+</pre></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="N10136" />5.2. Retrieving search results</h3></div></div></div><p>Depending on the second argument that is provided (builder), the
+      handler's method <code class="methodname">getNodes(query,builder)</code>
+      will return a list of nodes of one of the following types:</p><div class="itemizedlist"><ul type="disc"><li><p><code class="classname">MMObjectNode</code> - when a
+          <code class="classname">MMObjectBuilder</code> is specified, or a subclass
+          that is not a <code class="classname">VirtualBuilder</code>.</p><p>For this to work as expected, the query is required to include
+          all persistent fields of the nodetype that is retrieved.</p><p>Generally, this functionality is not meant to be accessed
+          directly, but instead through the MMObjectBuilder method
+          <code class="methodname">getNodes(query)</code>, which takes care of things
+          like nodecache and inheritance issues as well.</p></li><li><p><code class="classname">ClusterNode</code> - when a
+          <code class="classname">ClusterBuilder</code> is specified.</p><p>For this to work properly, the aliases of the steps in the
+          query should follow the conventions for tablenames in multilevel
+          queries. (TODO: elaborate)</p><p>Generally, this functionality is not meant to be accessed
+          directly, but instead through the ClusterBuilder method
+          <code class="methodname">getClusterNodes(query)</code>.</p></li><li><p><code class="classname">ResultNode</code> - when a
+          <code class="classname">ResultBuilder</code> is specified.</p><p>Resultnodes are able to represent the results of arbitrary
+          search queries without the restrictions of real or clusternodes. In
+          particular: field aliases can be used to rename the fields in the
+          result, results can be grouped/aggregated, and aggregate functions
+          like <span><strong class="command"><code class="methodname">COUNT</code></strong></span>,
+          <code class="methodname">MIN</code> and <code class="methodname">MAX</code> can be
+          used.</p><p>Generally, this functionality can be accessed directly, and is
+          meant to provide an alternative to directly executing search queries
+          on the database.</p></li></ul></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="N10176" />5.3. BasicQueryHandler</h3></div></div></div><p>A basic implementation of the <code class="classname">SearchQueryHandler</code>
+      interface is provided by <code class="classname">BasicQueryHandler,</code> that
+      can be used when the storage is provided by a SQL 92 compliant database.</p><p>A <code class="classname">BasicQueryHandler</code> instance uses an
+      <code class="classname">SqlHandler</code> object to create an SQL statement,
+      executes the resulting query and converts the queryresults back to
+      nodes.</p><p>The <code class="classname">SqlHandler</code> interface isolates the
+      functionality concerned with translating query objects to actual,
+      possibly vendor-specific, SQL statements. The actual implementation
+      class used will depend on the underlying database, and can be extended
+      with additional functionality using additional handlers. See the API
+      javadoc for more info.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="N1018E" />5.4. Code samples</h3></div></div></div><div class="example"><a id="N10192" /><p class="title"><b>Example 1. Retrieving real nodes</b></p><div class="example-contents"><p>As a demonstration of retrieving real nodes, this example lists
+        all nodes of type "pools".</p><pre class="programlisting">        MMBase mmbase = MMBase.getMMBase();
+        MMObjectBuilder pools = mmbase.getBuilder("pools");
+        MMObjectBuilder images = mmbase.getBuilder("images");
+        InsRel insrel = mmbase.getInsRel();
+
+        // EXAMPLE 1: query retrieving real nodes (of type pools).
+        NodeSearchQuery query1 = new NodeSearchQuery(pools);
+</pre><p>Note the use of <code class="classname">NodeSearchQuery</code> to
+        produce a query that retrieves real nodes.</p><p>This will creates a query equivalent to:</p><pre class="screen">        SELECT * FROM &lt;basename&gt;_pools pools
+</pre><p>This code executes the query and prints the result - real nodes
+        with these fields: number, otype, owner, name, description.</p><pre class="programlisting">        // Execute, get result as real nodes.
+        List nodes1 = pools.getNodes(query1);
+        Iterator iNodes1 = nodes1.iterator();
+        while (iNodes1.hasNext()) {
+            MMObjectNode node = (MMObjectNode) iNodes1.next();
+            System.out.println("Real node: " + node);
+        }</pre></div></div><br class="example-break" /><div class="example"><a id="N101A6" /><p class="title"><b>Example 2. Retrieving clusternodes</b></p><div class="example-contents"><p>As a demonstration of retrieving clusternodes, this example
+        lists number fields of related pools and images, following relations
+        from pools to images.</p><pre class="programlisting">        // EXAMPLE 2: query retrieving clusternodes.
+        BasicSearchQuery query2 = new BasicSearchQuery();
+        BasicStep step2a = query2.addStep(pools);
+        BasicRelationStep step2b = query2.addRelationStep(insrel, images);
+        step2b.setDirectionality(RelationStep.DIRECTIONS_DESTINATION);
+        Step step2c = step2b.getNext();
+        // Add at least the number fields of all steps.
+        query2.addField(step2a, pools.getField("number"));
+        query2.addField(step2b, insrel.getField("number"));
+        query2.addField(step2c, images.getField("number"));
+</pre><p>This creates the following query:</p><pre class="screen">        SELECT
+            pools.number,
+            insrel.number,
+            images.number
+        FROM
+            &lt;basename&gt;_pools pools,
+            &lt;basename&gt;_insrel insrel,
+            &lt;basename&gt;_images images
+        WHERE (pools.number = insrel.snumber
+        AND images.number = insrel.dnumber)
+</pre><p>This code executes the query and prints the results -
+        clusternodes with these fields: pools.number, insrel.number,
+        images.number.</p><pre class="programlisting">        // Execute, result as clusternodes.
+        ClusterBuilder clusterBuilder = mmbase.getClusterBuilder();
+        List nodes2 = clusterBuilder.getClusterNodes(query2);
+        Iterator iNodes2 = nodes2.iterator();
+        while (iNodes2.hasNext()) {
+            ClusterNode node = (ClusterNode) iNodes2.next();
+            System.out.println("Clusternode: " + node);
+        }</pre></div></div><br class="example-break" /><div class="example"><a id="N101B5" /><p class="title"><b>Example 3. Retrieving clusternodes using table aliases</b></p><div class="example-contents"><p>Alternatively we could use table aliases to use tablenames
+        appended with a digit:</p><pre class="programlisting">        // EXAMPLE 3: query retrieving clusternodes using table aliases.
+        BasicSearchQuery query3 = new BasicSearchQuery();
+        BasicStep step3a = query3.addStep(pools);
+        BasicRelationStep step3b = query3.addRelationStep(insrel, images);
+        step3b.setDirectionality(RelationStep.DIRECTIONS_DESTINATION);
+        BasicStep step3c = (BasicStep) step3b.getNext();
+        // Set table aliases.
+        step3a.setAlias("pools0");
+        step3c.setAlias("images3");
+        // Add at least the number fields of all steps.
+        query3.addField(step3a, pools.getField("number"));
+        query3.addField(step3b, insrel.getField("number"));
+        query3.addField(step3c, images.getField("number"));</pre><p>This creates the following query:<pre class="programlisting">        SELECT
+            pools0.number,
+            insrel.number,
+            images3.number
+        FROM
+            &lt;basename&gt;_pools pools0,
+            &lt;basename&gt;_insrel insrel,
+            &lt;basename&gt;_images images3
+        WHERE (pools0.number = insrel.snumber
+        AND images3.number = insrel.dnumber)
+</pre></p><p>Execution results in clusternodes with these fields:
+        pools0.number, insrel.number, images3.number.</p><pre class="programlisting">        // Execute, result as clusternodes.
+        List nodes3 = clusterBuilder.getClusterNodes(query3);
+        Iterator iNodes3 = nodes3.iterator();
+        while (iNodes3.hasNext()) {
+            ClusterNode node = (ClusterNode) iNodes3.next();
+            System.out.println("Clusternode: " + node);
+        }</pre></div></div><br class="example-break" /><div class="example"><a id="N101C4" /><p class="title"><b>Example 4. Retrieving resultnodes</b></p><div class="example-contents"><p>As a demonstration of retrieving resultnodes, this example lists
+        arbitrary fields of nodes of type "pools", using field
+        aliases.</p><pre class="programlisting">        // EXAMPLE 4: query retrieving resultnodes.
+        BasicSearchQuery query4 = new BasicSearchQuery();
+        BasicStep step4a = query4.addStep(pools);
+        // Add some fields with field aliases.
+        query4.addField(step4a, pools.getField("number")).setAlias("field1");
+        query4.addField(step4a, pools.getField("name")).setAlias("field2");
+        query4.addField(step4a, pools.getField("description")).setAlias("field3");
+</pre><p>This creates the following query:</p><pre class="screen">        SELECT
+            number AS field1,
+            name AS field2,
+            description AS field3
+        FROM
+            &lt;basename&gt;_pools pools
+</pre><p>This code executes the query and prints the results -
+        resultnodes with these fields: field1, field2, field3</p><pre class="programlisting">        // Execute, result as resultnodes.
+        List nodes4 = handler.getNodes(query4, new ResultBuilder(mmbase, query4));
+        Iterator iNodes4 = nodes4.iterator();
+        while (iNodes4.hasNext()) {
+            ResultNode node = (ResultNode) iNodes4.next();
+            System.out.println("Resultnode: " + node);
+        }</pre></div></div><br class="example-break" /><div class="example"><a id="N101D3" /><p class="title"><b>Example 5. Retrieving aggregated resultnodes</b></p><div class="example-contents"><p>Finally, to demonstrate aggregating queries, this example lists
+        the results of applying aggregating functions COUNT, MIN and MAX on
+        the "number" field of all nodes of type "pools".</p><pre class="programlisting">        // EXAMPLE 5: query retrieving aggregated resultnodes.
+        BasicSearchQuery query5 = new BasicSearchQuery(true);
+        BasicStep step5a = query5.addStep(pools);
+        // Add some aggregated fields with field aliases.
+        query5.addAggregatedField(step5a, pools.getField("number"),
+            AggregatedField.AGGREGATION_TYPE_COUNT).setAlias("count");
+        query5.addAggregatedField(step5a, pools.getField("number"),
+            AggregatedField.AGGREGATION_TYPE_MIN).setAlias("min_number");
+        query5.addAggregatedField(step5a, pools.getField("number"),
+            AggregatedField.AGGREGATION_TYPE_MAX).setAlias("max_number");</pre><p>This creates the following query:</p><pre class="screen">        SELECT
+            COUNT(number) AS pool_count,
+            MIN(number) AS min_number,
+            MAX(number) AS max_number
+        FROM
+            &lt;basename&gt;_pools pools
+</pre><p>This code executes the query and prints the result - a
+        resultnode with these fields: pool_count, min_number, max_number</p><pre class="programlisting">        // Execute, result as resultnodes.
+        List nodes5 = handler.getNodes(query5, new ResultBuilder(mmbase, query5));
+        Iterator iNodes5 = nodes5.iterator();
+        while (iNodes5.hasNext()) {
+            ResultNode node = (ResultNode) iNodes5.next();
+            System.out.println("Resultnode: " + node);
+        }</pre></div></div><br class="example-break" /></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="N101E2" />6. Sample program listings</h2></div></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="N101E5" />6.1. <code class="classname">QuerySampleCode</code></h3></div></div></div><pre class="programlisting">/*
+
+This software is OSI Certified Open Source Software.
+OSI Certified is a certification mark of the Open Source Initiative.
+
+The license (Mozilla version 1.0) can be read at the MMBase site.
+See http://www.MMBase.org/license
+
+*/
+package org.mmbase.storage.search.sample;
+
+import org.mmbase.module.core.*;
+import org.mmbase.module.corebuilders.*;
+import org.mmbase.storage.search.*;
+import org.mmbase.storage.search.implementation.*;
+import org.mmbase.storage.search.implementation.database.*;
+
+/**
+ * Sample code demonstrating basic usage of the &lt;code&gt;SearchQuery&lt;/code&gt;
+ * interfaces.
+ * &lt;p&gt;
+ * Requires the following builders to be active: &lt;code&gt;builders&lt;/code&gt; and
+ * &lt;code&gt;pools&lt;/code&gt;.
+ *
+ * @author  Rob van Maris
+ * @version $Revision: 1.11 $
+ * @since MMBase-1.7
+ */
+public class QuerySampleCode {
+
+    /**
+     * Demo application, writes resulting SQL strings to System.out.
+     * &lt;br&gt;
+     * Requires one commandline argument: the path to the MMBase config directory.
+     * @param args Commandline arguments.
+     */
+    public static void main(String[] args) throws Exception {
+        if (args.length &lt; 1) {
+            System.out.println(
+            "Requires one commandline argument: the path to the MMBase config directory.");
+            System.exit(1);
+        }
+        MMBaseContext.init(args[0], true);
+
+        // Sql handler that generates SQL strings.
+        SqlHandler sqlHandler = new BasicSqlHandler(new java.util.HashMap());
+
+        MMBase mmbase = MMBase.getMMBase();
+        MMObjectBuilder images = mmbase.getBuilder("images");
+
+        // Create query.
+        BasicSearchQuery query = new BasicSearchQuery();
+        BasicStep step1 = query.addStep(images);
+        FieldDefs imagesTitle = images.getField("title");
+        BasicStepField field1 = query.addField(step1, imagesTitle);
+
+/*
+ Result:
+        SELECT title FROM &lt;basename&gt;_images images
+ */
+        System.out.println("Result:\n" + sqlHandler.toSql(query, sqlHandler));
+
+        // Add a related step.
+        InsRel insrel = mmbase.getInsRel();
+        MMObjectBuilder pools = mmbase.getBuilder("pools");
+        BasicRelationStep step2 = query.addRelationStep(insrel, pools);
+        step2.setDirectionality(RelationStep.DIRECTIONS_DESTINATION);
+
+/*
+ Result:
+        SELECT images.title
+        FROM &lt;basename&gt;_images images,
+            &lt;basename&gt;_insrel insrel,
+            &lt;basename&gt;_pools pools
+        WHERE (images.number=insrel.snumber
+        AND pools.number=insrel.dnumber)
+ */
+        System.out.println("Result:\n" + sqlHandler.toSql(query, sqlHandler));
+
+        // Add another field.
+        BasicStep step3 = (BasicStep) step2.getNext();
+        FieldDefs poolsName = pools.getField("name");
+        BasicStepField field2 = query.addField(step3, poolsName);
+
+/*
+ Result:
+        SELECT images.title,
+            pools.name
+        FROM &lt;basename&gt;_images images,
+            &lt;basename&gt;_insrel insrel,
+            &lt;basename&gt;_pools pools
+        WHERE (images.number=insrel.snumber
+        AND pools.number=insrel.dnumber)
+ */
+        System.out.println("Result:\n" + sqlHandler.toSql(query, sqlHandler));
+
+        // Add nodenumber constraint.
+        step3.addNode(100);
+
+/*
+ Result:
+        SELECT images.title,
+            pools.name
+        FROM &lt;basename&gt;_images images,
+            &lt;basename&gt;_insrel insrel,
+            &lt;basename&gt;_pools pools
+        WHERE pools.number IN (100)
+        AND (images.number=insrel.snumber
+        AND pools.number=insrel.dnumber)
+ */
+        System.out.println("Result:\n" + sqlHandler.toSql(query, sqlHandler));
+
+        // Add field value constraint.
+        BasicFieldValueConstraint constraint
+            = new BasicFieldValueConstraint(field1, "Logo");
+        query.setConstraint(constraint);
+
+/*
+ Result:
+        SELECT images.title,
+            pools.name
+        FROM &lt;basename&gt;_images images,
+            &lt;basename&gt;_insrel insrel,
+            &lt;basename&gt;_pools pools
+        WHERE pools.number IN (100)
+        AND (images.number=insrel.snumber
+        AND pools.number=insrel.dnumber)
+        AND images.title='Logo'
+ */
+        System.out.println("Result:\n" + sqlHandler.toSql(query, sqlHandler));
+
+        // Add sort order.
+        BasicSortOrder sortOrder = query.addSortOrder(field1);
+
+/*
+ Result:
+        SELECT images.title,
+            pools.name
+        FROM &lt;basename&gt;_images images,
+            &lt;basename&gt;_insrel insrel,
+            &lt;basename&gt;_pools pools
+        WHERE pools.number IN (100)
+        AND (images.number=insrel.snumber
+        AND pools.number=insrel.dnumber)
+        AND images.title='Logo'
+        ORDER BY title ASC
+ */
+        System.out.println("Result:\n" + sqlHandler.toSql(query, sqlHandler));
+
+        // An example of creating an aggregating query counting a single field:
+        query = new BasicSearchQuery(true);
+        step1 = query.addStep(images);
+        FieldDefs imagesNumber = images.getField("number");
+        BasicAggregatedField field1a = query.addAggregatedField(
+            step1, imagesNumber, AggregatedField.AGGREGATION_TYPE_COUNT);
+        field1a.setAlias("number_count");
+
+/*
+ Result:
+        SELECT COUNT(number) AS number_count
+        FROM &lt;basename&gt;_images images
+ */
+        System.out.println("Result:\n" + sqlHandler.toSql(query, sqlHandler));
+
+        // Add grouping on a second field.
+        BasicAggregatedField field2a = query.addAggregatedField(
+            step1, imagesTitle, AggregatedField.AGGREGATION_TYPE_GROUP_BY);
+
+/*
+ Result:
+        SELECT COUNT(number) AS number_count,
+            title
+        FROM &lt;basename&gt;_images images
+        GROUP BY title
+ */
+        System.out.println("Result:\n" + sqlHandler.toSql(query, sqlHandler));
+
+        System.exit(0);
+    }
+
+}
+</pre></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="N101EC" />6.2. <code class="classname">QueryHandlerSampleCode</code></h3></div></div></div><pre class="programlisting">package org.mmbase.storage.search.sample;
+
+import java.util.*;
+import org.mmbase.module.core.*;
+import org.mmbase.module.corebuilders.*;
+import org.mmbase.storage.search.*;
+import org.mmbase.storage.search.implementation.*;
+import org.mmbase.storage.search.implementation.database.*;
+
+/**
+ * Sample code demonstrating basic usage of the
+ * {@link org.mmbase.storage.search.SearchQueryHandler SearchQueryHandler}
+ * interface.
+ * &lt;p&gt;
+ * Requires the following builders to be active: &lt;code&gt;builders&lt;/code&gt; and
+ * &lt;code&gt;pools&lt;/code&gt;.
+ *
+ * @author  Rob van Maris
+ * @version $Revision: 1.11 $
+ * @since MMBase-1.7
+ */
+public class QueryHandlerSampleCode {
+
+    /**
+     * Demo application.
+     * &lt;br&gt;
+     * Requires one commandline argument: the path to the MMBase config directory.
+     * @param args Commandline arguments.
+     */
+    public static void main(String args[]) throws Exception {
+        if (args.length &lt; 1) {
+            System.out.println(
+            "Requires one commandline argument: the path to the MMBase config directory.");
+            System.exit(1);
+        }
+        MMBaseContext.init(args[0], true);
+        MMBase mmbase = MMBase.getMMBase();
+
+        // Sql handler that generates SQL strings.
+        SqlHandler sqlHandler = new BasicSqlHandler(new java.util.HashMap());
+
+        /* Several ways to get a queryhandler instance:
+         1) Create a basic queryhandler, that supports (just) the
+            ANSI SQL92 standard:
+        SearchQueryHandler handler = new BasicQueryHandler(sqlHandler);
+         2) Get the database support class, that is configured for the
+            specific database used:
+        SearchQueryHandler handler = mmbase.getDatabase();
+         */
+
+        // Queryhandler provided by databaselayer:
+        SearchQueryHandler handler = mmbase.getDatabase();
+
+        MMObjectBuilder pools = mmbase.getBuilder("pools");
+        MMObjectBuilder images = mmbase.getBuilder("images");
+        InsRel insrel = mmbase.getInsRel();
+
+        // EXAMPLE 1: query retrieving real nodes (of type pools).
+        NodeSearchQuery query1 = new NodeSearchQuery(pools);
+
+/*
+ Query equivalent to:
+        SELECT * FROM &lt;basename&gt;_pools pools
+ Returns:
+    real nodes with these fields: number, otype, owner, name, description
+ */
+        System.out.println("Query: " + sqlHandler.toSql(query1, sqlHandler));
+
+        // Execute, get result as real nodes.
+        List nodes1 = handler.getNodes(query1, pools);
+        Iterator iNodes1 = nodes1.iterator();
+        while (iNodes1.hasNext()) {
+            MMObjectNode node = (MMObjectNode) iNodes1.next();
+            System.out.println("Real node: " + node);
+        }
+
+        // EXAMPLE 2: query retrieving clusternodes.
+        BasicSearchQuery query2 = new BasicSearchQuery();
+        BasicStep step2a = query2.addStep(pools);
+        BasicRelationStep step2b = query2.addRelationStep(insrel, images);
+        step2b.setDirectionality(RelationStep.DIRECTIONS_DESTINATION);
+        Step step2c = step2b.getNext();
+        // Add at least the number fields of all steps.
+        query2.addField(step2a, pools.getField("number"));
+        query2.addField(step2b, insrel.getField("number"));
+        query2.addField(step2c, images.getField("number"));
+
+/*
+ Query:
+        SELECT
+            pools.number,
+            insrel.number,
+            images.number
+        FROM
+            &lt;basename&gt;_pools pools,
+            &lt;basename&gt;_insrel insrel,
+            &lt;basename&gt;_images images
+        WHERE (pools.number = insrel.snumber
+        AND images.number = insrel.dnumber)
+ */
+        System.out.println("Query: " + sqlHandler.toSql(query2, sqlHandler));
+
+        // Execute, result as clusternodes.
+        List nodes2 = handler.getNodes(query2, new ClusterBuilder(mmbase));
+        Iterator iNodes2 = nodes2.iterator();
+        while (iNodes2.hasNext()) {
+            ClusterNode node = (ClusterNode) iNodes2.next();
+            System.out.println("Clusternode: " + node);
+        }
+
+/*
+ Returns:
+        clusternodes with these fields: pools.number, insrel.number, images.number
+ */
+
+        // EXAMPLE 3: query retrieving clusternodes using table aliases.
+        BasicSearchQuery query3 = new BasicSearchQuery();
+        BasicStep step3a = query3.addStep(pools);
+        BasicRelationStep step3b = query3.addRelationStep(insrel, images);
+        step3b.setDirectionality(RelationStep.DIRECTIONS_DESTINATION);
+        BasicStep step3c = (BasicStep) step3b.getNext();
+        // Set table aliases.
+        step3a.setAlias("pools0");
+        step3c.setAlias("images3");
+        // Add at least the number fields of all steps.
+        query3.addField(step3a, pools.getField("number"));
+        query3.addField(step3b, insrel.getField("number"));
+        query3.addField(step3c, images.getField("number"));
+
+/*
+ Query:
+        SELECT
+            pools0.number,
+            insrel.number,
+            images3.number
+        FROM
+            &lt;basename&gt;_pools pools0,
+            &lt;basename&gt;_insrel insrel,
+            &lt;basename&gt;_images images3
+        WHERE (pools0.number = insrel.snumber
+        AND images3.number = insrel.dnumber)
+ */
+        System.out.println("Query: " + sqlHandler.toSql(query3, sqlHandler));
+
+        // Execute, result as clusternodes.
+        List nodes3 = handler.getNodes(query3, new ClusterBuilder(mmbase));
+        Iterator iNodes3 = nodes3.iterator();
+        while (iNodes3.hasNext()) {
+            ClusterNode node = (ClusterNode) iNodes3.next();
+            System.out.println("Clusternode: " + node);
+        }
+
+/*
+ Returns:
+        clusternodes with these fields: pools0.number, insrel.number, images3.number
+ */
+
+        // EXAMPLE 4: query retrieving resultnodes.
+        BasicSearchQuery query4 = new BasicSearchQuery();
+        BasicStep step4a = query4.addStep(pools);
+        // Add some fields with field aliases.
+        query4.addField(step4a, pools.getField("number")).setAlias("field1");
+        query4.addField(step4a, pools.getField("name")).setAlias("field2");
+        query4.addField(step4a, pools.getField("description")).setAlias("field3");
+
+/*
+ Query:
+        SELECT
+            number AS field1,
+            name AS field2,
+            description AS field3
+        FROM
+            &lt;basename&gt;_pools pools
+ */
+        System.out.println("Query: " + sqlHandler.toSql(query4, sqlHandler));
+
+        // Execute, result as resultnodes.
+        List nodes4 = handler.getNodes(query4, new ResultBuilder(mmbase, query4));
+        Iterator iNodes4 = nodes4.iterator();
+        while (iNodes4.hasNext()) {
+            ResultNode node = (ResultNode) iNodes4.next();
+            System.out.println("Resultnode: " + node);
+        }
+
+/*
+ Returns:
+        resultnodes with these fields: field1, field2, field3
+ */
+
+        // EXAMPLE 5: query retrieving aggregated resultnodes.
+        BasicSearchQuery query5 = new BasicSearchQuery(true);
+        BasicStep step5a = query5.addStep(pools);
+        // Add some aggregated fields with field aliases.
+        query5.addAggregatedField(step5a, pools.getField("number"),
+            AggregatedField.AGGREGATION_TYPE_COUNT).setAlias("pool_count");
+        query5.addAggregatedField(step5a, pools.getField("number"),
+            AggregatedField.AGGREGATION_TYPE_MIN).setAlias("min_number");
+        query5.addAggregatedField(step5a, pools.getField("number"),
+            AggregatedField.AGGREGATION_TYPE_MAX).setAlias("max_number");
+
+/*
+ Query:
+        SELECT
+            COUNT(number) AS pool_count,
+            MIN(number) AS min_number,
+            MAX(number) AS max_number
+        FROM
+            &lt;basename&gt;_pools pools
+ */
+        System.out.println("Query: " + sqlHandler.toSql(query5, sqlHandler));
+
+        // Execute, result as resultnodes.
+        List nodes5 = handler.getNodes(query5, new ResultBuilder(mmbase, query5));
+        Iterator iNodes5 = nodes5.iterator();
+        while (iNodes5.hasNext()) {
+            ResultNode node = (ResultNode) iNodes5.next();
+            System.out.println("Resultnode: " + node);
+        }
+
+/*
+ Returns:
+        a resultnode with these fields: pool_count, min_number, max_number
+ */
+
+        System.exit(0);
+    }
+}
+</pre></div></div></div><hr xmlns="" /><p xmlns="">
+      This is part of the <a href="http://www.mmbase.org">MMBase</a> documentation.
+    </p><p xmlns="">
+      For questions and remarks about this documentation mail to: 
+      <a href="/cdn-cgi/l/email-protection#97f3f8f4e2faf2f9e3f6e3fef8f9d7fafaf5f6e4f2b9f8e5f0"><span class="__cf_email__" data-cfemail="6b0f04081e060e051f0a1f0204052b0606090a180e4504190c">[email&#160;protected]</span></a></p><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script></body></html>

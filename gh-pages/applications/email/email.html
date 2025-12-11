@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title>Email application</title><link href="../../style/documentation.css" rel="stylesheet" type="text/css" /><meta content="DocBook XSL Stylesheets V1.72.0" name="generator" /><link xmlns="" type="image/x-icon" href="../../style/favicon.ico" rel="icon" /><link xmlns="" type="image/x-icon" href="../../style/favicon.ico" rel="shortcut icon" /><meta xmlns="" content="text/html; charset=utf-8" http-equiv="content-type" /></head><body><div xmlns="" class="navigation"><img alt="mmbase logo" src="../../style/logo.png" /><h2>Email application</h2><p><a href="email.html#N10028">Introduction</a></p><p><a href="email.html#N1002D">Basic Concepts</a></p><p><a href="email.html#N10032">Sending our first email (oneshot)</a></p><p><a href="email.html#N1003C">Finding out what happened to the email</a></p><p><a href="email.html#N10046">Sending mail to users and groups</a></p><p><a href="email.html#N10050">OneShotKeep and startmail</a></p><p><a href="email.html#N1005F">Emailing dynamic content</a></p><p><a href="email.html#receiving">Receiving email</a></p><hr /><p><a href="http://www.mmbase.org">MMBase</a></p><p><a href="../../index.html">home</a></p></div><div class="article" lang="en"><div class="titlepage"><div><div><h1 class="title"><a id="N10001" />Email application</h1></div><div><div class="authorgroup"><strong class="authorgroup">Authors: </strong><span class="author"><span class="firstname">Daniel</span> <span class="surname">Ockeloen</span>, </span><span class="author"><span class="firstname">Michiel</span> <span class="surname">Meeuwissen</span></span><br /><strong class="authorgroup">Date: </strong>2007-10-10</div></div><div><p class="releaseinfo">A download of this application is available for MMBase versions since 1.6.x.</p></div><div><div class="legalnotice"><a id="N1001B" /><p>This software is OSI Certified Open Source Software. OSI Certified is a certification mark of the Open Source Initiative.</p><p>The license (Mozilla version 1.0) can be read at the MMBase site. See <a xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.mmbase.org/license" target="_top">http://www.mmbase.org/license</a>
+      </p></div></div></div><hr /></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="section"><a href="email.html#N10028">1. Introduction</a></span></dt><dt><span class="section"><a href="email.html#N1002D">2. Basic Concepts</a></span></dt><dt><span class="section"><a href="email.html#N10032">3. Sending our first email (oneshot)</a></span></dt><dt><span class="section"><a href="email.html#N1003C">4. Finding out what happened to the email</a></span></dt><dt><span class="section"><a href="email.html#N10046">5. Sending mail to users and groups</a></span></dt><dt><span class="section"><a href="email.html#N10050">6. OneShotKeep and startmail</a></span></dt><dt><span class="section"><a href="email.html#N1005F">7. Emailing dynamic content</a></span></dt><dt><span class="section"><a href="email.html#receiving">8. Receiving email</a></span></dt><dd><dl><dt><span class="section"><a href="email.html#smtp">8.1. Acting as an SMTP-server</a></span></dt><dt><span class="section"><a href="email.html#smtp">8.2. Acting as an POP-client</a></span></dt><dt><span class="section"><a href="email.html#mailhandler">8.3. Dealing with received mail</a></span></dt><dd><dl><dt><span class="section"><a href="email.html#forwardmailhandler">8.3.1. Forwarder</a></span></dt><dt><span class="section"><a href="email.html#verifymailhandler">8.3.2. VerifyEmailMailHandler</a></span></dt><dt><span class="section"><a href="email.html#cloudmailhandler">8.3.3. CloudMailHandler</a></span></dt></dl></dd></dl></dd></dl></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="N10028" />1. Introduction</h2></div></div></div><p>
+      As many other cms systems, mmbase allows you to "publish" to email, but unlike other
+      systems it provides a interactive email system that allows you to create/send/use email in a
+      flexible way. Within modern websites you have several kinds of email needs ranging from sending
+      a new user a email with his account and password information to full dynamic update mails to a
+      group of users who share a common interest. This manual will give you the basic building blocks
+      and examples to allow you to build and change your mmbase application to your email needs. Its
+      based on the new email appication as found in 1.7.x and up but also works on older release (see
+      installing for 1.6.x).
+    </p></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="N1002D" />2. Basic Concepts</h2></div></div></div><p>
+      Email within mmbase is not created as a separate extension but gains its power by using several of
+      the core mmbase concepts : objects/relations and separation between content and layout. In practice
+      this means email is and uses objects and relations just like all the other content stored in mmbase
+      allow very for very powerful scripted email systems using all the already accepted tools to create
+    their layout for most that means using the taglib system provided with mmbase.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="N10032" />3. Sending our first email (oneshot)</h2></div></div></div><p>Sending one email from mmbase is as simple as creating a object !, This works because the email objects are "smart" objects that can react when you create/talk to them. Here is a a taglib example :</p><pre class="programlisting">
+      
+(from example1.jsp)
+&lt;!--  create the email node --&gt;
+&lt;mm:createnode id="mail1" type="email"&gt;
+  &lt;mm:setfield name="from"&gt;Daniel &lt;<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="aacecbc4c3cfc6eac7c7c8cbd9cf84c5d8cd">[email&#160;protected]</a>&gt;&lt;/mm:setfield&gt;
+  &lt;mm:setfield name="to"&gt;<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="1d797c737478715d70707f7c6e7833726f7a">[email&#160;protected]</a>&lt;/mm:setfield&gt;
+  &lt;mm:setfield name="cc"&gt;<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="b1dcd8d2d9d8d4ddf1dcdcd3d0c2d49fdec3d6">[email&#160;protected]</a>,<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="3b5f54584e565e554f5a4f5254557b5656595a485e1554495c">[email&#160;protected]</a>&lt;/mm:setfield&gt;
+  &lt;mm:setfield name="subject"&gt;my first mmbase email !!&lt;/mm:setfield&gt;
+  &lt;mm:setfield name="body"&gt;Just testing email&lt;/mm:setfield&gt;
+  &lt;mm:function name="mail" /&gt;&lt;!-- mail the email node --&gt;
+&lt;/mm:createnode&gt; 
+    </pre><p>
+      Here the Node is created and filled the with the fields we
+      need, most of the normal headers can be set (to, from, reply-to, subject, cc, bcc, body),
+      and even before it is commited, it is send with the 'mail'
+      function on it. The mail function has one parameter 'type', which defaults to 'oneshot' (so it is
+      not supplied here). The oneshot type means the email will be deleted once its mailed, for reasons
+      you will find out in following examples its not deleted right away but only after the email expire
+      time passed.
+    </p></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="N1003C" />4. Finding out what happened to the email</h2></div></div></div><p>
+      The node is only tagged to be deleted if you use oneshot, you can still visit it in one of the
+      editors or ask it questions like the example below that shows if the mail worked and at what time.
+    </p><pre class="programlisting">
+			
+(from example2.jsp)
+&lt;!--  create the email node --&gt;
+&lt;mm:createnode id="mail1" type="email"&gt;
+  &lt;mm:setfield name="from"&gt;<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="e98d8887808c85a984848b889a8cc7869b8e">[email&#160;protected]</a>&lt;/mm:setfield&gt;
+  &lt;mm:setfield name="to"&gt;<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="e78386898e828ba78a8a85869482c9889580">[email&#160;protected]</a>&lt;/mm:setfield&gt;
+  &lt;mm:setfield name="subject"&gt;my first mmbase email !!&lt;/mm:setfield&gt;
+  &lt;mm:setfield name="body"&gt;Just testing email&lt;/mm:setfield&gt;
+&lt;/mm:createnode&gt;
+
+&lt;!-- mail the email node --&gt;
+&lt;mm:node referid="mail1"&gt;
+  &lt;mm:functioncontainer&gt;
+    &lt;mm:param name="type" value="oneshot" /&gt;
+    &lt;mm:function name="mail" /&gt;
+  &lt;/mm:functioncontainer&gt;
+&lt;/mm:node&gt;
+
+&lt;!--check if mmbase could mail the message --&gt;
+&lt;mm:node referid="mail1"&gt;
+  &lt;mm:field name="mailstatus"&gt;
+    &lt;mm:compare value="1"&gt;
+      Mail was delivered at &lt;mm:field name="mailedtime"&gt;&lt;mm:time format=":LONG.LONG" /&gt;&lt;/mm:field&gt;
+    &lt;/mm:compare&gt;
+    &lt;mm:compare value="2"&gt;
+      Mail failed
+    &lt;/mm:compare&gt;
+  &lt;/mm:field&gt;
+&lt;/mm:node&gt; 
+      </pre><p>
+        Here you see 2 parts in the first we create the node and it is given an
+        id so we can refer to it for sending and finding out what happened.
+        The second part opens the email node and calls the mail function with the type oneshot (this
+        time explicitely). Then in the third part we use the mail node again, just to show some status
+        information about it.
+      </p></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="N10046" />5. Sending mail to users and groups</h2></div></div></div><p>
+        The above examples are clear but not very dynamic, it just mails one person that we know the
+        email address of usefull for sending account messages or greetingcards but within a modern
+        website you also want to mail groups of users like in a mailing list or all the people that
+        are part of a community topic. The mmbase email object will automaticly check any related
+        users or groups of users and allow you to mail them just as easy as mailing just one of
+        them. The following example mails a whole group with users, so in mmbase terms its
+        users-&gt;groups-&gt;email. Once we give the mail command it will find check if there are related
+        groups and if these groups have related users. If so it creates a list of all the found
+        users and mails them.  The application sends the mail to a specific address, so it is needed
+        you provide the 'to' field like <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="472e292128072a2a2526342269283520">[email&#160;protected]</a> in this example.
+      </p><pre class="programlisting">
+&lt;!--  create the email node --&gt;
+&lt;mm:createnode id="mail1" type="email"&gt;
+  &lt;mm:setfield name="to"&gt;<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="51383f373e113c3c333022347f3e2336">[email&#160;protected]</a>&lt;/mm:setfield&gt;
+  &lt;mm:setfield name="from"&gt;<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="f490959a9d9198b4999996958791da9b8693">[email&#160;protected]</a>&lt;/mm:setfield&gt;
+  &lt;mm:setfield name="subject"&gt;MMBase group mail&lt;/mm:setfield&gt;
+  &lt;mm:setfield name="body"&gt;Hi to all our group members !&lt;/mm:setfield&gt;
+&lt;/mm:createnode&gt;
+
+&lt;!-- get the group node we want to mail --&gt;
+&lt;mm:node id="group1" number="groups.testgroep" /&gt;
+
+&lt;!-- create a relation to the group --&gt;
+&lt;mm:createrelation source="mail1" destination="group1" role="related" /&gt;
+
+&lt;!-- start the mailer and wait for it to finish --&gt;
+&lt;mm:node referid="mail1"&gt;
+  &lt;mm:function name="mail" /&gt;
+&lt;/mm:node&gt;
+			
+			</pre><p>
+        If you are new to mmbase this seems a lot of lines but if you are already a user of the mmbase
+        taglibs you will notice that the code is just based taglibs and if you are working with groups in
+        your application you probably already have created it and you can add some lines. The example first
+        creates a email object then gets the group that is defined by the mmbase alias "groups.testgroep"
+        then a relation is created between the email object and the group. Lastly the mail(oneshot) command
+        is given again. Since mmbase can't find a "to" field it will try to find if any users or groups with
+        users are related to this email node and mails all the users it finds. The above example only finds
+        a attached group with users but attached users work in the same way.
+      </p></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="N10050" />6. OneShotKeep and startmail</h2></div></div></div><p>
+        In the above examples we controlled the email process by using &lt;mm:function
+        name="mail" /&gt;, the mail command tells mmbase to mail and wait until its done. This works
+        fine for 1 of 2 mails and should be used in these cases (the good thing is that you can check
+        what happened in the rest of the page as in example2.jsp) but this becomes a problem if you
+        are mailing a larg(er) group mailing that can take several seconds to even minutes depending
+        on the speed of your mailhost. Since such a page would most likely be called from a browser it
+        means that the user gets a "getting page" for several seconds/minutes and will probably hit
+        stop at one point leaving the email in an unsure state. To solve this you can also start
+        mailing in the background, the command will return right away and you can use the method shown
+        in example2 to check if its done.
+      </p><pre class="programlisting">
+
+&lt;mm:node referid="mail1"&gt;
+  &lt;mm:functioncontainer&gt;
+	&lt;mm:param name="type" value="oneshot" /&gt;
+	&lt;mm:function name="startmail" /&gt;
+  &lt;/mm:functioncontainer&gt;
+&lt;/mm:node&gt;
+
+			</pre><p>
+        This will start the mailing process in the background and your page will return right away so users can not stop it. There can be several mail action going on at the same time without a problem.
+      </p><p>
+        Now the oneshot will mail and tag itself to be deleted by mmbase, but in the above group example this might not be wanted. You might for example want to keep "prove" of when the email was send and if it worked ok for administration use. Or u want to reuse the email object (just update the content in the body for example) and email it again. For this the mailtype oneshotkeep was will not be deleted once it is mailed, cleanup or reuse will be upto you.
+      </p><pre class="programlisting">
+
+&lt;mm:node referid="mail1"&gt;
+  &lt;mm:functioncontainer&gt;
+	&lt;mm:param name="type" value="oneshotkeep" /&gt;
+	&lt;mm:function name="startmail" /&gt;
+  &lt;/mm:functioncontainer&gt;
+&lt;/mm:node&gt;
+
+</pre></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="N1005F" />7. Emailing dynamic content</h2></div></div></div><p>
+        Mailing from inside a cms only makes sense if you can either work dynamically with the list of
+        people you mail (see above) or that you can use content from within the cms. MMBase can do both and
+        makes it very easy to allow very complex and powerful personalized email to users and groups of
+        users. There are 2 ways to generate dynamic content and depend on if each person getting a copy of
+        the email needs is different or they all get the same copy of the email. If everybody gets the same
+        copy just add taglibs inside the above examples while building the email object. If every user needs
+        a different mail then you can enter urls instead of the subject and body. MMBase will automatically
+        see the url and call that on each user it will mail. It will also add a parameter to the url with
+      the usernumber so you can create email based on it.</p><pre class="programlisting">
+        (from example5.jsp)
+
+ &lt;!--  create the email node --&gt;
+ &lt;mm:createnode id="mail1" type="email"&gt;
+   &lt;mm:setfield name="from"&gt;<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="3551545b5c5059754640575854475c5b501b5b59">[email&#160;protected]</a>&lt;/mm:setfield&gt;
+   &lt;mm:setfield name="subject"&gt;http://localhost/mmexamples/jsp/email/example5_subject.jsp&lt;/mm:setfield&gt;
+   &lt;mm:setfield name="body"&gt;http://localhost/mmexamples/jsp/email/example5_body.jsp&lt;/mm:setfield&gt;
+&lt;/mm:createnode&gt;
+
+			</pre><p>
+      When the mail(..) or startmail(..) is called it will include the content found on the urls
+      defined in subject and body. Also the email code will add a url param to the url. It will do
+      this for each user it will mail. So say we have 2 users :</p><pre class="programlisting">
+Daniel Ockeloen with user number : 320
+Piet Hein with user number : 343
+
+It will include for Daniel Ockeloen
+
+example5_subject.jsp?usernumber=320 for the subject
+example5_body.jsp?usernumer=320 for the body
+
+and for Piet Hein
+
+example5_subject.jsp?usernumber=343 for the subject
+example5_body.jsp?usernumer=343 for the body
+
+      </pre><pre class="programlisting">The example5_subject.jsp :
+
+&lt;%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" %&gt;
+&lt;mm:cloud&gt;
+  &lt;mm:import externid="usernumber" /&gt;
+  &lt;mm:node number="$usernumber"&gt;update for
+    &lt;mm:field name="firstname" /&gt;
+    &lt;mm:field name="lastname" /&gt; !
+  &lt;/mm:node&gt;
+&lt;/mm:cloud&gt;
+
+
+      </pre><p>
+      As you can see there is nothing special in this page, it imports the usernumber param, opens the node and creates a subject line using the first and last name of the user. What is special is that MMBase will automatically remove all returns from the subject line since returns are not allowed in subject lines.</p><pre class="programlisting">
+The example5_body.jsp
+&lt;%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" %&gt;
+&lt;mm:cloud&gt;
+  &lt;mm:import externid="usernumber" /&gt;
+  &lt;mm:node number="$usernumber"&gt;
+    &lt;p&gt;Hi &lt;mm:field name="firstname" /&gt; &lt;mm:field name="lastname" /&gt; !&lt;/p&gt;
+    &lt;p&gt;Nice to see you again, These are your settings :&lt;/p&gt;
+    &lt;p&gt;
+    firstname : &lt;mm:field name="firstname" /&gt;&lt;br/&gt;
+    lastname : &lt;mm:field name="lastname" /&gt;&lt;br/&gt;
+    email : &lt;mm:field name="email" /&gt;&lt;br/&gt;
+    account : &lt;mm:field name="account" /&gt;&lt;br/&gt;
+    password : &lt;mm:field name="password" /&gt;&lt;br/&gt;
+    &lt;/p&gt;
+    &lt;p&gt;
+    Bye,&lt;br /&gt;
+    MMBase Email Team.&lt;/p&gt;
+  &lt;/mm:node&gt;
+&lt;/mm:cloud&gt;
+
+      </pre><p>
+        Same thing as with the subject a normal taglib page the body page is allowed to do any of
+        the normal things to create the page you want. In this case ive assumed we want to mail
+        people their account info. Now to allow for better control/layout of the email you can use
+        the html &gt;br /&gt; and &gt;p&gt; tabs. If they are used in a body url we will convert them
+        before emailing to single and dubble returns.
+      </p><pre class="programlisting">
+      Todo : Tell about multipart mail (example6.jsp),  mailing attachments (example7.jsp)
+&lt;mm:setfield name="body"&gt;
+  &lt;multipart id="plaintext" type="text/plain" encoding="UTF-8"&gt;
+    This is plain text !
+  &lt;/multipart&gt;
+  &lt;multipart id="htmltext" alt="plaintext" type="text/html" encoding="UTF-8"&gt;
+    &lt;h1&gt;This is in html !&lt;/h1&gt;
+  &lt;/multipart&gt;
+&lt;/mm:setfield&gt;
+      </pre></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="receiving" />8. Receiving email</h2></div></div></div><p>
+        The MMBase email application also contains functionality to <span class="emphasis"><em>receive</em></span>
+        email. Two implementation are provided: it can act as a stand alone SMTP server, or it can
+        actively pop from a pop- or imap-server.
+      </p><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="smtp" />8.1. Acting as an SMTP-server</h3></div></div></div><p>
+          To configure smtp, you must activate and configure the 'smtp' module. This means placing
+          a file 'smtp.xml' in the conf/modules/smtp.xml. Several properties can be configured, like
+          e.g. the port number (e.g. 25), and for which domains it should accept the mail. Find the
+          example smtp.xml, which also contains further clarifications.
+        </p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="smtp" />8.2. Acting as an POP-client</h3></div></div></div><p>
+          Mail can also be fetched by acting as a pop client. For this the mmbase crontab component
+          must be active, and you configure org.mmbase.module.smtp.PopFetcher as a cronjob. An
+          example conf/util/cronjobs.xml is shipped.
+        </p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="mailhandler" />8.3. Dealing with received mail</h3></div></div></div><p>
+          Mail which was received by one of the methods mentioned before, is then processed by
+          <span class="emphasis"><em>MailHandler</em></span>s. The mail handlers are configured in a file
+          &lt;config dir&gt;/utils/mailhandlers.xml. The mailhandlers are used in the order as they are present in
+          that resource. Every mailhandler can either handle or ignore the message, if it ignores
+          the message, it is passed to the next one.
+        </p><p>
+          The default configurations looks like this.
+        </p><pre class="programlisting">
+   &lt;properties&gt;
+     &lt;property name="classes" type="map"&gt;
+      &lt;entry&gt;&lt;key&gt;org.mmbase.module.smtp.Forwarder&lt;/key&gt;&lt;/entry&gt;
+      &lt;entry&gt;&lt;key&gt;org.mmbase.module.smtp.VerifyEmailMailHandler&lt;/key&gt;&lt;/entry&gt;
+      &lt;entry&gt;&lt;key&gt;org.mmbase.module.smtp.CloudMailHandler&lt;/key&gt;&lt;/entry&gt;
+    &lt;/property&gt;
+  &lt;/properties&gt;
+</pre><p>
+          This also shows a few implementations, which will be a bit elaborated on in the next sections.
+        </p><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a id="forwardmailhandler" />8.3.1. Forwarder</h4></div></div></div><p>
+            The Mailhandler 'Forwarder' only forwards email. In a resource &lt;config
+            dir&gt;/utils/forwards.xml is maintained what addresses are forwarded, and to where.
+          </p></div><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a id="verifymailhandler" />8.3.2. VerifyEmailMailHandler</h4></div></div></div><p>
+            Another provided mail-handler is org.mmbase.module.smtp.VerifyEmailMailHandler. This one
+            work in conjuction with the 'verify_email' data type which is provided by the email
+            component too. A builder which has next to some 'email' field also a 'verify_email' field,
+            will automaticly send emails containing the request to 'validate' the address. The
+            recipient can reply to such an email.
+          </p></div><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a id="cloudmailhandler" />8.3.3. CloudMailHandler</h4></div></div></div><p>
+            The implementation org.mmbase.module.smtp.CloudMailHandler will convert the received
+            emails into MMBase objects. This gives the possiblity to have a webmail. TODO: implement a
+            simple webmail (the one in didactor is too complex and messy).
+          </p><p>
+            If the node associated with the person receiving the email has a function 'forwardEmail'
+            which returns a non-empty value, then the message will also be forwarded to that
+            address. This behaviour may be disable alltogether (in test environments), if the
+            'sendmail' module has a init-parameter 'noforwarding' with value 'true'.
+          </p></div></div></div></div><hr xmlns="" /><p xmlns="">
+      This is part of the <a href="http://www.mmbase.org">MMBase</a> documentation.
+    </p><p xmlns="">
+      For questions and remarks about this documentation mail to: 
+      <a href="/cdn-cgi/l/email-protection#e3878c80968e868d9782978a8c8da38e8e81829086cd8c9184"><span class="__cf_email__" data-cfemail="6a0e05091f070f041e0b1e0305042a0707080b190f4405180d">[email&#160;protected]</span></a></p><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script></body></html>

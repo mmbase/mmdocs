@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title>How to tune MMBase for production</title><link href="../style/documentation.css" rel="stylesheet" type="text/css" /><meta content="DocBook XSL Stylesheets V1.72.0" name="generator" /><meta name="description" content="How to for fine tuning MMBase" /><link xmlns="" type="image/x-icon" href="../style/favicon.ico" rel="icon" /><link xmlns="" type="image/x-icon" href="../style/favicon.ico" rel="shortcut icon" /><meta xmlns="" content="text/html; charset=utf-8" http-equiv="content-type" /></head><body><div xmlns="" class="navigation"><img alt="mmbase logo" src="../style/logo.png" /><h2>How to tune MMBase for production</h2><p><a href="tune-production.html#introduction">Introduction</a></p><p><a href="tune-production.html#scope">Scope</a></p><p><a href="tune-production.html#bottlenecks">Identify bottlenecks</a></p><p><a href="tune-production.html#browsersegment">Browser segment</a></p><p><a href="tune-production.html#databassegment">Database segment</a></p><p><a href="tune-production.html#appserversegment">Application server segment</a></p><p><a href="tune-production.html#mmbase">MMBase optimization</a></p><p><a href="tune-production.html#sequence">Performance tuning sequence</a></p><hr /><p><a href="http://www.mmbase.org">MMBase</a></p><p><a href="../index.html">home</a></p></div><div class="article" lang="en"><div class="titlepage"><div><div><h1 class="title"><a id="N10001" />How to tune MMBase for production</h1></div><div><div class="authorgroup"><strong class="authorgroup">Author: </strong><span class="author"><span class="firstname">Nico Klasens</span> <span class="surname" /></span><br /><strong class="authorgroup">Date: </strong>2005-12-09</div></div><div><div class="legalnotice"><a id="N10025" /><p>This software is OSI Certified Open Source Software. OSI Certified
+      is a certification mark of the Open Source Initiative.</p><p>The license (Mozilla version 1.0) can be read at the MMBase site.
+      See <a xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.mmbase.org/license" target="_top">http://www.mmbase.org/license</a></p></div></div><div /><div><div class="abstract"><p class="title"><b>Abstract</b></p><p>How to for fine tuning MMBase</p></div></div></div><hr /></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="section"><a href="tune-production.html#introduction">1. Introduction</a></span></dt><dt><span class="section"><a href="tune-production.html#scope">2. Scope</a></span></dt><dt><span class="section"><a href="tune-production.html#bottlenecks">3. Identify bottlenecks</a></span></dt><dt><span class="section"><a href="tune-production.html#browsersegment">4. Browser segment</a></span></dt><dt><span class="section"><a href="tune-production.html#databassegment">5. Database segment</a></span></dt><dt><span class="section"><a href="tune-production.html#appserversegment">6. Application server segment</a></span></dt><dd><dl><dt><span class="section"><a href="tune-production.html#os">6.1. Operating system and applications</a></span></dt><dt><span class="section"><a href="tune-production.html#jvm">6.2. Java Virtual Machine</a></span></dt><dt><span class="section"><a href="tune-production.html#memory">6.3. Memory</a></span></dt><dt><span class="section"><a href="tune-production.html#appserver">6.4. Application server</a></span></dt></dl></dd><dt><span class="section"><a href="tune-production.html#mmbase">7. MMBase optimization</a></span></dt><dd><dl><dt><span class="section"><a href="tune-production.html#mmbase_caches">7.1. Caches</a></span></dt></dl></dd><dt><span class="section"><a href="tune-production.html#sequence">8. Performance tuning sequence</a></span></dt></dl></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="introduction" />1. Introduction</h2></div></div></div><p>Like every application, MMBase is not optimized for every production
+    environment. Out of the box it is suitable for small sites with low
+    traffic. This document will describe how to change the configuration of
+    MMBase and what other things are involved to boost performance of a
+    site.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="scope" />2. Scope</h2></div></div></div><p>The experience of an user that a site is slow is usually not only
+    the fault of a web application. The request from a browser passes many
+    systems before the response is returned. Every passed system will add a
+    delay to the response. The web application is just a part of the cycle.
+    This document describes how to tune MMBase, but it is only worth the
+    effort when MMBase is the problem.</p><p>Several systems in a production environment which can affect
+    performance are:</p><div class="itemizedlist"><ul type="disc"><li><p>Internet connection to Internet Service Provider</p></li><li><p>FIrewalls which block and filter traffic</p></li><li><p>Network with physical data limits and routing</p></li><li><p>Webserver or proxy (e.g. Apache http server or IIS)</p></li><li><p>Operating system (I/O and network settings)</p></li><li><p>Other running applications on the system</p></li><li><p>Database server</p></li><li><p>Database settings</p></li><li><p>Java Virtual Machine settings</p></li></ul></div><p /></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="bottlenecks" />3. Identify bottlenecks</h2></div></div></div><p>The first step, in identifying which systems perform poorly, is to
+    divide the production environment in segments. Every segment represent a
+    part of the response time.</p><div class="orderedlist"><ol type="1"><li><p>Browser - webserver</p></li><li><p>Webserver and application server</p></li><li><p>Database server</p></li></ol></div><p>Every system on a segment boundary should log the response time of
+    the request to find the segment with the highest delay</p><p>Browser</p><p>Logging of the response time on the client can be done with several
+    load test tools. A freely available one is Jmeter <a xmlns:xlink="http://www.w3.org/1999/xlink" href="http://jakarta.apache.org/jmeter" target="_top">http://jakarta.apache.org/jmeter</a></p><p>Webserver or application server</p><p>All frequently used servers can log in the access.log response time
+    information.</p><p>The apache http server uses the mod_log_config module which support
+    custom log formats. See <a xmlns:xlink="http://www.w3.org/1999/xlink" href="http://httpd.apache.org/docs/2.0/mod/mod_log_config.html" target="_top">
+    http://httpd.apache.org/docs/2.0/mod/mod_log_config.html</a> for more
+    information on LogFormat and CUstomLog</p><p>Apache Tomcat uses an Access Log Valve create a similar logfile as
+    the apache http server does. For more information see <a xmlns:xlink="http://www.w3.org/1999/xlink" href="http://tomcat.apache.org/tomcat-5.5-doc/config/valve.html" target="_top">
+    http://tomcat.apache.org/tomcat-5.5-doc/config/valve.html</a></p><p>Database server</p><p>Most databases can monitor the time a query requires to execute.
+    This is different for every database and difficult to map to a request of
+    one user. MMBase can also log the query response time by enabling the
+    debug level on the Sqlhandlers. The log configuration is default in the
+    log4j.xml in the mmbase.jar or /WEB-INF/config/log/ directory.</p><p><pre class="programlisting">&lt;logger name="org.mmbase.storage.implementation.database.DatabaseStorageManager" 
+        additivity="false"&gt; &lt;level class="&amp;mmlevel;" value ="debug" /&gt;
+  &lt;appender-ref ref="sqllog" /&gt;
+&lt;/logger&gt;
+</pre></p><p /></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="browsersegment" />4. Browser segment</h2></div></div></div><p>If the response time is not acceptable is this segment then the
+    problem is somewhere in:</p><div class="itemizedlist"><ul type="disc"><li><p>Internet connection to Internet Service Provider</p></li><li><p>FIrewalls which block and filter traffic</p></li><li><p>Network with physical data limits and routing</p></li></ul></div><p>How to fine tune this segment is out of the scope of this
+    document.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="databassegment" />5. Database segment</h2></div></div></div><p>The most common error in the database segment is that the indexes on
+    the database are not present. indexes on the following columns should
+    always be present</p><div class="itemizedlist"><ul type="disc"><li><p>_object - number</p></li><li><p>_insrel - snumber</p></li><li><p>_insrel - dnumber</p></li><li><p>_insrel - rnumber</p></li><li><p>_typerel - snumber</p></li><li><p>_typerel - dnumber</p></li><li><p>_typerel - rnumber</p></li><li><p>_versions - name</p></li><li><p>_oalias - name</p></li><li><p>_syncnodes - exportsource</p></li><li><p>_syncnodes - exportnumber</p></li></ul></div><p>Other tables could also benefit from indexes. Mysql requires indexes
+    on all snumber, dnumber and rnumber columns in tables containing
+    relations. This is also the case for Postgresql. Postgresql extends the
+    tables, but does not inherit the indexes of the parent table.</p><p>Every web application build on top of MMBase has it own required
+    indexes to perform well. The sql statements log as shown above will help
+    identify which columns need an index. All columns mentioned in WHERE parts
+    of the query are candidates for an index.</p><p>See the documentation of your database how to do maintenance. A
+    database can easily become a bottleneck over time.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="appserversegment" />6. Application server segment</h2></div></div></div><p>If the response time in this segment is very bad then the problem
+    can be in several parts:</p><div class="itemizedlist"><ul type="disc"><li><p>Operating system (I/O and network settings)</p></li><li><p>Other running applications on the system</p></li><li><p>Java Virtual Machine settings</p></li><li><p>JSP code</p></li><li><p>Custom application code</p></li><li><p>MMBase code</p></li></ul></div><p>The first thing to check is which resources on the server are
+    overloaded and which processes are causing it: Monitor the cpu load,
+    virtual memory usage and I/O operations statistics. When the cpu load or
+    memory usage is not caused by the application server process then the
+    problem is somewhere in other applications or the OS.</p><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="os" />6.1. Operating system and applications</h3></div></div></div><p>The first thing to check is that the last update release of the
+      jvm is used. Every major release (e.g. J2SE 1.3.1, J2SE 1.4.2, J2SE 5.0)
+      has update releases on a regular basis Update releases often include bug
+      fixes and performance improvements. By deploying the most recent update
+      release you will benefit from the latest and greatest performance
+      improvements.</p><p>The second thing to check is that all required software patched
+      for the OS and jvm are installed. In the case of Solaris there is a set
+      of patches that are recommended when deploying Java applications. To get
+      these Solaris patches for Java please see the links under the section
+      Solaris OS Patches on the Java™ download page. Solaris with not all
+      patches installed can have high cpu loads. The cpu load is than
+      generated by system libraries and not user code.</p><p>Be aware that various system activities and the operations of
+      other applications running on your system can introduce significant
+      variance into the measurements of any application's performance,
+      including Java applications. The activities of the OS and other
+      applications may introduce resource CPU, Memory, disk or network
+      resource contention that may interfere with your measurements.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="jvm" />6.2. Java Virtual Machine</h3></div></div></div><p>Before going into the details of the JVM realize that one of the
+      advantages of Java is that it dynamically optimizes for data at runtime.
+      A Java™ HotSpot™ virtual machine adapts and reacts to the specific
+      machine and specific application it is running. In more and more cases
+      Java performance meets or exceeds the performance of similar statically
+      compiled programs. However this adaptability of the JVM makes it hard to
+      measure small snippets of Java functionality.</p><p>One of the reasons that it's challenging to measure Java
+      performance is that it changes over time. At startup, the JVM typically
+      spends some time "warming up". Depending on the JVM implementation, it
+      may spend some time in interpreted mode while it is profiled to find the
+      'hot' methods. When a method gets sufficiently hot, it may be compiled
+      and optimized into native code.</p><p>Before you start to tune the command line arguments for Java be
+      aware that Sun's HotSpot™ Java Virtual Machine has incorporated
+      technology to begin to tune itself. This smart tuning is referred to as
+      Ergonomics. Most computers that have at least 2 CPU's and at least 2 GB
+      of physical memory are considered server-class machines which means that
+      by default the settings are:</p><div class="itemizedlist"><ul type="disc"><li><p>The -server compiler</p></li><li><p>The -XX:+UseParallelGC parallel (throughput) garbage
+          collector</p></li><li><p>The -Xms initial heap size is 1/64th of the machine's physical
+          memory</p></li><li><p>The -Xmx maximum heap size is 1/4th of the machine's physical
+          memory (up to 1 GB max).</p></li></ul></div><p>Please note that 32-bit Windows systems all use the -client
+      compiler by default and 64-bit Windows systems which meet the criteria
+      above will be treated as server-class machines.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="memory" />6.3. Memory</h3></div></div></div><p>Even though Ergonomics significantly improves the "out of the box"
+      experience for many applications, optimal tuning often requires more
+      attention to the sizing of the Java memory regions.</p><p>A lot of java developers don't know how memory management happens
+      in the JVM. As a developer you don't have to care about memory
+      (de)allocation. When an application is put in production it can be very
+      important how the memory management system is tweaked. A badly tweaked
+      application could halt for more then 10 minutes. This has been seen on a
+      machine which had to swap a lot and had 1G assigned as max size (-Xmx).
+      After tuning the settings it was reduced to 30 seconds or less.</p><p>Garbage collection (GC) is one of the hardest things to do
+      efficiently for jvm's. You can make some parameters explicit to the jvm
+      which makes it much easier for the jvm to guess when it should do
+      something.</p><p>Most people know the parameters -Xms and -Xmx, but not what they
+      will do to memory management and gc.A lot of MMBase instance in
+      production do not have these settings or they are very high. In the 1G
+      example the settings were reduced to 700M and it is still to high. The
+      -Xms and -Xmx are allocating OS memory for the process. This is called
+      the memory heap. When the heap is filled for 60% or more then the jvm
+      will start a GC which will halt the process until it is finished (the 10
+      minute break). The default heap setting is 64M which MMBase will fill in
+      seconds with an average web application. The GC will run very frequently
+      to free memory which means less application cpu time. Most MMBase
+      applications require about 300M of heap size.</p><p>Note that the -Xms and -Xmx settings does not match with what the
+      OS returns for the memory usage of the process. The memory usage also
+      includes program code and jvm code (j2se uses the jvm code in memory for
+      all java processes). The memory footprint for the process have to stay
+      below the physical memory to prevent high GC times. Setting the -Xmx the
+      same as the physical memory will decrease performance, because it will
+      likely result in paging of virtual memory to disk.</p><p>In the next part where the jvm or java is mentioned the Sun jvm is
+      meant. A lot is the same for others, but not everything. The Sun jvm is
+      divided into several spaces. It has one permanent generation, one old
+      generation and one new generation. The new generation is divided in an
+      eden and 2 survivor spaces.</p><p>The permanent generation is for storing the class objects and some
+      other permanent stuff. In JSP environments when a lot of classes are
+      loaded, it is a good practice to set the 'PermSize' value high enough.
+      Full GCs are needed to extend the permanent generation.</p><p>New object instances are created in eden (new generation). When
+      eden is full then a small GC is performed to clean it. The instances
+      still in use are copied to one of the survivor spaces and the rest will
+      be cleared. When instances are copied multiple times to the survivor
+      spaces then it will be promoted to the old generation. When the old
+      generation is full then a Full GC will be preformed on the heap. A Full
+      GC, in the default case, will mean a halt on the jvm. The new generation
+      GC won't halt the jvm. The new generation GC is also much faster then
+      the old generation GC.</p><p>The ratio of the size of the generations based on the full heap
+      size can have great impact on the throughput and halt time of the jvm
+      especially when editwizards are involved. When you have memory issues
+      then give it a shot with these settings</p><p><pre class="programlisting">-server -XX:NewRatio=2 -XX:SurvivorRatio=6</pre></p><p>The jvm has to run in server mode and not client mode. In client
+      mode the ratio between old and new is -XX:NewRatio=8. This means that
+      the new generation in client mode will be 1/8 of the heap and the old
+      generation 7/8. In server mode the ratio is -XX:NewRatio=2. The new
+      generation will then be 1/3 of the heap. The -XX:NewRatio=2 above just
+      makes it explicit. The advantages are that more new instance can be
+      created and die before a small GC is preformed.</p><p>The -XX:SurvivorRatio is default 25. The reason to increase the
+      Survivor spaces is to prevent that there are too many new instances for
+      the survivor space. If it doesn't fit then the rest will go to the old
+      generation right away. This will happen when the editwizards are
+      installed. A user keeps a stack of wizards with a lot of instances on
+      the server. A very big wizard can occupy 4MB of memory. All instances
+      die when the wizard is closed. You want to keep these objects in the new
+      generation. With a default server mode jvm with 1G the Survivor spaces
+      are 12M. If you have multiple editors then the stacks with wizards can
+      easily be more then 12M and instances will go to the old generation with
+      a small GC and can only be cleared with a Full GC.</p><p>To emphasize, in an ideal run you want your survivor space to have
+      objects of different ages. That means you have enough space there to not
+      instantly promote live objects to the old generation. This means less
+      pollution of the old generation.</p><p><pre class="programlisting">Default setup with 1G 
+Old generation 682mb (client mode: 910) 
+New geneartion 341mb (client mode: 113) 
+eden 315 (client mode: 104) 
+Survivors 12 (client mode:4)</pre></p><p><pre class="programlisting">Setup with 1G and -server -XX:NewRatio=2 -XX:SurvivorRatio=6 
+Old generation 682mb 
+New geneartion 341mb 
+eden 255
+Survivors 42</pre></p><p>When you want to monitor the heap usage on a production server
+      then you could use -Xloggc:/log/gc.log. The GC statistics will be
+      written to this file with no overhead. GCViewer can generate a nice
+      graph of the logfile (<a xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.tagtraum.com/gcviewer.html" target="_top">http://www.tagtraum.com/gcviewer.html</a>)</p><p>Another tool which is very handy, and maybe even an absolute
+      necessity, is jvmstat. Jvmstat shows you graphically how your memory is
+      filled between permanent, old and young generation, It also shows how
+      eden and survivor spaces are filled.</p><p>There are many articles on the Internet with more information on
+      memory and heap size tuning on different platforms. See for example
+      <a xmlns:xlink="http://www.w3.org/1999/xlink" href="http://java.sun.com/performance/" target="_top">
+      http://java.sun.com/performance/</a></p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="appserver" />6.4. Application server</h3></div></div></div><p>Every application server contains a number of OOTB
+      (out-of-the-box) performance-related parameters that can be fine-tuned
+      depending on your environment and applications. Tuning these parameters
+      based on your system requirements (rather than running with default
+      settings) can greatly improve performance and the scalability of an
+      application.</p><p>Modify the value of the http listener threads.</p><p>Application servers can service multiple simultaneous requests and
+      because thread creation is expensive application servers have to
+      maintain a pool of threads that handle each request. Some application
+      servers break this thread pool into two: one to handle the incoming
+      requests and place those in a queue and one to take the threads from the
+      queue and do the actual work requested by the caller. Regardless of the
+      implementation, the size of the thread pool limits the amount of work
+      your application server can do; the tradeoff is that there is a point at
+      which the context-switching (giving the CPU to each of the threads in
+      turn) becomes so costly that performance degrades.</p><p>Some other things you might consider:</p><div class="itemizedlist"><ul type="disc"><li><p>Turn off excessive logging, because this could significantly
+          slow system performance.</p></li><li><p>Disable checks for JSP page checks and servlet
+          reloading.</p></li><li><p>Precompile JSPs</p></li></ul></div><p /></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="mmbase" />7. MMBase optimization</h2></div></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="mmbase_caches" />7.1. Caches</h3></div></div></div><p>MMBase relies heavily on its caches. Most caches are configurable
+      in the caches.xml, which is in the root of the MMBase configuration.
+      There are a few which have a large effect on memory usage and database
+      round trips. The MMBase admin has a page where cache statistics are
+      shown. This page shows how efficient a cache is.</p><p>The default implementation of all caches is a Least Recently Used
+      Hashtable. Another implementation can be plugged in when this is not
+      sufficient.</p><p>Before explaining these caches it is important to understand the
+      two different types of nodes MMbase uses. MMBase has virtual and real
+      nodes. Real nodes contain fields which are defined in a builder. Virtual
+      nodes are usually a result of a multi level query. Fields in virtual
+      nodes are original from multiple builders. The field name is always
+      prefixed with the builder name. Real nodes represent objects like news
+      items. Virtual nodes represent multiple parts of different objects. A
+      virtual node can contain a news item title and the authors full name.
+      Virtual nodes do not have a nodenumber.</p><div class="itemizedlist"><ul type="disc"><li><p>'Nodes' cache. This cache is used to store individual real
+          nodes. The key of this cache is the nodenumber. All real nodes
+          requested are saved in this one.</p></li><li><p>'NodeList' cache which stores the results of real node list
+          requests. This cache can become very big rapidly. All real nodes
+          requested by a list are also stored in the 'Nodes' cache. This cache
+          usually keeps references to nodes which are already flushed by the
+          'Nodes' cache.</p></li><li><p>'Multilevel' cache. This cache stores all results of virtual
+          node list requests. This cache stores the results for all
+          complicated SearchQueries.</p></li><li><p>'AggregatedResult' cache. All results from queries with
+          min/max/count fields are stored in this.</p></li><li><p>'RelatedNodes' cache. The results in this cache contain nodes
+          which are related to another node.</p></li><li><p>'Related' cache. The results in this cache are relations which
+          belong to a node. The key of the cache is a nodenumber.</p></li></ul></div><p>How the caches are used, depends on how the application on top of
+      MMbase is coded. An application which uses a lot of getRelatedNodes
+      request requires a large 'RelatedNodes' cache. An application with a lot
+      of complicated queries with multiple tables involved requires a larger
+      'Multilevel' cache.</p></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="sequence" />8. Performance tuning sequence</h2></div></div></div><p>We recommend that you tune the production environment in the
+    following sequence:</p><div class="itemizedlist"><ul type="disc"><li><p>Tuning Your Application and MMBase</p></li><li><p>Tuning Application Server</p></li><li><p>Tuning the Java Runtime System</p></li><li><p>Tuning the Operating System</p></li><li><p>Tuning Database Servers</p></li></ul></div><p>When you are done with tuniong thenreverse the order and do it all
+    again. Changes in one part will require changes in others.</p></div></div><hr xmlns="" /><p xmlns="">
+      This is part of the <a href="http://www.mmbase.org">MMBase</a> documentation.
+    </p><p xmlns="">
+      For questions and remarks about this documentation mail to: 
+      <a href="/cdn-cgi/l/email-protection#a2c6cdc1d7cfc7ccd6c3d6cbcdcce2cfcfc0c3d1c78ccdd0c5"><span class="__cf_email__" data-cfemail="492d262a3c242c273d283d2026270924242b283a2c67263b2e">[email&#160;protected]</span></a></p><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script></body></html>
