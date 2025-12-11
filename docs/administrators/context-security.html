@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title>Context Security Configuration</title><link href="../style/documentation.css" rel="stylesheet" type="text/css" /><meta content="DocBook XSL Stylesheets V1.72.0" name="generator" /><link xmlns="" type="image/x-icon" href="../style/favicon.ico" rel="icon" /><link xmlns="" type="image/x-icon" href="../style/favicon.ico" rel="shortcut icon" /><meta xmlns="" content="text/html; charset=utf-8" http-equiv="content-type" /></head><body><div xmlns="" class="navigation"><img alt="mmbase logo" src="../style/logo.png" /><h2>Context Security Configuration</h2><p><a href="context-security.html#introduction">Introduction</a></p><p><a href="context-security.html#explanation">Central notions in the context security model</a></p><p><a href="context-security.html#extended_example">An extended example</a></p><hr /><p><a href="http://www.mmbase.org">MMBase</a></p><p><a href="../index.html">home</a></p></div><div class="article" lang="en"><div class="titlepage"><div><div><h1 class="title"><a id="N10001" />Context Security Configuration</h1></div><div><div class="authorgroup"><strong class="authorgroup">Authors: </strong><span class="author"><span class="firstname">Eduard</span> <span class="surname">Witteveen</span>, </span><span class="author"><span class="firstname">Sjoerd</span> <span class="surname">de Heer</span>, </span><span class="author"><span class="firstname">Henk</span> <span class="surname">Hangyi</span>, </span><span class="author"><span class="firstname">Pierre</span> <span class="surname">van Rooden</span></span><br /><strong class="authorgroup">Date: </strong>2003-02-12</div></div><div><div class="legalnotice"><a id="N10024" /><p>This software is OSI Certified Open Source Software. OSI Certified
+      is a certification mark of the Open Source Initiative.</p><p>The license (Mozilla version 1.0) can be read at the MMBase site.
+      See <a xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.mmbase.org/license" target="_top">http://www.mmbase.org/license</a></p></div></div><div /></div><hr /></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="section"><a href="context-security.html#introduction">1. Introduction</a></span></dt><dd><dl><dt><span class="section"><a href="context-security.html#context_security">1.1. A security implementation with contexts</a></span></dt><dt><span class="section"><a href="context-security.html#users">1.2. Users</a></span></dt><dt><span class="section"><a href="context-security.html#groups">1.3. Groups</a></span></dt><dt><span class="section"><a href="context-security.html#contexts">1.4. Contexts</a></span></dt></dl></dd><dt><span class="section"><a href="context-security.html#explanation">2. Central notions in the context security model</a></span></dt><dd><dl><dt><span class="section"><a href="context-security.html#contexts_groups_users">2.1. Contexts, Groups and Users</a></span></dt><dd><dl><dt><span class="section"><a href="context-security.html#reference_field">2.1.1. Reference field</a></span></dt><dt><span class="section"><a href="context-security.html#expl_contexts">2.1.2. Contexts</a></span></dt><dt><span class="section"><a href="context-security.html#groupss">2.1.3. Groups</a></span></dt><dt><span class="section"><a href="context-security.html#userss">2.1.4. Users</a></span></dt><dt><span class="section"><a href="context-security.html#overview">2.1.5. Overview picture of the security model</a></span></dt></dl></dd><dt><span class="section"><a href="context-security.html#operations">2.2. Operations on objects</a></span></dt><dd><dl><dt><span class="section"><a href="context-security.html#rwd">2.2.1. Read, Write and Delete</a></span></dt><dt><span class="section"><a href="context-security.html#making_reference">2.2.2. Making a reference to.</a></span></dt><dt><span class="section"><a href="context-security.html#create">2.2.3. Create</a></span></dt><dt><span class="section"><a href="context-security.html#change">2.2.4. Change</a></span></dt></dl></dd><dt><span class="section"><a href="context-security.html#rights">2.3. Rights</a></span></dt><dd><dl><dt><span class="section"><a href="context-security.html#create_object">2.3.1. Create a new object</a></span></dt><dt><span class="section"><a href="context-security.html#create_relation">2.3.2. Creating a new relation</a></span></dt><dt><span class="section"><a href="context-security.html#alter">2.3.3. Altering an object</a></span></dt><dt><span class="section"><a href="context-security.html#change_rights">2.3.4. Changing rights in contexts</a></span></dt><dt><span class="section"><a href="context-security.html#delete_right">2.3.5. Deleting objects</a></span></dt></dl></dd></dl></dd><dt><span class="section"><a href="context-security.html#extended_example">3. An extended example</a></span></dt><dd><dl><dt><span class="section"><a href="context-security.html#loginmodule">3.1. &lt;loginmodules /&gt;</a></span></dt><dt><span class="section"><a href="context-security.html#accounts">3.2. &lt;accounts /&gt;</a></span></dt><dt><span class="section"><a href="context-security.html#user_tag">3.3. &lt;user&gt; &lt;identify /&gt; &lt;/user&gt;</a></span></dt><dt><span class="section"><a href="context-security.html#group_tag">3.4. &lt;group&gt; &lt;contains /&gt; &lt;/group&gt;</a></span></dt><dt><span class="section"><a href="context-security.html#contexts_tag">3.5. &lt;contexts&gt; &lt;context /&gt; &lt;/contexts&gt;</a></span></dt><dt><span class="section"><a href="context-security.html#dtd">3.6. The DTD of context.xml</a></span></dt></dl></dd></dl></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="introduction" />1. Introduction</h2></div></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="context_security" />1.1. A security implementation with contexts</h3></div></div></div><p>A context exists of a set of rights which describe what you can do
+      within this context with an object of MMBase. For example you define
+      read access to a the context which is used by anonymous visitors of your
+      site and you can define a context with edit rights for registered users
+      of your site. The main parts of the security framework are:</p><div class="itemizedlist"><ul type="disc"><li><p>Single users (users)</p></li><li><p>Groups (users)</p></li><li><p>Contexts</p></li></ul></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="users" />1.2. Users</h3></div></div></div><p>The users of MMBase can have different levels anonymous or
+      registered users. The anonymous users are the normal page viewers. There
+      rights are being served through the anonymous module of MMBase.
+      Registered users are being served through the user/password module, this
+      are the users that can alter data within MMBase.</p><p>For registered users there is also an extra level called rank. The
+      default ranks are 'Basic user' and 'Administrator'. These ranks can
+      denote extra rights within MMBase. The anonymous users can only have the
+      rank 'Anonymous'.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="groups" />1.3. Groups</h3></div></div></div><p>A Group can exist of users and/ or groups. In this way you can
+      define a structure which inherits rights from lower levels. For example
+      the office-sweeper group may read the newspaper. The office-clerk group
+      is member of the office-sweeper group but may also use the toilet. So a
+      member of the office-clerk may read the newspaper and go to the toilet,
+      even at the same time. While a office-sweeper can only read the paper
+      and work fast to get home in time to use the bathroom. As you probably
+      noticed a stupid example which might help to understand the
+      framework.</p><p>A user can be member of more than one group within MMBase.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="contexts" />1.4. Contexts</h3></div></div></div><p>Each object within MMBase has a context. Which context is
+      associated with an object can be seen in the owner field of that object.
+      The name found there is the name first used as context before fallback
+      on the default context. In the context is defined which rights are
+      granted to a user or group. The following rights are available.</p><div class="itemizedlist"><ul type="disc"><li><p>read, read the content of an object.</p></li><li><p>write, write content to an object.</p></li><li><p>link, making a relation between two objects.</p></li><li><p>delete, remove an object.</p></li><li><p>create, create a new object of the type typedef. The so called
+          editors.</p></li><li><p>change, changing of context.</p></li></ul></div><p>Of each context is also know to which context it may change. An
+      admin may change to a user but a user may not change to an admin.</p></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="explanation" />2. Central notions in the context security model</h2></div></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="contexts_groups_users" />2.1. Contexts, Groups and Users</h3></div></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a id="reference_field" />2.1.1. Reference field</h4></div></div></div><p>Within MMBase each object has a field called 'owner'. The value
+        of this field is used by the security system to specify the context of
+        an object. If an object is accessed and the name of its context does
+        not exist a warning will be issued in the logs and the default context
+        will be selected.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a id="expl_contexts" />2.1.2. Contexts</h4></div></div></div><p>A context defines which rights a group has on a object. Also is
+        defined within this context to which contexts you can change to assume
+        there rights.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a id="groupss" />2.1.3. Groups</h4></div></div></div><p>A group is a collection of users and groups. In this way you can
+        represent your organization in the security system. If used properly
+        in combination with contexts for each group.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a id="userss" />2.1.4. Users</h4></div></div></div><p>Anonymous users: These users get there rights from the module
+        called anonymous. They are considered the normal page viewers. There
+        rank will always be 'ANONYMOUS'.</p><p>Logged in users: These users are validated through the
+        user/password module of the context security. They are the users which
+        can change your data in MMBase. The rank of these users is normally
+        'Basic users' but can also be 'Administrator' which is a rank that
+        grants more rights within MMBase.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a id="overview" />2.1.5. Overview picture of the security model</h4></div></div></div><div class="screenshot"><div><img src="media/contextSecurity.png" /></div></div><p>Note that the context to which a user belongs, is stored in the
+        owner field of the user.</p></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="operations" />2.2. Operations on objects</h3></div></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a id="rwd" />2.2.1. Read, Write and Delete</h4></div></div></div><p>To be able to read or write or delete an object in MMBase a user
+        needs the right 'read' or 'write' or 'delete' for this object.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a id="making_reference" />2.2.2. Making a reference to.</h4></div></div></div><p>The right 'link' give a user the possibility to create relations
+        between objects in MMBase. The user needs create rights on the
+        relation builder for this to work!</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a id="create" />2.2.3. Create</h4></div></div></div><p>The right 'create' is only used for builders. It gives the
+        specified user the right to create objects in this selected
+        builder.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a id="change" />2.2.4. Change</h4></div></div></div><p>The right 'change context' gives a users the right to alter the
+        rights defined in the selected context.</p></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="rights" />2.3. Rights</h3></div></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a id="create_object" />2.3.1. Create a new object</h4></div></div></div><p>To be able to create an object the user needs 'create' rights on
+        the node that represents the node-type within MMBase, see the typedef
+        table.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a id="create_relation" />2.3.2. Creating a new relation</h4></div></div></div><p>To create a new relation your users needs 'create' rights on the
+        insrel table and 'link' rights between the objects where he or she
+        wants to create a relation in-between.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a id="alter" />2.3.3. Altering an object</h4></div></div></div><p>To be able to change an object the user needs the 'change' right
+        for that object.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a id="change_rights" />2.3.4. Changing rights in contexts</h4></div></div></div><p>When you want a user to be able to change the rights of a
+        context then that user needs 'change context' rights for that selected
+        context.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h4 class="title"><a id="delete_right" />2.3.5. Deleting objects</h4></div></div></div><p>To remove an object the user needs 'delete' rights.</p></div></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="extended_example" />3. An extended example</h2></div></div></div><p>The following XML will be used to provide some explanation on the
+    context security configuration</p><pre class="programlisting">
+&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;!DOCTYPE contextconfig PUBLIC "//MMBase - contextconfig//" "http://www.mmbase.org/dtd/securitycontextconfig.dtd"&gt;
+&lt;contextconfig&gt;
+  &lt;loginmodules&gt;
+    &lt;module name="anonymous" class="org.mmbase.security.implementation.context.AnonymousLogin" /&gt;
+    &lt;module name="name/password" class="org.mmbase.security.implementation.context.PasswordLogin" /&gt;
+  &lt;/loginmodules&gt;
+  &lt;accounts&gt;
+    &lt;user name="anonymous" context="default" /&gt;
+    &lt;user name="admin" context="admin"&gt;
+      &lt;identify type="name/password" rank="administrator"&gt;admin2k&lt;/identify&gt;
+    &lt;/user&gt;
+    &lt;user name="foo" context="default" &gt;
+      &lt;identify type="name/password" rank="basic user"&gt;bar&lt;/identify&gt;
+    &lt;/user&gt;
+  &lt;/accounts&gt;
+  &lt;groups&gt;
+    &lt;group name="everyone"&gt;
+      &lt;contains type="group" named="users" /&gt;
+      &lt;contains type="user" named="anonymous" /&gt;
+    &lt;/group&gt;
+    &lt;group name="users"&gt;
+      &lt;contains type="user" named="foo" /&gt;
+      &lt;contains type="group" named="administrators" /&gt;
+    &lt;/group&gt;
+    &lt;group name="administrators"&gt;
+      &lt;contains type="user" named="admin" /&gt;
+    &lt;/group&gt;
+  &lt;/groups&gt;
+  &lt;contexts default="default"&gt;
+    &lt;context name="default"&gt;
+      &lt;operation type="create"&gt;
+        &lt;grant group="users" /&gt;
+      &lt;/operation&gt;
+      &lt;operation type="read"&gt;
+        &lt;grant group="everyone" /&gt;
+      &lt;/operation&gt;
+      &lt;operation type="write"&gt;
+        &lt;grant group="users" /&gt;
+      &lt;/operation&gt;
+      &lt;operation type="link"&gt;
+        &lt;grant group="users" /&gt;
+      &lt;/operation&gt;
+      &lt;operation type="delete"&gt;
+        &lt;grant group="users" /&gt;
+      &lt;/operation&gt;
+      &lt;operation type="change context"&gt;
+        &lt;grant group="administrators" /&gt;
+      &lt;/operation&gt;
+      &lt;possible context="default" /&gt;
+    &lt;/context&gt;
+  &lt;/contexts&gt;
+&lt;/contextconfig&gt;
+    </pre><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="loginmodule" />3.1. &lt;loginmodules /&gt;</h3></div></div></div><p>This is the module that takes care of the login process within
+      MMBase. There are no changes needed to this field so it will not be
+      described any further.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="accounts" />3.2. &lt;accounts /&gt;</h3></div></div></div><p>This are the accounts of the users which are know to the system.
+      It is advised to also create a user called anonymous since it does not
+      exists anywhere else.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="user_tag" />3.3. &lt;user&gt; &lt;identify /&gt; &lt;/user&gt;</h3></div></div></div><p>The following values can be given to the elements of user.</p><div class="itemizedlist"><ul type="disc"><li><p>name="..." : The name of the user</p></li><li><p>context="..." : The context that objects get when created
+          through this user</p></li><li><p>&lt;identify type="..." &gt; : The login type refers to
+          /contextconfig/loginmodules/module[@name] , this shall always be
+          "name/password"</p></li><li><p>&lt;identify rank="..." &gt; : This is the rank of the user
+          after login. The default is 'basic user' unless a person is
+          administrator then the rank will be 'administrator'. Anonymous users
+          always get the rank 'anonymous'</p></li><li><p>&lt;identify &gt; ... &lt;/identify &gt; : The password for
+          this user</p></li></ul></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="group_tag" />3.4. &lt;group&gt; &lt;contains /&gt; &lt;/group&gt;</h3></div></div></div><p>This defines groups within the context security. The following
+      structure applies:</p><pre class="programlisting">
+&lt;group name="%name%"&gt;
+  &lt;contains type="user" named="%username%" /&gt;
+  &lt;contains type="user" named="%username%" /&gt;
+  &lt;contains type="group" named="%groupname%" /&gt;
+  &lt;contains type="group" named="%groupname%" /&gt;
+&lt;/group&gt;
+      </pre><p>The following values can be given to the elements of group:</p><div class="itemizedlist"><ul type="disc"><li><p>name="..." : The name of the group.</p></li><li><p>&lt;contains type="..." &gt; : The type of of the element
+          'named' valid values are 'user' and 'group'.</p></li><li><p>&lt;contains named="..." &gt; : The group or user that is
+          member of this group. The element 'type' determines of this is a
+          user or a group member. If you specify the wrong type then the
+          correct entry cannot be found.</p></li></ul></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="contexts_tag" />3.5. &lt;contexts&gt; &lt;context /&gt; &lt;/contexts&gt;</h3></div></div></div><p>The following values can be given to the elements of
+      contexts.</p><div class="itemizedlist"><ul type="disc"><li><p>&lt;contexts&gt; ... &lt;/contexts&gt; : This is a list of
+          contexts that can be used within the context system.</p></li><li><p>&lt;contexts default="..." &gt; : This field refers to a
+          context that should be used when the owner field of an object refers
+          to an context that cannot be found. So the value should be named in
+          one of the &lt;contexts&gt; &lt;context name="..." &gt;
+          &lt;/contexts&gt; elements.</p><p>Within these &lt;contexts&gt; ... &lt;/contexts&gt; is it
+          possible to create new contexts which use the following
+          structure:</p><pre class="programlisting">
+&lt;context name="%contextname%"&gt;
+  &lt;operation type="%operation%" /&gt;
+  &lt;operation type="%operation%"&gt;
+    &lt;grant group="%groupname%" /&gt;
+    &lt;grant group="%groupname%" /&gt;
+  &lt;/operation&gt;
+  &lt;possible context="%contextname%" /&gt;
+  &lt;possible context="%contextname%" /&gt;
+&lt;/context&gt;
+          </pre><p>The following values can be given to the elements:</p><div class="itemizedlist"><ul type="circle"><li><p>&lt;context name="..." &gt; : The name of the
+              context.</p></li><li><p>&lt;context&gt; &lt;operation type="..." /&gt;
+              &lt;/context&gt; : The type of operation where rights are
+              granted to. Valid values are 'read', 'write', 'link', 'delete'
+              and 'change context'</p></li><li><p>&lt;context&gt; &lt;operation &gt; &lt;grant group="..."
+              /&gt; &lt;/operation&gt; &lt;/context&gt; : The group which
+              receives the rights within this context. Off course the group
+              should be found in a &lt;groups&gt; &lt;group name="..." /&gt;
+              &lt;/groups&gt; element.</p></li><li><p>&lt;context&gt; &lt;possible context="..." /&gt;
+              &lt;/context&gt; context/possible[@context] : When the context
+              of object van be changed, it can only be changed into the values
+              specified in this element. Which should be found in an element
+              called &lt;contexts&gt; &lt;context name="..." /&gt;
+              &lt;/contexts&gt;.</p></li></ul></div></li></ul></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="dtd" />3.6. The DTD of context.xml</h3></div></div></div><p>For completeness this is the full DTD used for context.xml:</p><pre class="programlisting">
+&lt;!ELEMENT contextconfig ( loginmodules, accounts, groups, contexts ) &gt;
+
+&lt;!ELEMENT loginmodules ( module+ ) &gt;
+
+&lt;!ELEMENT module ( property* ) &gt;
+&lt;!ATTLIST module class NMTOKEN #REQUIRED &gt;
+&lt;!ATTLIST module name CDATA #REQUIRED &gt;
+
+&lt;!ELEMENT property ( #PCDATA ) &gt;
+&lt;!ATTLIST property name NMTOKEN #REQUIRED &gt;
+
+&lt;!ELEMENT accounts ( user+ ) &gt;
+
+&lt;!ELEMENT user ( identify* ) &gt;
+&lt;!ATTLIST user context NMTOKEN #REQUIRED &gt;
+&lt;!ATTLIST user name NMTOKEN #REQUIRED &gt;
+
+&lt;!ELEMENT identify ( #PCDATA ) &gt;
+&lt;!ATTLIST identify rank (administrator | basic user) #REQUIRED &gt;
+&lt;!ATTLIST identify type CDATA #REQUIRED &gt;
+
+&lt;!ELEMENT groups ( group+ ) &gt;
+
+&lt;!ELEMENT group ( contains+ ) &gt;
+&lt;!ATTLIST group name NMTOKEN #REQUIRED &gt;
+
+&lt;!ELEMENT contains EMPTY &gt;
+&lt;!ATTLIST contains named NMTOKEN #REQUIRED &gt;
+&lt;!ATTLIST contains type NMTOKEN #REQUIRED &gt;
+
+&lt;!ELEMENT contexts ( context+ ) &gt;
+&lt;!ATTLIST contexts default NMTOKEN #REQUIRED &gt;
+
+&lt;!ELEMENT context ( operation*, possible* ) &gt;
+&lt;!ATTLIST context name NMTOKEN #REQUIRED &gt;
+
+&lt;!ELEMENT operation ( grant* ) &gt;
+&lt;!ATTLIST operation type (read | write | link | delete | change context) #REQUIRED &gt;
+
+&lt;!ELEMENT grant EMPTY &gt;
+&lt;!ATTLIST grant group NMTOKEN #REQUIRED &gt;
+
+&lt;!ELEMENT possible EMPTY &gt;
+&lt;!ATTLIST possible context NMTOKEN #REQUIRED &gt;
+      </pre></div></div></div><hr xmlns="" /><p xmlns="">
+      This is part of the <a href="http://www.mmbase.org">MMBase</a> documentation.
+    </p><p xmlns="">
+      For questions and remarks about this documentation mail to: 
+      <a href="/cdn-cgi/l/email-protection#f4909b978199919a8095809d9b9ab4999996958791da9b8693"><span class="__cf_email__" data-cfemail="74101b170119111a0015001d1b1a341919161507115a1b0613">[email&#160;protected]</span></a></p><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script></body></html>

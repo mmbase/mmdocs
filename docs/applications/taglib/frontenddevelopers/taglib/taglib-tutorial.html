@@ -1,0 +1,910 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title>Creating webpages with the MMBase Tag Library</title><link href="../../../../style/documentation.css" rel="stylesheet" type="text/css" /><meta content="DocBook XSL Stylesheets V1.72.0" name="generator" /><meta name="description" content="This document offers a tutorial for page designer who want to build web pages using the MMBase Tag Library. Readers should be familiar with JSP technologies, HTML and have an up-and-running instance of MMBase available." /><link xmlns="" type="image/x-icon" href="../../../../style/favicon.ico" rel="icon" /><link xmlns="" type="image/x-icon" href="../../../../style/favicon.ico" rel="shortcut icon" /><meta xmlns="" content="text/html; charset=utf-8" http-equiv="content-type" /></head><body><div xmlns="" class="navigation"><img alt="mmbase logo" src="../../../../style/logo.png" /><h2>Creating webpages with the MMBase Tag Library</h2><p><a href="taglib-tutorial.html#N10040">Introduction</a></p><p><a href="taglib-tutorial.html#N1008B">Preparing the tutorial</a></p><p><a href="taglib-tutorial.html#N1009C">Accessing content stored in MMBase</a></p><p><a href="taglib-tutorial.html#N1010B">Working with field tags</a></p><p><a href="taglib-tutorial.html#N1011F">Working with related nodes</a></p><p><a href="taglib-tutorial.html#N10153">Constructing the newsitems page</a></p><p><a href="taglib-tutorial.html#N1018B">Next steps...</a></p><p><a href="taglib-tutorial.html#N101A4">A bit more about 'providers', 'referrers',
+    'writers' and so on.</a></p><p><a href="taglib-tutorial.html#taglibvars">Taglib variables</a></p><p><a href="taglib-tutorial.html#N10293">Jsp-variables</a></p><hr /><p><a href="http://www.mmbase.org">MMBase</a></p><p><a href="../../../../index.html">home</a></p></div><div class="article" lang="en"><div class="titlepage"><div><div><h1 class="title"><a id="N10001" />Creating webpages with the MMBase Tag Library</h1></div><div><div class="authorgroup"><strong class="authorgroup">Authors: </strong><span class="author"><span class="firstname">Rogier</span> <span class="surname">Schaaf (E-id! Internet Strategies B.V.)</span>, </span><span class="author"><span class="firstname">Michiel</span> <span class="surname">Meeuwissen</span></span><br /><strong class="authorgroup">Date: </strong>2006-07</div></div><div><p class="copyright">Copyright © This document is created under the Mozilla Public License </p></div><div /><div><div class="abstract"><p class="title"><b>Abstract</b></p><p>This document offers a tutorial for page designer who want to
+      build web pages using the MMBase Tag Library. Readers should be familiar
+      with JSP technologies, HTML and have an up-and-running instance of
+      MMBase available.</p></div></div></div><hr /></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="section"><a href="taglib-tutorial.html#N10040">1. Introduction</a></span></dt><dd><dl><dt><span class="section"><a href="taglib-tutorial.html#N10045">1.1. Who should read this tutorial?</a></span></dt><dt><span class="section"><a href="taglib-tutorial.html#N1004A">1.2. What you need to complete this tutorial?</a></span></dt><dt><span class="section"><a href="taglib-tutorial.html#N10051">1.3. Conventions</a></span></dt><dt><span class="section"><a href="taglib-tutorial.html#N1006A">1.4. Tell us what you think</a></span></dt><dt><span class="section"><a href="taglib-tutorial.html#N1007A">1.5. Getting help</a></span></dt></dl></dd><dt><span class="section"><a href="taglib-tutorial.html#N1008B">2. Preparing the tutorial</a></span></dt><dt><span class="section"><a href="taglib-tutorial.html#N1009C">3. Accessing content stored in MMBase</a></span></dt><dd><dl><dt><span class="section"><a href="taglib-tutorial.html#N100B5">3.1. Importing the default magazine</a></span></dt><dt><span class="section"><a href="taglib-tutorial.html#N100CA">3.2. Accessing the cloud</a></span></dt><dt><span class="section"><a href="taglib-tutorial.html#N100E2">3.3. Working with node tags</a></span></dt><dt><span class="section"><a href="taglib-tutorial.html#N10104">3.4. Summary</a></span></dt></dl></dd><dt><span class="section"><a href="taglib-tutorial.html#N1010B">4. Working with field tags</a></span></dt><dt><span class="section"><a href="taglib-tutorial.html#N1011F">5. Working with related nodes</a></span></dt><dd><dl><dt><span class="section"><a href="taglib-tutorial.html#N10124">5.1. Retrieving the related nodes</a></span></dt></dl></dd><dt><span class="section"><a href="taglib-tutorial.html#N10153">6. Constructing the newsitems page</a></span></dt><dt><span class="section"><a href="taglib-tutorial.html#N1018B">7. Next steps...</a></span></dt><dt><span class="section"><a href="taglib-tutorial.html#N101A4">8. A bit more about 'providers', 'referrers',
+    'writers' and so on.</a></span></dt><dd><dl><dt><span class="section"><a href="taglib-tutorial.html#N101A7">8.1. Providers/Referrers</a></span></dt><dt><span class="section"><a href="taglib-tutorial.html#N101B8">8.2. id's</a></span></dt><dt><span class="section"><a href="taglib-tutorial.html#N101D7">8.3. Writers/Writer referrers</a></span></dt><dt><span class="section"><a href="taglib-tutorial.html#N101ED">8.4. Condition tags</a></span></dt><dt><span class="section"><a href="taglib-tutorial.html#N101FA">8.5. List referrers</a></span></dt></dl></dd><dt><span class="section"><a href="taglib-tutorial.html#taglibvars">9. Taglib variables</a></span></dt><dd><dl><dt><span class="section"><a href="taglib-tutorial.html#N10211">9.1. The context tag</a></span></dt><dt><span class="section"><a href="taglib-tutorial.html#N1022A">9.2. The referid attribute</a></span></dt><dt><span class="section"><a href="taglib-tutorial.html#N10234">9.3. dollar-signs ($)</a></span></dt><dt><span class="section"><a href="taglib-tutorial.html#N10259">9.4. Another way to create taglib variables: import tag</a></span></dt><dt><span class="section"><a href="taglib-tutorial.html#N10279">9.5. The parent-writer variable $_ and  parent-node variable $_node</a></span></dt></dl></dd><dt><span class="section"><a href="taglib-tutorial.html#N10293">10. Jsp-variables</a></span></dt></dl></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="N10040" />1. Introduction</h2></div></div></div><p>In this tutorial we try to give page designers a hands-on overview
+    of the capabilities of the MMBase Tag Library. This technology, shipped
+    with the MMBase content management system, enables page designers in
+    developing web pages that retrieve their content from the MMBase system.
+    After reading this tutorial and working your way through the examples we
+    hope that share our enthusiasm for the MMBase system and the possibilities
+    it offers to page designers.</p><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="N10045" />1.1. Who should read this tutorial?</h3></div></div></div><p>This tutorial is aimed at page designers who develop websites
+      using MMBase as the underlying content management system. To successful
+      complete this tutorial, you must be proficient with HTML and JSP
+      concepts like tags and tag libraries.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="N1004A" />1.2. What you need to complete this tutorial?</h3></div></div></div><p> This tutorial requires a working instance of MMBase with the 'MyNews' application
+      deployed.  If you don't have an MMBase instance available in your network, ask your MMBase
+      administrator to set one up for you.</p><p>To edit your pages you'll need at least some breed of editor.
+      The tutorial makes no assumptions on your tooling. You can edit your
+      pages with your favorite editor, however the tutorial doesn't
+      elaborate on using specific tools for page editing.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="N10051" />1.3. Conventions</h3></div></div></div><p>We have used a number of styles of text and layout in this
+      tutorial to help differentiate between different kinds of information.
+      The following examples are an example of this markup.</p><div class="example"><a id="N10056" /><p class="title"><b>Example 1. Example</b></p><div class="example-contents"><p>All examples in this tutorial are separately headed</p></div></div><br class="example-break" /><div class="caution" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Caution</h3><p>this indicates a possible problem area</p></div><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p>this indicates a warning</p></div><div class="important" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Important</h3><p>important notices</p></div><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>additional information</p></div><div class="tip" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Tip</h3><p>this indicates a valuable tip</p></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="N1006A" />1.4. Tell us what you think</h3></div></div></div><p>The MMBase community has worked hard on this tutorial to make it
+      enjoyable and useful. Our best reward would be to hear from you that you
+      liked working through it and it helped you discovering the possibilities
+      of the MMBase tag library.</p><p>Please let us know what you think about it. Tell us what you liked
+      best and what aspects of this tutorial you didn't like so we improve
+      future releases of this document. The easiest way to give us feedback is
+      to drop an email message at:</p><p class="remark"><i><span class="remark"><code class="email">&lt;<a href="/cdn-cgi/l/email-protection#a2c6cdc1d7cfc7ccd6c3d6cbcdcce2cfcfc0c3d1c78ccdd0c5"><span class="__cf_email__" data-cfemail="5a3e35392f373f342e3b2e3335341a3737383b293f7435283d">[email&#160;protected]</span></a>&gt;</code></span></i></p><p>You can also find more information about MMBase on the MMBase
+      website. There you'll find sample code, information on latest
+      releases, currently running projects and their participating members and
+      lots of other interesting information. The address of the website is:</p><p class="remark"><i><span class="remark"><a xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.mmbase.org/" target="_top">http://www.mmbase.org</a></span></i></p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="N1007A" />1.5. Getting help</h3></div></div></div><p>If you find a mistake in this tutorial, please inform us about it
+      at <a xmlns:xlink="http://www.w3.org/1999/xlink" href="/cdn-cgi/l/email-protection#32565d51475f575c4653465b5d5c725f5f505341571c5d4055" target="_top"><span class="__cf_email__" data-cfemail="5c38333f29313932283d283533321c31313e3d2f3972332e3b">[email&#160;protected]</span></a>.</p><p>If you have additional questions please contact one of the
+      companies that support MMBase. You will find a complete listing of
+      supporting companies on the MMBase website. Point your browser to:</p><p class="remark"><i><span class="remark"><a xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.mmbase.org/" target="_top">http://www.mmbase.org</a></span></i></p><p>Furthermore, you can subscribe to several mailing lists where
+      users and developers exchange information. Good chance you'll find
+      someone there willing to help you out.</p></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="N1008B" />2. Preparing the tutorial</h2></div></div></div><p>This tutorial builds the MyNews application, a sample application
+    that is shipped with the MMBase distribution. Before beginning this
+    tutorial, make sure that you have the distribution of MMBase installed and
+    running with the demo applications running as well. The MyNews application
+    uses the following content model. Take a minute to review this design as
+    it will be used throughout this tutorial.</p><div class="figure"><a id="N10090" /><p class="title"><b>Figure 1. News Example Cloud</b></p><div class="figure-contents"><div class="mediaobject"><img src="media/cloud.jpg" alt="News Example Cloud" /></div></div></div><br class="figure-break" /><p>As you can see, the central item appears to be our news item. It has
+    several relations to other content types within the cloud, some of them
+    showing a "posrel" attribute.</p><p>These are special types of relations. Posrel relations offer the
+    possibility to add sequencing information on the relation. This way you
+    can set the sequence as each relation is added by using an integer
+    attribute. Note that setting the "pos" attribute of a posrel
+    relation is not done automatically. If you don't supply a value,
+    MMBase will set it to its default value being -1.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="N1009C" />3. Accessing content stored in MMBase</h2></div></div></div><p>When you're developing websites with MMBase as the underlying
+    content management system, your pages will need access to the content that
+    is stored in MMBase. Content in MMBase is stored in a cloud. Within the
+    cloud you'll find nodes. The nodes are the actual pieces of content in
+    MMBase. Nodes are organized in content types and relations between content
+    types. For example, if you define that every news item you publish on your
+    website would contain the news text and an image, then you would have two
+    content types in your cloud: content type "news" and content type
+    "images". Furthermore you would define a relation between the
+    content types news and image to support displaying images with newsitems.</p><p>For a very basic website you'll need no more than a handful of
+    content types. The standard MMBase distribution is supplied with all
+    necessary node types for a basic website.</p><p>Now let's have a look at how we can access the cloud from within
+    the default J2EE templating facility, e.g. Java Server Pages or short
+    JSP's. To access the content cloud, MMBase supplies developers with a
+    tag library. We assume you are familiar with the concepts of such a
+    library and will not elaborate on it here.</p><p>Every tag library uses it's own namespace. The namespace is
+    there to help the system distinguish between different tags from different
+    libraries. MMBase tags are all prefixed by default with the string
+    "mm". You are free to choose another prefix, however this usage is
+    very common across MMBase developers.</p><p>To prepare your pages to work with MMBase tag libraries the first
+    thing you'll have todo is to declare the MMBase tag library in your
+    page. The MMBase tag library is declared by the following statement:</p><pre class="programlisting">&lt;%@ taglib uri="http://www.mmbase.org/mmbase-taglib-2.0"
+    prefix="mm" %&gt;</pre><p>
+      Or if you are using JSPX:
+    </p><pre class="programlisting">
+      &lt;anyxmlelement xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0" /&gt;
+    </pre><p>In this declaration you tell the JSP compiler that you will be using
+    the MMBase taglibrary and that the tags used by this library are prefixed
+    by "mm". The value for the uri attribute, in this case
+    "http://www.mmbase.org/mmbase-taglib-2.0" is the identification of
+    the MMBase tag library. There is also a version 1-0, which differences in a few details only
+    (but it more backwards compatible with older mmbase taglib versions, and doesn't use features
+    which e.g. are not available in Tomcat 4).
+    </p><p>
+      We may omit this declaration in further examples, but don't forget that it must always be there.
+    </p><p>
+      The MMBase taglib is implemented in a file 'mmbase-taglib-2.jar' which must be present in the
+      WEB-INF/lib directory of your web application.
+    </p><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="N100B5" />3.1. Importing the default magazine</h3></div></div></div><p>To start with this tutorial, we will first start the actual MyNews
+      application. Find the URL on the examples screen and click it to startup
+      MyNews. MyNews should present you it's first screen.</p><p>[todo:screendump]</p><p>This first screen shows the magazine that's available in the
+      demo setup of MMBase, together with the news items associated with that
+      magazine and (full right) a link you can click to read the actual news
+      item. As you can see, the layout is straightforward without graphics.
+      We'll focus on developing this page first, then you can add graphics
+      and layout to your liking.</p><p>Below, in the lefthand corner of the screen, you'll find two
+      links. Clicking the last link will show you the source of this page.</p><p>The MyNews application runs with a simple database with a single
+      magazine in it. The designers of the database have labeled this
+      magazine with a default alias named "default.mags". To use this
+      default magazine we import it into our page by using the
+      &lt;mm:import&gt; tag. The &lt;mm:import&gt; tag uses a special
+      environment, called a context. Into this context, the developer can
+      store identifiers and their values (Java developers can compare a
+      context to a Map-like structure). </p><pre class="programlisting">&lt;%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" %&gt;
+&lt;mm:import id="magid" externid="magid"&gt;default.mags&lt;/mm:import&gt;</pre><p>When this page would be called with the parameter magid in the
+      request then the value of magid would be passed to the id magid. For
+      example if index.jsp is called with index.jsp?magid=210 then the id
+      magid would have the value 210. For this to work you will for example
+      have to create a page with links to all available magazines, like &lt;a
+      href="index.jsp?magid=210"&gt;The default magazine&lt;/a&gt;.
+      In the "Working with related nodes" section we will see how you can
+      create such page by using the &lt;mm:url /&gt; tag.
+      </p><p>
+        If the externid and id attbributes are the same, then the id attribute can be omitted, so
+        often you'd see simply this:
+      </p><pre class="programlisting">&lt;mm:import id="magid" externid="magid"&gt;default.mags&lt;/mm:import&gt;</pre></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="N100CA" />3.2. Accessing the cloud</h3></div></div></div><p>
+        Any webpage that tries to access content from MMBase will first
+        have to initialize access to the cloud. For cloud initialization the
+        &lt;mm:cloud&gt; tag is available. Besides a number of exceptions, the
+        &lt;mm:cloud&gt; tag encapsulates most other MMBase tags you want to
+        use. This means that all other MMBase tags you'll want to use, must
+        appear between the &lt;mm: cloud&gt; and &lt;/mm:cloud&gt; tags.
+        Note that you may get runtime errors when you place tags which need a cloud, outside the cloud
+        tag.
+      </p><div class="example"><a id="N100CF" /><p class="title"><b>Example 2. accessing the cloud example</b></p><div class="example-contents"><p>
+          When using the &lt;mm:cloud&gt; tag there are several
+          attributes that you can use. For now, we only use the "name"
+          attribute. By default MMBase uses the "mmbase" value for this
+          attribute if you omit it If you want to access a cloud that has
+          another name, you'll have to supply this name to be able to access
+          that cloud. This is never done.
+        </p><p>Please refer to the MMBase Tag Library Reference Guide to get a
+        full overview of the possible attributes you can use with this tag.</p><p><div class="tip" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Tip</h3><p>The &lt;mm:cloud&gt; tag offers far more functionality that presented
+        here. Mostly related to authentication of users. To learn more about the &lt;mm:cloud&gt;
+        tag, please refer to the advanced features section of the tutorial where you can learn about
+        using the authentication features of this tag. [ TO DO]</p></div></p><p>To access the cloud, add the following tags to our page:</p><pre class="programlisting">&lt;%@taglib
+        uri="http://www.mmbase.org/mmbase-taglib-2.0"
+        prefix="mm" %&gt; &lt;mm:import
+        externid="magid"&gt;default.mags&lt;/mm:import&gt;
+        &lt;mm:cloud&gt; &lt;/mm:cloud&gt;</pre><p>
+          Or, if we give another JSPX version:
+        </p><pre class="programlisting">
+        &lt;mm:cloud xmlns:mm="http://www.mmbase.org/mmbase-taglib-2.0"&gt;
+           &lt;mm:import externid="magid"&gt;default.mags&lt;/mm:import&gt;
+        &lt;/mm:cloud&gt;</pre></div></div><br class="example-break" /></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="N100E2" />3.3. Working with node tags</h3></div></div></div><p>Through the tag in the previous chapter, the &lt;mm:cloud&gt;
+      tag, we gained access to the MMBase cloud. Next we want access to our
+      magazine, a node in the MMBase cloud.</p><p>Now to access our magazine, you'll have to tell MMBase which
+      node you wish to access. Every node within MMBase is automatically
+      assigned a unique number to distinguish it from other nodes.</p><div class="tip" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Tip</h3><p>To make your content portable between databases, you can use
+        aliases to refer to your nodes, in stead of absolute numerical node
+        numbers. As you transfer content between databases it's not
+        guaranteed that nodes receive the same number, while they always keep
+        an assigned alias. Usage of aliases will also make your JSP's
+        better readable.</p></div><p>To retrieve a node from MMBase you use the &lt;mm:node&gt; tag.</p><p>To retrieve our magazine we obviously have several alternate
+      approaches. We can use the number of the node, we can use the alias that
+      is linked to our magazine, or we can use an id which contains the node
+      number or the alias as its value. From the previous paragraph we know
+      that our magazine has a default alias of "default.mags".
+      We'll use that to access it in our JSP. Add the following to our JSP:</p><pre class="programlisting">
+&lt;mm:cloud&gt;
+  &lt;mm:import externid="magid"&gt;default.mags&lt;/mm:import&gt;
+  &lt;mm:node number="$magid"&gt;
+  &lt;/mm:node&gt;
+&lt;/mm:cloud&gt;</pre><p>Using the &lt;mm:node&gt; tag we actually are accessing the node
+      of which we imported the alias or node number earlier into our page,
+      using the &lt;mm:import&gt; tag. By using the $ directive, MMBase
+      knows that the value between quotes is not an actual value of an alias,
+      but an imported variable within the context of this page.</p><p>Another approach, if our database would ever only contain one
+      default magazine, would be to lookup its node number in MMBase and refer
+      it directly in our page. For example, assume we one magazine in our
+      database with number 210, we could do:</p><pre class="programlisting">
+&lt;mm:cloud&gt;
+  &lt;mm:node number="210"&gt;
+  &lt;/mm:node&gt;
+&lt;/mm:cloud&gt;</pre><p>The obvious drawback of this structure is that the magazine number
+      is now hardcoded into our page, which means we can only show this
+      specific magazine.</p><p> An alternative to working with &lt;mm:import
+      externid="magid" /&gt; is to use a little Java scriplet inside
+      your template which distills the node number from the request.</p><pre class="programlisting">
+&lt;%
+  String magid = (String) request.getAttribute("magid");
+%&gt;
+
+&lt;mm:cloud&gt;
+  &lt;mm:node number="&lt;%= magid%&gt;"&gt;
+  &lt;/mm:node&gt;
+&lt;/mm:cloud&gt;</pre><p>You could also use 'Expression language', which makes it even simpler.</p><pre class="programlisting">
+&lt;mm:cloud&gt;
+  &lt;mm:node number="${param.magid}&gt;"&gt;
+  &lt;/mm:node&gt;
+&lt;/mm:cloud&gt;</pre><p>These are all alternatives to the solution presented in the sample
+      MMBase application MyNews. Your actual choice depends on your
+      application needs and your personal liking. For this tutorial we will
+      stick to the default implementation as presented in the MMBase
+      distribution.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="N10104" />3.4. Summary</h3></div></div></div><p>We have now prepared our first JSP that will retrieve a default
+      magazine from our preloaded content cloud. We used the
+      &lt;mm:import&gt; tag to import our magazine into a context and later
+      used the &lt;mm:node&gt; tag to retrieve the magazine from this
+      context. Before we could use the &lt;mm:node&gt; tag however, we had
+      to tell MMBase which cloud we are going to access. Accessing the cloud
+      is the important step you always have to perform to work with MMBase
+      content in a JSP environment.</p><p>In the next chapter we'll try to display some of the fields of
+      the magazine and display the titles of the available newsitems
+      associated with the magazine.</p></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="N1010B" />4. Working with field tags</h2></div></div></div><p>MMBase organizes its content into nodes. Each node consists of
+    several fields, containing the actual content of the node. Each field can
+    be of a specific type. To access the fields within a node, MMBase offers
+    the &lt;mm:field&gt; tag. To access the title and the subtitle of the
+    magazine, we tell MMBase to display it by using this tag.</p><p>In our first page we'll now use the &lt;mm:field&gt; tag to
+    display fields from the default magazine. Create a table and within the
+    table, create two rows. The first row displays the title and the subtitle
+    of the default magazine. The second row display the intro and the body of
+    the magazine. Your page should now look something like the listing below.</p><pre class="programlisting">
+&lt;mm:import externid="magid"&gt;default.mags&lt;/mm:import&gt;
+&lt;mm:cloud&gt;
+  &lt;mm:node number="$magid" id="mag"&gt;
+    &lt;h1&gt;&lt;mm:field name="title" escape="inline" /&gt;&lt;/h1&gt;
+    &lt;h2&gt;&lt;mm:field name="subtitle" escape="inline" /&gt;&lt;/h2&gt;
+    &lt;p&gt;&lt;mm:field  name="intro" /&gt;&lt;/p&gt;
+    &lt;mm:field  name="body" escape="p" /&gt;
+  &lt;/mm:node&gt;
+&lt;/mm:cloud&gt;</pre><p>Note that we used the
+    &lt;mm:field&gt; tag to display the title and the subtitle of the
+    magazine. As a simple formatting option we added &lt;h1&gt; and
+    &lt;h2&gt; tags to create the impression of titles. Also notice that all
+    MMBase tags are well formed. This means that opening and closing tags
+    should always be in balance. JSP compilers are not as forgiving as
+    browsers. If your tags are not well formed, you will definitely see
+    compile errors (also in your log). If you see them, correct the errors and try
+    compiling the page again.</p><p>
+      The escape-attribute is used to ensure that the content produced by the field-tags does not
+      break the HTML.
+    </p><div class="tip" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Tip</h3><p>
+        A surrounding &lt;mm:content&gt;-tag can provide a default escaper to all field-tags, so
+        that you don't have to specifiy 'escape="inline"' every time.
+      </p></div><p>Your page is now ready for a first test and should display the
+    title, subtitle, intro and body of the default magazine from the MMBase
+    content cloud.</p><p>The &lt;mm:node&gt; tag offers more options than the one shown in
+    this tutorial. Please refer to the full documentation for more information
+    on the use of this tag.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="N1011F" />5. Working with related nodes</h2></div></div></div><p>Next we want to display the news items that can be found in our
+    magazine. Refer back to the content model we displayed earlier in this
+    tutorial. One related node from magazine is news. As we have the magazine
+    available in our page, we should be able to access its related news nodes.</p><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="N10124" />5.1. Retrieving the related nodes</h3></div></div></div><p>To retrieve related nodes from a specific node, MMBase supplies the
+      &lt;mm:relatednodes&gt; tag (and also an 'mm:related' tag). Within this tag you can use
+      several interesting options to control the way MMBase retrieves the related nodes. Refer to
+      the full reference documentation to review all possible options to control retrieval of
+      related nodes. For now we add an entry to our JSP where we tell MMBase to travel a path
+      between our magazine and its news using the posrel relation. As we are only interested in the
+      sequence of the relation and the title of each news item in our magazine, we tell MMBase to
+      only use the "pos" field from the posrel relation and the title from the magazine node. We
+      conclude by telling MMBase to order all results by the value in the "pos" field, thus
+      retrieving each news node in same sequence as it was entered.</p><p><pre class="programlisting">&lt;mm:relatednodes role="posrel" type="news" orderby="posrel.pos"&gt;</pre></p><p>When you add the above entry, your JSP should now look something
+      like below. Note that we also added a &lt;tr&gt; &lt;/tr&gt; entry,
+      so that for each found related node from magazine to news, a new row in
+      our table will be created.</p><pre class="programlisting">
+&lt;mm:import externid="magid"&gt;default.mags&lt;/mm:import&gt;
+&lt;mm:cloud&gt;
+  &lt;mm:node number="$magid"&gt;
+    &lt;h1&gt;&lt;mm:field name="title" escape="inline" /&gt;&lt;/h1&gt;
+    &lt;h2&gt;&lt;mm:field name="subtitle" escape="inline" /&gt;&lt;/h2&gt;
+    &lt;mm:field  name="intro" escape="p"/&gt;&lt;
+    &lt;mm:field  name="body" escape="p" /&gt;
+    &lt;ul&gt;
+      &lt;mm:relatednodes role="posrel" type="news" orderby="posrel.pos"&gt;
+       &lt;li&gt;
+        &lt;field name="title" escape="text/html" /&gt;
+       &lt;/li&gt;
+      &lt;/mm:related&gt;
+      &lt;/ul&gt;
+  &lt;/mm:node&gt;
+&lt;/mm:cloud&gt;</pre><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>MMBase contains a number of tags by which you can list the nodes
+        related to a specific node. Next to &lt;mm:relatednodes &gt; you can use
+        &lt;mm:related&gt;, &lt;mm:listnodes&gt; and
+        &lt;mm:list&gt;. See the MMBase taglib reference for a
+        difference between these tags. 
+        </p><p>
+          The difference beteen mm:relatednodes and mm:related is that the second one does nur
+          provide 'real' but 'cluster' nodes, which are 'virtual' nodes which contain
+          field data of one or more real nodes.
+        </p></div><p>We've now setup the basic structure that will create rows for
+      each news node found by MMBase. It would be nice though, if these values
+      were presented with a heading for each column. We want this heading to
+      appear just once before MMBase start writing out the first news node. To
+      support this behavior, MMBase has a tag &lt;mm:first&gt; that fires
+      upon the first entry in the list.</p><pre class="programlisting">
+&lt;mm:import externid="magid"&gt;default.mags&lt;/mm:import&gt;
+&lt;mm:cloud&gt;
+  &lt;mm:node number="$magid"&gt;
+    &lt;h1&gt;&lt;mm:field name="title"/&gt;&lt;/h1&gt;
+    &lt;h2&gt;&lt;mm:field name="subtitle"/&gt;&lt;/h2&gt;
+    &lt;mm:field  name="intro" escape="p"/&gt;
+    &lt;mm:field  name="body" escape="p" /&gt;
+    &lt;table&gt;
+       &lt;mm:related path="posrel,news" fields="news.title" orderby="posrel.pos"&gt;
+         &lt;mm:first&gt;
+             &lt;tr&gt;
+               &lt;td&gt;Title&lt;/td&gt;
+               &lt;td/&gt;
+            &lt;/tr&gt;
+            &lt;/mm:first&gt;
+            &lt;tr&gt;
+            &lt;/tr&gt;
+            &lt;/mm:related&gt;
+     &lt;/table&gt;
+  &lt;/mm:node&gt;
+&lt;/mm:cloud&gt;</pre><p>To complete our JSP, we now have to add the title field followed
+      by an URL to the next JSP that will display our actual news. Displaying
+      the title is achieved by using the &lt;mm:field&gt; tag again.
+      Remember we used this tag to display the some fields from the default
+      magazine.</p><pre class="programlisting">&lt;%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" %&gt;
+&lt;mm:import externid="magid"&gt;default.mags&lt;/mm:import&gt;
+&lt;mm:cloud&gt;
+  &lt;mm:node number="$magid" id="mag"&gt;
+  &lt;h1&gt;&lt;mm:field name="title"/&gt;&lt;/h1&gt;&lt;
+  &lt;h2&gt;&lt;mm:field name="subtitle"/&gt;&lt;/h2&gt;
+  &lt;mm:field  name="intro" escape="p"/&gt;
+  &lt;mm:field  name="body" escape="p"/&gt;
+  &lt;table&gt;
+    &lt;mm:related path="posrel,news" fields="posrel.pos,news.title" orderby="posrel.pos"&gt;
+      &lt;mm:first&gt;
+        &lt;tr&gt;
+          &lt;td&gt;Title&lt;/td&gt;
+        &lt;/tr&gt;
+      &lt;/mm:first&gt;
+      &lt;tr&gt;
+         &lt;td&gt;&lt;mm:field name="title"/&gt;&lt;/td&gt;
+      &lt;/tr&gt;
+     &lt;/mm:related&gt;
+   &lt;/table&gt;
+  &lt;/mm:node&gt;
+&lt;/mm:cloud&gt;</pre><p>The construction of the URL to access the content of the news
+      items may seem a bit obscure and needs some additional explanation. First
+      we start creation of a default URL by using the &lt;a&gt; tag. In
+      stead of hardcoding our "href", we use data from MMBase by
+      letting MMBase create the URL use by using the &lt;mm:url&gt; tag.
+      Read the full documentation on this tag to get more information on the
+      possibilities of this tag. In this situation the URL is pointing to the
+      JSP named "newsitem.jsp". Within the &lt;mm:url&gt; tag we use
+      the &lt;mm:param&gt; tag to pass necessary information to our
+      "newsitem.jsp", namely the number or id of the newsitem we wish
+      to read.</p><p>The resulting URL will appear as follows in our browser:</p><pre class="programlisting">http://yourhostname/mmbase-webapp/mmexamples/jsp/mynews/newsitem.jsp?magid=default.mags&amp;newsid=59</pre><p>When we run our JSP in our browser we should see the following
+      page appear [TO DO add screenshot]:</p><div><img src="http://www.mmbase.org/mmdocs/applications/taglib/frontenddevelopers/taglib/media/mynews.jpg" /></div><div class="tip" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Tip</h3><p>
+          When using JSPX, the demonstrated way of using mm:url in the href attribute of the a-tag
+          is not possible (because it is not valid XML). Therefore in MMBase-1.8 there is also
+          this way:
+        </p><pre class="programlisting">
+          &lt;mm:link referids="magid" page="newsItem.jspx"&gt;
+              &lt;mm:param name="newsid"&gt;&lt;mm:field name="number"/&gt;&lt;/mm:param&gt;
+              &lt;a href='${_}'&gt;link&lt;/a&gt;
+          &lt;/mm:link&gt;
+        </pre><p>
+          This 'link' tag is nearly identical to the 'url' tag. It only differs in details about
+          when it writes itself to the page.
+        </p></div><div class="tip" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Tip</h3><p>
+          Using the implicit _node variable (available in the body of every node-tag, and always
+          representing the 'current' node), it can be
+          made even simpler:
+        </p><pre class="programlisting">
+          &lt;mm:link referids="magid,_node@newsid" page="newsItem.jspx"&gt;
+              &lt;a href='${_}'&gt;link&lt;/a&gt;
+          &lt;/mm:link&gt;
+        </pre></div></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="N10153" />6. Constructing the newsitems page</h2></div></div></div><p>We've completed the first part of our sample application. Next
+    we will expand our sample application with a second page that's
+    capable of presenting the news item selected from the first page. First we
+    add some familiar stuff like the reference to the MMBase tag library. You
+    should incorporate this on every page, otherwise the MMBase tags will
+    definitely not work. In this page you see a new feature: the usage of an
+    error page. This has nothing to do with MMBase, but is a typical feature
+    of the JSP specs. Using an error page, you can create a more elegant way
+    to trap unforeseen situations. In stead of presenting the user with a
+    stack trace, we can now present an error page where we handle the error
+    more gracefully. Building the error page is not within the scope of this
+    tutorial, so please review the page yourself if you want to find out more
+    about this technique.</p><div class="warning" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Warning</h3><p>When developing new pages you should be very careful with using
+      an error page. Where you want elegant error messages once your website
+      is in production, you will surely enjoy the full error message when you
+      are developing your JSP-templates.</p></div><pre class="programlisting">&lt;%@page errorPage="error.jsp" language="java" contentType="text/html; charset=UTF-8" %&gt;
+&lt;%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" %&gt;
+
+&lt;mm:cloud&gt;
+  &lt;mm:import externid="newsid" required="true" /&gt;
+
+  &lt;html&gt;
+    &lt;head&gt;
+      &lt;link rel="stylesheet" type="text/css" href="style.css" /&gt;
+    &lt;/head&gt;
+
+    &lt;mm:node number="$newsid"&gt;
+    &lt;/mm:node&gt;
+
+  &lt;/html&gt;
+&lt;/mm:cloud&gt;
+
+</pre><p>We import the id of the selected news item from the previous page.
+    This value was passed to our new page through the &lt;mm:param&gt; tag
+    and the &lt;mm:import&gt; tags retrieves it again.</p><p>Next we use the &lt;mm:node&gt; tag to be able to process the news
+    item that we wish to display. Remember that by using the $ directive we
+    don't actually use that value as the node id, but are referring to a
+    variable with that name inside the context.</p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>
+        Most tags also can have a 'referid' attribute, by which they become a reuse of another tag
+        with that id. So you could use the same node twice like this:
+      </p><pre class="programlisting">
+        &lt;mm:node id="newsnode" number="$newsid"&gt;
+        &lt;/mm:node&gt;
+        &lt;mm:node referid="newsnode"&gt;
+        &lt;/mm:node&gt;
+      </pre><p>
+        A tag with an id actually creates a variable of that name. If a variable referred in a
+        'referid' attribute is not of the correct type, it will normally automaticly be converted to
+        the variable. Therefore you could also have used this in the first place:
+      </p><pre class="programlisting">
+        &lt;mm:node referid="newsid"&gt;
+        &lt;/mm:node&gt;
+      </pre></div><p>Next we'll add the title for our browser window and build the
+    basic html structure that will display our news item.</p><pre class="programlisting">&lt;%@page errorPage="error.jsp" language="java" contentType="text/html; charset=UTF-8" %&gt;
+&lt;%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" %&gt;
+&lt;mm:content type="text/html" language="en" &gt;
+&lt;mm:cloud&gt;
+  &lt;mm:import externid="newsid" required="true" /&gt;
+  &lt;mm:node number="$newsid"&gt;
+ 
+    &lt;html&gt;
+      &lt;head&gt;
+        &lt;link rel="stylesheet" type="text/css" href="style.css" /&gt;
+        &lt;title&gt;&lt;mm:field  name="title"/&gt;&lt;/title&gt;
+      &lt;/head&gt;
+
+      &lt;body&gt;
+      &lt;h1&gt;&lt;mm:field  name="title"/&gt;&lt;/h1&gt;
+      &lt;mm:field name="subtitle"&gt;
+        &lt;mm:isnotempty&gt;
+          &lt;h2&gt;&lt;mm:write /&gt;&lt;/h2&gt;
+        &lt;/mm:isnotempty&gt;
+      &lt;/mm:field&gt;
+    &lt;/html&gt;
+  &lt;/mm:node&gt;
+&lt;/mm:cloud&gt;
+&lt;/mm:content&gt;
+</pre><p>We see here also the 'isnotempty' tag. The
+    'isnotempty' tag searches for a parent tag of the type
+    'Writer'. Every tag that can produce content, is a Writer tag. The
+    field tag is a simple example of a Writer tag. The isnotempy tag now
+    checks if the content produced by this parent 'writer' tag is
+    empty, and in that case it does not evaluate its body.</p><p>We should be aware that a writer tag does <span class="emphasis"><em>not</em></span>
+    write anything to the page by itself if it has a body. The idea is that
+    the tags in the body do something with the content provided by the writer
+    then.</p><p>So, in this case the content is checked for emptyness, and if not,
+    '&lt;h2&gt;&lt;mm:write /&gt;&lt;/h2&gt;' is performed. A
+    write-tag without attributes, searches for a parent 'writer' and
+    writes the content to the page (unless, of course, it has a body, because
+    a write-tag is a writer too).</p><p>But in this case, the write-tag does not have a body, so it writes
+    the field. The whole exercise was only done to avoid writing empty
+    h2-tags to the page if by chance the subtitle field of the news items is
+    empty. As you saw, this happens because those h2 tags are inside the
+    isnotempty-tag too, so will be skipped if the parent writer tag (the
+    field) is empty.</p><p>The next step is to complete our full news item in this page.</p><pre class="programlisting">&lt;%@page errorPage="error.jsp" language="java" contentType="text/html; charset=UTF-8" %&gt;
+&lt;%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" %&gt;
+&lt;mm:content language="en"&gt;
+&lt;mm:cloud&gt;
+  &lt;mm:import externid="newsid" required="true" /&gt;
+  &lt;mm:node number="$newsid"&gt;
+ 
+    &lt;html&gt;
+      &lt;head&gt;
+        &lt;link rel="stylesheet" type="text/css" href="style.css" /&gt;
+        &lt;title&gt;&lt;mm:field  name="title"/&gt;&lt;/title&gt;
+      &lt;/head&gt;
+
+      &lt;body&gt;
+        &lt;h1&gt;&lt;mm:field  name="title"/&gt;&lt;/h1&gt;
+        &lt;mm:field name="subtitle"&gt;
+          &lt;mm:isnotempty&gt;
+            &lt;h2&gt;&lt;mm:write /&gt;&lt;/h2&gt;
+          &lt;/mm:isnotempty&gt;
+        &lt;/mm:field&gt;
+      &lt;div class="intro"&gt;&lt;mm:field name="intro" escape="p" /&gt;&lt;/div&gt;
+      &lt;mm:field  name="body" escape="p"/&gt;
+    &lt;/html&gt;
+  &lt;/mm:node&gt;
+&lt;/mm:cloud&gt;
+&lt;/mm:content&gt;
+</pre><p>
+      This new code prints out the intro of the news item. As you can see from the actual page, this
+      intro appears in bold formatting to make it stand out more. Next we write the body of the
+      item. Notice that we use a escape attribute here. This makes the tag escape the value of body
+      in a special way to allow for the creation of HTML from plain text.  Many different escapers
+      are available for all kind of different goals. A overview is available in the taglib
+      reference. They are pluggable too, and any MMBase 'applications' can provide new escapers.
+    </p><p>
+      If we go back to our cloud design we know that any news item can be
+      related to quite a few other nodes of different types, like magazines and
+      authors. It's important to evaluate the design of your template, so
+      that you provide solutions for any possible related node. For example, it
+      would be a bad design if your model expresses a relation between a picture
+      and a news item while your template is not capable of displaying the
+      picture (unless of course this is your explicit decision and your user
+      agrees with you).
+    </p><p>
+      From our cloud design it appears that any news item could possibly
+      have relations with attachments, images, people, URL's and MMEvents.
+      For this example we will support relations to images, authors (people) and
+      URL's. Other node types are ignored.
+    </p><pre class="programlisting">&lt;%@page errorPage="error.jsp" language="java" contentType="text/html; charset=UTF-8" %&gt;
+&lt;%@taglib uri="http://www.mmbase.org/mmbase-taglib-2.0" prefix="mm" %&gt;
+&lt;mm:content&gt;
+&lt;mm:cloud&gt;
+  &lt;mm:import externid="newsid" required="true" /&gt;
+  &lt;mm:node number="$newsid"&gt;
+ 
+    &lt;html&gt;
+      &lt;head&gt;
+        &lt;link rel="stylesheet" type="text/css" href="style.css" /&gt;
+        &lt;title&gt;&lt;mm:field  name="title"/&gt;&lt;/title&gt;
+      &lt;/head&gt;
+
+      &lt;body&gt;
+      &lt;h1&gt;&lt;mm:field  name="title"/&gt;&lt;/h&gt;
+      &lt;mm:field name="subtitle"&gt;
+        &lt;mm:isnotempty&gt;
+          &lt;h2&gt;&lt;mm:write /&gt;&lt;/h2&gt;
+        &lt;/mm:isnotempty&gt;
+      &lt;/mm:field&gt;
+      &lt;div class="intro"&gt;&lt;mm:field  name="intro"/&gt;&lt;/div&gt;
+      &lt;mm:field  name="body" escape="p"/&gt;
+
+      &lt;mm:relatednodes type="images" max="3"&gt;
+        &lt;mm:first&gt;
+          &lt;h3&gt;Related images&lt;/h3&gt;
+        &lt;/mm:first&gt;
+        &lt;mm:image template="s(x200)" mode="img" /&gt;
+        &lt;mm:last inverse="true"&gt;, &lt;/mm:last&gt;
+      &lt;/mm:relatednodes&gt;
+
+      &lt;mm:relatednodes type="urls"&gt;
+        &lt;mm:first&gt;
+          &lt;h3&gt;Related url&lt;/h3&gt;
+        &lt;/mm:first&gt;
+        &lt;a href="&lt;mm:field name="url"/&gt;"&gt;&lt;mm:field name="description"/&gt;&lt;/a&gt;
+        &lt;mm:last inverse="true"&gt;, &lt;/mm:last&gt;
+      &lt;/mm:relatednodes&gt;
+
+      &lt;mm:relatednodes type="people"&gt;
+        &lt;mm:first&gt;
+          &lt;h3&gt;Authors&lt;/h3&gt;
+        &lt;/mm:first&gt;
+        &lt;em&gt;&lt;mm:field name="firstname" /&gt; &lt;mm:field name="lastname" /&gt;&lt;/em&gt;
+        &lt;mm:last inverse="true"&gt;, &lt;/mm:last&gt;
+      &lt;/mm:relatednodes&gt;
+    &lt;/html&gt;
+  &lt;/mm:node&gt;
+&lt;/mm:cloud&gt;</pre><p>Here we added the &lt;mm:relatednodes&gt; tag to support retrieval
+    of our relevant related nodes. Note the usage of the &lt;mm:last&gt; tag
+    to get a comma after each related nodes but the last one. 
+    </p><p>After you completed this step, check your page in your development
+    environment. Your page should look something like below figure if all went
+    well.[TODO include screenshot ]</p><div><img src="http://www.mmbase.org/mmdocs/applications/taglib/frontenddevelopers/taglib/media/newsitem.jpg" /></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="N1018B" />7. Next steps...</h2></div></div></div><p>In this tutorial we showed how to build a sample MMBase application.
+    Obviously we have only tipped the possibilities that MMBase offers to page
+    designers. There are several things you can do from here:</p><div class="itemizedlist"><ul type="disc"><li><p>
+          You can read on. The following chapters will elaborate on the concepts of MMBase taglib a bit.
+        </p></li><li><p>
+          You could also start reading about how to do includes with taglib .<a xmlns:xlink="http://www.w3.org/1999/xlink" href="include.html" target="_top">Include mechanisms</a>
+        </p></li><li><p>
+          Explore other (sample) applications shipped with the MMBase distro, also the
+          '/mmexamples/taglib' directory is quite useful.  E.g. the admin pages of the crontab
+          application show nicely how you can use 'functions'.
+        </p></li><li><p>
+          Integrate MMBase Tag Library with your favorite page design tool
+          like Macromedia DreamWeaver.
+        </p></li><li><p>
+          Explore the MMBase Tag Library reference guide where all tags
+          are documented and supplied with additional samples you can try out.
+        </p></li></ul></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="N101A4" />8. A bit more about 'providers', 'referrers',
+    'writers' and so on.</h2></div></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="N101A7" />8.1. Providers/Referrers</h3></div></div></div><p>In this tutorial we have seen that tags can cooperate, and work
+      together. It is good to know a bit about the abstraction behind this.</p><p>The first tag which we encountered was the 'cloud' tag.
+      Every tag that wraps functionality needing a cloud must be inside such a
+      cloud tag. Those tags are named 'cloudreferrers' (see the taglib
+      reference for an overview of all cloud referrers).</p><p>The cloud tag itself of course then is a 'CloudProvider'.
+      That seems a bit silly at first, because perhaps you cannot think of
+      something else that could provide a cloud. If you look
+      'cloudprovider' up in the reference you see however that there
+      is one other cloudprovider, namely the 'transaction'-tag. A
+      transaction is a special kind of cloud.</p><p>This same scheme can be applied to several other concepts. The
+      next one of course is the 'node provider' with its counterpart
+      the 'node referrer'.</p><p>Node referrers are many. The most obvious one is of course the
+      field tag. When presenting a field, the field tag of course needs a
+      reference to a node variable where the actual field value belongs to.
+      Other examples of node referrer tags are the 'related' tag and
+      the 'relatednodes' tag, which list nodes related to the node to
+      which they refer as a node referrer.</p><p>These relatednodes tags are of course also node providers. They
+      provide nodes, based on the reference to another node.</p><p>For node referrer tags it does not matter which tag exactly is
+      the node provider, they only search for the abstract thing which is a
+      'node provider'. That's why a field-tag can be used inside a
+      node-tag or a nodelist-tag and so on.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="N101B8" />8.2. id's</h3></div></div></div><p>Sometimes it will occur that a node referrer (like a field-tag) §is actually in more
+      then one node-provider tag at the same time. For example:
+      <pre class="programlisting">&lt;mm:node number="123"&gt;
+   &lt;mm:relatednodes type="urls"&gt;
+      &lt;mm:field name="title" /&gt;
+   &lt;/mm:relatednodes&gt;
+&lt;/mm:node&gt;</pre> Both 'node' and
+      'relatednodes' are node providers, the field tag is in the body
+      of both. So how does it know now of which node provider it should write
+      the 'title' field?</p><p>The answer is that on default it will use the
+      <span class="emphasis"><em>direct</em></span> parent, so in this case the
+      'relatednodes' node provider.</p><p>If however this is not what you want then you need to know the
+      following. Every tag, so also every node provider, can have an
+      'id' attribute, and every node referrer tag can have the
+      'node' attribute. So perhaps you understand already, but the
+      example will make it clear if not: <pre class="programlisting">&lt;mm:node id="abc" number="123"&gt;
+  &lt;mm:relatednodes type="urls"&gt;
+      &lt;mm:field node="abc" name="title" /&gt;
+  &lt;/mm:relatednodes&gt;
+&lt;/mm:node&gt;        
+</pre>You see, now the field searches for a node-provider with id
+      'abc', and that happens to be the mm:node tag. It still has to
+      be <span class="emphasis"><em>inside</em></span> though.</p><p>This mechanisms work for every provider/referrer pair. So
+      cloud-referrers have a 'cloud' attribute, node-referrers have a
+      'node' attribute and field-referrers have a 'field'
+      attribute.</p><p>The 'id' attributes of tags are also used for something
+      else. Namely to construct 'taglib variables' about which we will
+      elaborate in the section <a href="taglib-tutorial.html#taglibvars" title="9. Taglib variables">Taglib variables</a>.</p><p>But first we will tell a bit about another very basic
+      provider/referrer pair, namely the writers and writer referrers.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="N101D7" />8.3. Writers/Writer referrers</h3></div></div></div><p>Another name for 'writer' tags could perhaps have been
+      'content providers'. These concepts were introduced after the
+      observation that there are really two kind of tags. There are tags such
+      as the cloud tag and node tag, which do nothing by themselves, they
+      merely provide an environment for other tags. On the other hand, there
+      are also tags which can actually write something to the page, like the
+      field tag, they actually provide content, so to say. (hence the chosen
+      name 'Writer' and the 'content provider' suggestion I
+      just did).</p><p>Sometimes we do not want to write the content provided by a writer
+      tag to the page, but we want something else. Perhaps we first want to
+      check if the content is correct, or perhaps we want to store the content
+      in a jsp-variable, or perhaps yet something else.</p><p>So here the concept of writerreferrer tags comes in. It works
+      precisely the same as the other referrers we talked about. Writer
+      referrers work in the body of 'writer' tags. Because of this,
+      'Writer' tags behave a bit different if they have a body,
+      because only then they start being real 'providers', otherwise they
+      simply provide the content to the writer-referrers. But if the
+      writer-tag does not have a body, then the most sensible thing is done
+      with the content: it is written to the page. This default behavior of
+      writer tags can be overriden by their 'write' attribute. Using
+      this attribute you can perform tricks as 'silent' field tags, or
+      field tags that write also when they have a body.</p><p>The most simple example of a writer-tag is the write-tag.
+      <pre class="programlisting">
+&lt;mm:write value="hello world" /&gt;
+</pre> This will for example just write 'hello world' on
+      your page. This is a silly thing to do of course, because you could as
+      well have used no tag at all for this. In the section about taglib
+      variables you will however find out that even the 'value'
+      attribute of the write-tag can come in useful.</p><p>But the write-tag is also a <span class="emphasis"><em>writer referrer</em></span>
+      tag. Of course, when the write-tag works as a writer-referrer tag, it
+      simply takes the content of the 'writer' tag it refers to and
+      uses that as its own content. <pre class="programlisting">
+&lt;mm:field name="title"&gt;
+  &lt;mm:write /&gt;
+&lt;/mm:field&gt;
+</pre> So this will simply write the value of the 'title'
+      field. The field tag itself did not write because it has a body, and the
+      write tag inside it referred to it, and wrote it to the page.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="N101ED" />8.4. Condition tags</h3></div></div></div><p>There are a lot of 'writer referrer' tags, and most of
+      them are also 'condition' tags. Condition tags are tags that do
+      evaluate their body based on some condition. A condition tag that is
+      also writer referrer would naturally do some check on the content
+      provided by the writer.</p><p>For example we could write something to the page if the title
+      happens to be empty: <pre class="programlisting">
+&lt;mm:field name="title"&gt;
+  &lt;mm:isempty&gt;
+    This news article has no title!
+  &lt;/mm:isempty&gt;
+  &lt;mm:isnotempty&gt;
+     &lt;mm:write /&gt; &lt;!-- write it out then --&gt;
+  &lt;/mm:isnotempy&gt;
+&lt;/mm:field&gt;
+</pre></p><p>Condition tags always have a 'inverse' attribute to turn
+      the condition around. So the following is equivalent:
+      <pre class="programlisting">
+&lt;mm:field name="title"&gt;
+  &lt;mm:isempty&gt;
+    This news article has no title!
+  &lt;/mm:isempty&gt;
+  &lt;mm:isempty inverse="true"&gt;
+     &lt;mm:write /&gt; &lt;!-- write it out then --&gt;
+  &lt;/mm:isempy&gt;
+&lt;/mm:field&gt;
+</pre></p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="N101FA" />8.5. List referrers</h3></div></div></div><p>There is also a bunch of condition tags that are not writer
+      referrers but list referrers. List tags are naturally those tags that
+      evaluate their body zero or more times.</p><p>One of the most used list referrers that is also a condition is
+      the 'first' tag: <pre class="programlisting">
+&lt;mm:relatednodes type="urls"&gt;
+  &lt;mm:first&gt;
+    &lt;h2&gt;Related urls&lt;/h2&gt;
+  &lt;/mm:first&gt;
+ .....
+&lt;/mm:relatednodes&gt;
+</pre> Of course, the first tag evaluates its body only if this is
+      the first iteration of the list. So, if the list happens to be empty it
+      is never executed. In the above example the mm:first tag is used to
+      write out a 'related urls' header if and only if there are
+      actually one or more of such urls. It would be silly to write that
+      header if there are no related urls, wouldn't it?</p></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="taglibvars" />9. Taglib variables</h2></div></div></div><p>In the previous section we already mentioned the fact that the
+    'id' attribute is also used to create 'taglib variables'.
+    We will now demonstrate what those are.</p><p>Taglib variables originated from the need to pass around information
+    between tags that are not 'inside' each other. There is for
+    example a tag that creates a relation between two nodes. So, this
+    'createrelation' tag would need to refer to two nodes, and not to
+    one. It would be silly to demand that the createrelation tag be in two
+    nodeproviders. So we came up with this: <pre class="programlisting">
+&lt;mm:node id="firstnode" number="123" /&gt;
+&lt;mm:node id="secondnode" number="456" /&gt;
+&lt;mm:createrelation role="related" source="firstnode" destination="secondnode" /&gt;
+</pre></p><p>Now, the two nodes under concern are stored somewhere, and the
+    createrelation tag uses it. Perhaps it is a good idea to reveal
+    immediately where they are stored. They are stored in a 'context'.</p><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="N10211" />9.1. The context tag</h3></div></div></div><p>Every mmbase taglib page implicitly has a context of its own, but
+      you can also explicitly define contexts.</p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>
+          As of MMBase 1.8 (or taglib 2.0), this implicit context of variables coincides with the
+          scope in which the <span class="emphasis"><em>Expression Language</em></span> (EL) variable are.
+        </p><p>
+          This means that, if your application server supports EL, MMBase variables can also be
+          directly accessed using EL (and inversely). For example:
+          <pre class="programlisting">
+&lt;mm:field name="title" id="title" &lt;
+, ${title}
+</pre>
+will write the title field twice.
+        </p><p>
+          Or the inverse:
+          <pre class="programlisting">
+&lt;c:set var="title" value="hello" /&gt;
+&lt;mm:write referid="title" /&gt;
+          </pre>
+          will write 'hello'.
+        </p></div><p>You must know that a context can only contain one instance of a
+      variable with a certain name. You will get an error message if you do
+      not obey this rule.
+      </p><p>
+        Every mmbase tag can write itself to the 'context' and
+        often it also can get some information from the context. Therefore,
+        every mmbase tag is a 'context referrer' tag (and because of
+      that, has a 'context' attribute too)
+      </p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="N1022A" />9.2. The referid attribute</h3></div></div></div><p>If a tag was written itself to the 'context' by use of its
+      'id' attribute, then it must be possible to pick this up later,
+      as long - of course - the same context can be referred to. For that, the
+      'referid' attribute is used. Lets make it clear with an example.
+      <pre class="programlisting">
+&lt;mm:node id="my_node" number="123"&gt;
+ ... 
+&lt;/mm:node&gt;
+
+...
+
+&lt;mm:node referid="my_node"&gt;
+
+&lt;/mm:node&gt;
+</pre> The first node tag has an 'id' so, it stores itself
+      (or at least its 'Node') in the context. The second node tag
+      picks this up with the referid attribute, so there we have node 123
+      again.</p><p>Most tags do have a referid attribute, to facilitate this.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="N10234" />9.3. dollar-signs ($)</h3></div></div></div><p>So now what happens if we assign an id to a writer tag? Then of
+      course the obvious thing will happen, namely that the associated writer
+      content is written to the context. This can be picked up later. So now
+      you can understand what this will do: <pre class="programlisting">
+&lt;mm:field id="title" name="title" /&gt;
+&lt;mm:write referid="title" /&gt;
+</pre> Yes, this will write the title field twice.</p><p>It can happen you want to use the value of some writer in the
+      attribute of another tag. This would be the natural thing to do:
+      <pre class="programlisting">
+&lt;mm:field id="type" name="type" /&gt;
+&lt;mm:listnodes type="&lt;mm:write referid="type" /&gt;"&gt; &lt;!-- THIS IS NOT POSSIBLE --&gt;
+   ..
+&lt;/mm:listnodes&gt;
+</pre> This can however not be done in taglib (of course because
+      tags cannot be used inside attributes in XML).</p><p>To solve this, we came up with the dollar-sign notation:
+      <pre class="programlisting">
+&lt;mm:field id="type" name="type" /&gt;
+&lt;mm:listnodes type="$type"&gt; 
+   ..
+&lt;/mm:listnodes&gt;
+</pre> Dollar signs are often used to indicate that something
+      should be interpreted as the name of a variable, e.g. in XML based
+      languages like XSL and Ant. Also in script languages like Perl this is
+      common practice.
+      </p><p>
+        It is also more or less the notation of EL, though there it is obligated to use also curly
+        brackets (they used to be optional in MMBase Taglib).
+      </p><p>This will write out the field 'title' six times:
+      <pre class="programlisting">
+&lt;mm:field id="title" name="title" /&gt; simple
+&lt;mm:write referid="title" /&gt;         referid
+&lt;mm:write value="$title" /&gt;          MMBase dollar sign notation
+&lt;mm:write value="${title}" /&gt;        MMBase dollar sign notation with curly brackets, or EL if available
+&lt;mm:write value="$[title]" /&gt;        MMBase dollar sign notation with square brackets (introduced to provide way to avoid collisions with EL)
+${title}
+
+</pre> Do you understand the difference between the 'value'
+      and the 'referid' attributes?</p><p>Dollar-sign variables can be used in nearly all attributes. It can
+      also be combined with other text: <pre class="programlisting">
+&lt;mm:field id="title" name="title" /&gt;
+&lt;mm:listnodes type="news" constraints="title LIKE '$title'"&gt; 
+   ..
+&lt;/mm:listnodes&gt;
+</pre> Sometimes it is needed to use curly brackets to indicate
+      where the name of the variable ends: <pre class="programlisting">
+&lt;mm:field id="firstname" name="firstname" /&gt;
+&lt;mm:field id="lastname" name="lastname" /&gt;
+&lt;mm:listnodes type="news" constraints="title LIKE '${firstname}${lastname}'"&gt; 
+   ..
+&lt;/mm:listnodes&gt;
+</pre></p><p>Also other objects in the context can be used with a dollar-sign
+      variable, and usually something sensible happens then. For example the
+      dollar-sign value of a node is its number. You can use this for example
+      to create an url: <pre class="programlisting">
+&lt;mm:listnodes id="article" type="news"&gt;
+    &lt;a href="&lt;mm:url page="newsitem.jsp?article=$article" /&gt;"&gt;&lt;mm:field name="title" /&gt;&lt;/a&gt;
+&lt;/mm:listnodes&gt;
+</pre> The url-tag has more features. Please use the reference
+      documentation to learn more about it.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="N10259" />9.4. Another way to create taglib variables: import tag</h3></div></div></div><p>We have seen the most natural way to put something in the
+      'context', which is using an 'id' on some tag. Putting
+      explicitly something in the context could therefore be done like this:
+      <pre class="programlisting">
+&lt;mm:write value="hello world" id="hello" write="false" /&gt;
+</pre></p><p>There is a variant of the write-tag of which the only goal is
+      putting things in the context. This is the 'import' tag, which
+      you have seen before. It is in some way also the inverse of the write
+      tag; the write tag is to get things <span class="emphasis"><em>out</em></span> the context
+      (but by chance can also be used to put things in it), but the import tag
+      is <span class="emphasis"><em>meant</em></span> to put things <span class="emphasis"><em>in</em></span> the
+      context. Therefore the import-tag is not a 'writer' itself. The
+      function of the value attribute of the write tag is taken by the body of
+      the import tag. <pre class="programlisting">
+&lt;mm:import id="hello"&gt;hello world&lt;/mm:import&gt;
+</pre></p><p>The body of the import tag is only optional though. Normally the
+      import-tag will import from somewhere else in the context. Very often,
+      it will be used to 'import' a request parameter.
+      <pre class="programlisting">
+&lt;mm:import externid="greeting" from="parameters" id="hello" /&gt;
+</pre> This will put the value of the request parameter
+      'greeting' into the taglib variable 'hello'.</p><p>Very often you will be content with a taglib variable with the
+      same name, so the 'id' attribute is optional if you use the
+      externid attribute: <pre class="programlisting">
+&lt;mm:import externid="greeting" from="parameters"/&gt;
+</pre> This will put the value of the request parameter
+      'greeting' into the taglib variable 'greeting'.</p><p>These are the basics of the import tag. We refer to the taglib
+      reference documentation for a full description.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="N10279" />9.5. The parent-writer variable $_ and  parent-node variable $_node</h3></div></div></div><p>In MMBase taglib there are two dollar sign variable with a special
+      meaning, which can be very convenient. If you happen to know Perl, you
+      will know from where this syntax was borrowed.</p><p>Often it is a bit cumbersome to use an id attribute on some
+      writer, because that will often also introduce a context tag (when you
+      are in a list), and things get a bit messy. So, you can also use the
+      $_-variable which is the equivalent of &lt;mm:write /&gt;, but then
+      inside an attribute. <pre class="programlisting">
+&lt;mm:listnodes type="news"&gt;
+  &lt;mm:field name="title"&gt;
+    &lt;mm:listnodes type="news" constraints="title LIKE '$_'"&gt; 
+      ..
+    &lt;/mm:listnodes&gt;
+  &lt;/mm:field&gt;
+&lt;/mm:listnodes&gt;
+</pre> This finds news articles with the same title.
+      </p><p>
+        Something similar goes for 'nodes' which are the core of any MMBase code, and also in taglib
+        you may often want to refer to the 'current' node. As you can refer to the current writer
+        with a nude &lt;mm:write /&gt; tag, so you can refer to the current node with a nude
+        &lt;node /&gt; tag. The associated $-variable is $_node.
+      </p><p>
+        In that way you e.g. also easily use field values in attributes.
+<pre class="programlisting">
+&lt;mm:listnodes type="news"&gt;  
+  &lt;div class="${_node.className}"&gt;
+  &lt;/mm:div&gt;
+&lt;/mm:listnodes&gt;
+</pre> 
+      </p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>
+          Also mmbase taglib escaping is available in attributes, using EL <span class="emphasis"><em>functions</em></span>.
+<pre class="programlisting">
+&lt;mm:listnodes type="news"&gt;  
+  &lt;div title="${mm:escape('text/html/attribute', _node.title)}"&gt;
+  &lt;/mm:div&gt;
+&lt;/mm:listnodes&gt;
+</pre> 
+         Where something like &lt;div title="&lt;mm:field name="title" escape="text/html/attribute" /&gt;" &gt;
+         happened, but in a XML (and JSPX) compliant way.
+        </p></div></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="N10293" />10. Jsp-variables</h2></div></div></div><p>Sometimes the MMBase taglib will not provide enough functionality.
+    Since a taglib is always used in a JSP page (this is not so per
+    definition, but in practice, this is always so), it would be only logical to
+    implement the more complicated things in Java.</p><p>For this to be possible most MMBase tags (I think the exceptions are
+    only the 'condition' tags) have the 'jspvar' attribute.
+    With this, a java variable, of which the name is defined by the the value
+    of the jspvar attribute, will be instantiated, and can be used in the body
+    of the tag. There is for example (in taglib 1.0.1) no taglib way to get
+    user information: <pre class="programlisting">
+&lt;mm:cloud jspvar="cloud"&gt;
+  logged in as &lt;%=  cloud.getUser().getIdentifier() %&gt;
+&lt;/mm:cloud&gt;
+</pre></p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>
+        In taglib 2.0 there <span class="emphasis"><em>is</em></span> a taglib way to do this, using the
+        &lt;mm:cloudinfo&gt; tag.
+      </p></div><p>Sometimes the type of the variable which must be declared is not
+    defined well by the tag. Then a jspvar of type 'Object' will be
+    declared, which can be inconvenient because then normally you will have to
+    cast to the desired type.</p><p>Therefore the tags to which this applies (most noticeably all
+    'writer' tags) also feature the 'vartype' attribute.
+    <pre class="programlisting">
+&lt;mm:field name="size" jspvar="size" vartype="float"&gt;
+  Size of the object: &lt;%= size.floatValue() * 1000 %&gt; millimeters.
+&lt;/mm:field&gt;
+</pre></p><p>The 'jspvar' and 'vartype' attributes are probably
+    the only mmbase taglib attribute which do not accept taglib dollar-sign
+    variables. This is fundamentally impossible, because the values of those
+    attributes need to be known at compile time.</p><p>The 'import' tag is the only tag which does not create the
+    jsp-variable in its body (because that is used already for something
+    else). The jspvar of an import tag is available <span class="emphasis"><em>after</em></span>
+    the tag. So the import tag provides you a way to create global
+    jsp-variables on your page. Global variables are considered bad practice.</p></div></div><hr xmlns="" /><p xmlns="">
+      This is part of the <a href="http://www.mmbase.org">MMBase</a> documentation.
+    </p><p xmlns="">
+      For questions and remarks about this documentation mail to: 
+      <a href="/cdn-cgi/l/email-protection#aecac1cddbc3cbc0dacfdac7c1c0eec3c3cccfddcb80c1dcc9"><span class="__cf_email__" data-cfemail="3c58535f49515952485d485553527c51515e5d4f5912534e5b">[email&#160;protected]</span></a></p><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script></body></html>

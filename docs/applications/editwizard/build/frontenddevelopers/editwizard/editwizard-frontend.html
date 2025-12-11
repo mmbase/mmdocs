@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title>MMBase Editwizard Front end</title><link href="../../style/documentation.css" rel="stylesheet" type="text/css" /><meta content="DocBook XSL Stylesheets V1.72.0" name="generator" /><link xmlns="" type="image/x-icon" href="../../style/favicon.ico" rel="icon" /><link xmlns="" type="image/x-icon" href="../../style/favicon.ico" rel="shortcut icon" /><meta xmlns="" content="text/html; charset=utf-8" http-equiv="content-type" /></head><body><div xmlns="" class="navigation"><img alt="mmbase logo" src="../../style/logo.png" /><h2>MMBase Editwizard Front end</h2><p><a href="editwizard-frontend.html#introduction">Introduction</a></p><p><a href="editwizard-frontend.html#assumptions">Assumptions</a></p><p><a href="editwizard-frontend.html#inner-workings">Inner workings</a></p><p><a href="editwizard-frontend.html#locations">Files and directory locations</a></p><p><a href="editwizard-frontend.html#types-of-pages">Types of pages</a></p><p><a href="editwizard-frontend.html#look">Changing the look</a></p><p><a href="editwizard-frontend.html#example1">Example 1: logo in the header</a></p><p><a href="editwizard-frontend.html#example2">Example 2: new fieldtype</a></p><hr /><p><a href="http://www.mmbase.org">MMBase</a></p><p><a href="http://www.mmbase.org/mmdocs/applications/editwizard/build/index.html">home</a></p></div><div class="article" lang="en"><div class="titlepage"><div><div><h1 class="title"><a id="N10001" />MMBase Editwizard Front end</h1></div><div><div class="authorgroup"><strong class="authorgroup">Author: </strong><span class="author"><span class="firstname">Nico</span> <span class="surname">Klasens</span></span><br /><strong class="authorgroup">Date: </strong>2004-01-05</div></div><div><p class="releaseinfo" /></div><div><div class="legalnotice"><a id="N10018" /><p>This software is OSI Certified Open Source Software. OSI Certified is a certification mark of the Open Source Initiative.</p><p>The license (Mozilla version 1.0) can be read at the MMBase site. See <a xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.mmbase.org/license" target="_top">http://www.mmbase.org/license</a></p></div></div></div><hr /></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="section"><a href="editwizard-frontend.html#introduction">1. Introduction</a></span></dt><dt><span class="section"><a href="editwizard-frontend.html#assumptions">2. Assumptions</a></span></dt><dt><span class="section"><a href="editwizard-frontend.html#inner-workings">3. Inner workings</a></span></dt><dt><span class="section"><a href="editwizard-frontend.html#locations">4. Files and directory locations</a></span></dt><dt><span class="section"><a href="editwizard-frontend.html#types-of-pages">5. Types of pages</a></span></dt><dt><span class="section"><a href="editwizard-frontend.html#look">6. Changing the look</a></span></dt><dt><span class="section"><a href="editwizard-frontend.html#example1">7. Example 1: logo in the header</a></span></dt><dt><span class="section"><a href="editwizard-frontend.html#example2">8. Example 2: new fieldtype</a></span></dt></dl></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="introduction" />1. Introduction</h2></div></div></div><p>The MMBase editwizard extension provides an easy way to create customizable wizards for edit environments. In most cases the default editwizard look does not match the look of the rest of the edit environment. This document describes how the look and feel of the editwizard front end can be changed to match with the rest.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="assumptions" />2. Assumptions</h2></div></div></div><p>The front end relies heavily on xsl, css and javascript. Therefore, this document assumes you know something about these techniques. A good reference for these techniques is http://www.w3schools.com and the official w3c site (http://www.w3c.org)</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="inner-workings" />3. Inner workings</h2></div></div></div><p>We will elaborate a little on the inner workings of the editwizard extension before we dive into the details of the front end. The editwizard extension can be divided into 2 layers. The first layer is the server side engine which consists of java and jsp files. The engine communicates with MMBase and generates the data for the second layer. The second layer is the front end, which runs on the server and in the client browser.</p><p>The engine communicates with MMBase through the dove interface. The dove interface adds a protocol for communication with, and passing commands to, the MMBase system using an XML format. The output from the engine to the front end is an XML stream with the data to build the html pages. The engine is not only a pass-through for data. It also keeps track of stacks with opened wizards for every user and parses the wizard definition schema files.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="locations" />4. Files and directory locations</h2></div></div></div><p>The editwizard extension assumes a directory structure where files can be found. Two root locations are used to find the files. The most important one is the editwizard home directory. The editwizard home is the directory that contains the editwizard data library, css-stylesheets, javascript files and jsp pages. In the standard distribution, this location is /mmapps/editwizard/. The other root location is the referrer page directory. You call the editwizard scripts (list.jsp and wizard.jsp) from a page located in another directory than the editwizard home directory. If you do, the wizards keep a reference to the calling page, the 'referrer'. When a xml or xsl file is requested, the wizard first checks whether the file can be found in the directory of the referrer page. You can also use this location to have you own javascript files or css-stylesheets.</p><p>The assumed sub locations of the editwizard home directory are:</p><div class="itemizedlist"><ul type="disc"><li><p>/data/</p><p>Searched for wizard definition schema files when they are not found in the referrer page directory.</p></li><li><p>/data/i18n/</p><p>Translated prompts in the wizards. These will override the English version in the /data/xsl/ directory</p></li><li><p>/data/xsl/</p><p>Xsl transformation files used to generate the html pages. These are used when the xsl files are not found in the referrer page directory.</p></li><li><p>/javascript/</p><p>Javascript files which are used for many things on the client side.</p></li><li><p>/jsp/</p><p>scripts to enter the editwizard extension. Frequently used files are list.jsp and wizard.jsp.</p></li><li><p>/media/</p><p>Images and other media files used in the front end.</p></li><li><p>/style/color/</p><p>css-stylesheets which define the colors of the wizards.</p></li><li><p>/style/layout/</p><p>css-stylesheets which define the layout of the wizards.</p></li></ul></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="types-of-pages" />5. Types of pages</h2></div></div></div><p>The editwizard generates five types of pages. Three of them are used in normal operation. These are the list, wizard and searchlist pages. Most of the times, you go from a list page to a wizard page and then you add related objects with the searchlist page to the wizard. The ones left over are the debug and error (exception) pages. The debug page shows editwizard engine internal data which could be handy to use when changing the front end xsl’s. Hopefully, you will never see the error page. If you look in some directories then you will see files with the same names as the types of the pages.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="look" />6. Changing the look</h2></div></div></div><p>You probably already guessed what to do when you want to change the colors and images of the front-end. The colors are defined in the css-stylesheets in the /style/colors/. This is the only place where colors are defined. If you want to know where the class definitions are used then you should consult the comments in /style/layout/wizard.css. The images are in the /media/ directory so that is not hard to change too. If you want to change the editwizard hardcoded prompts (eg the save and cancel link) then you should change the /data/xsl/prompts.xsl (and the i18n ones) to accomplish this.</p><p>The above are the simple things to change your wizards. You can customize much more. One of the powerful things in the editwizard extension is that you can use the referrer page directory to override the default xsl’s. One big pro is that you can easily change to a newer version of the editwizard extension without re-applying your own changes. The xsl’s have empty templates (eg. extrameta, extrastyle, extrajavascript) where you can add extra functionality for your wizards and variables to turn things on and off. One of these variables is the SEARCH_LIST_TYPE which switches the searchlist from a popup window to an iframe.</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="example1" />7. Example 1: logo in the header</h2></div></div></div><p>This example shows how you can add a logo to the header of the wizards. The first thing you have to do is create a file base.xsl in your referrer directory. The new base.xsl will import the one from the editwizard home directory. The ew: prefix in the import points to the editwizard home directory. The new xsl overrides the headcontent template from the editwizard base.xsl to add an extra column for the logo.</p><pre class="programlisting">
+		
+&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;xsl:stylesheet 
+  version="1.0"
+  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+  xmlns:node="org.mmbase.bridge.util.xml.NodeFunction"
+  xmlns:date="org.mmbase.bridge.util.xml.DateFormat"
+  extension-element-prefixes="node date"&gt;
+
+   &lt;!-- Import original stylesheet --&gt;
+   &lt;xsl:import href="ew:xsl/base.xsl"/&gt;
+
+  &lt;xsl:template name="headcontent" &gt;
+    &lt;table class="head"&gt;
+      &lt;tr class="headtitle"&gt;
+        &lt;td rowspan="2"&gt;&lt;img src="{$referrerdir}my_logo.jpg"/&gt;&lt;/td&gt;
+        &lt;xsl:call-template name="title" /&gt;
+      &lt;/tr&gt;
+      &lt;tr class="headsubtitle"&gt;
+        &lt;xsl:call-template name="subtitle" /&gt;
+      &lt;/tr&gt;
+    &lt;/table&gt;
+  &lt;/xsl:template&gt;
+
+&lt;/xsl:stylesheet&gt;
+		
+		</pre></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="example2" />8. Example 2: new fieldtype</h2></div></div></div><p>Adding a logo is not so hard to do, but what if you have your own fieldtype (wizard definition schema attribute ftype)? Maybe, you want your fieldtype represented as a checkbox, radio button or dropdown box. This involves graphical representation, client-side initialisation and validation.</p><p>The first thing we have to do for this is overriding the ftype-unknown template of the wizard.xsl (See the first example). This template calls templates for unknown ftypes to generate the graphical representation.</p><pre class="programlisting">
+		
+&lt;?xml version="1.0" encoding="utf-8" ?&gt;
+&lt;xsl:stylesheet 
+  version="1.0"
+  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+  xmlns:node="org.mmbase.bridge.util.xml.NodeFunction"
+  xmlns:date="org.mmbase.bridge.util.xml.DateFormat"
+  extension-element-prefixes="node date"&gt;
+
+   &lt;!-- Import original stylesheet --&gt;
+   &lt;xsl:import href="ew:xsl/wizard.xsl"/&gt;
+
+  &lt;xsl:template name="ftype-unknown"&gt;
+    &lt;xsl:choose&gt;
+      &lt;xsl:when test="@ftype=&amp;apos;my_ftype&amp;apos;"&gt;
+      	&lt;xsl:call-template name="ftype-my-ftype"/&gt;
+      &lt;/xsl:when&gt;
+      &lt;xsl:otherwise&gt;
+      	&lt;xsl:call-template name="ftype-other"/&gt;
+      &lt;/xsl:otherwise&gt;
+    &lt;/xsl:choose&gt;
+  &lt;/xsl:template&gt;
+  
+  &lt;xsl:template name="ftype-my-ftype"&gt;
+    &lt;input type="checkbox" name="{@fieldname}" value="{value}" id="{@fieldname}"&gt;
+      &lt;xsl:apply-templates select="@*" /&gt;
+    &lt;/input&gt;
+  &lt;/xsl:template&gt;
+
+  &lt;xsl:template name="extrajavascript"&gt;
+    &lt;script language="javascript" src="{$referrerdir}override.js"&gt;&lt;/script&gt;
+  &lt;/xsl:template&gt;
+
+&lt;/xsl:stylesheet&gt;
+		
+		</pre><p>Now the editwizard will generate a checkbox for all fields with ftyp=”my_ftype”. We will use an &lt;referrer page directory&gt;/override.js to initialise and validate the checkbox. The validator will attach itself to the input fields when it is required to validate it. The validation is now only at the client-side. The editwizard will do a server-side validation for the existing fieldtypes too.</p><pre class="programlisting">
+		
+function initializeElement(elem, dttype, ftype) {
+    if (ftype == "my_ftype") {
+        elem.checked = true;
+    }
+}
+
+//validator methods
+function requiresUnknown(el, form) {
+    return (el.getAttribute("ftype") == "my_ftype");
+}
+
+function validateUnknown(el, form, v) {
+    if (el.getAttribute("ftype") == "my_ftype" &amp;&amp; el.checked) {
+        return "Checkbox is still checked";
+    }
+    return "";
+}
+		
+		</pre></div></div><hr xmlns="" /><p xmlns="">
+      This is part of the <a href="http://www.mmbase.org">MMBase</a> documentation.
+    </p><p xmlns="">
+      For questions and remarks about this documentation mail to: 
+      <a href="/cdn-cgi/l/email-protection#82e6ede1f7efe7ecf6e3f6ebedecc2efefe0e3f1e7acedf0e5"><span class="__cf_email__" data-cfemail="26424945534b43485247524f4948664b4b4447554308495441">[email&#160;protected]</span></a></p><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script></body></html>

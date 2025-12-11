@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title>MMBase Internationalization and Localization</title><link href="../style/documentation.css" rel="stylesheet" type="text/css" /><meta content="DocBook XSL Stylesheets V1.72.0" name="generator" /><link xmlns="" type="image/x-icon" href="../style/favicon.ico" rel="icon" /><link xmlns="" type="image/x-icon" href="../style/favicon.ico" rel="shortcut icon" /><meta xmlns="" content="text/html; charset=utf-8" http-equiv="content-type" /></head><body><div xmlns="" class="navigation"><img alt="mmbase logo" src="../style/logo.png" /><h2>MMBase Internationalization and Localization</h2><p><a href="i18n.html#N10022">Introduction</a></p><p><a href="i18n.html#encodings">Internationalization - Encodings</a></p><p><a href="i18n.html#translations">Localization - Translations</a></p><p><a href="i18n.html#languagesetting">Language setting</a></p><hr /><p><a href="http://www.mmbase.org">MMBase</a></p><p><a href="../index.html">home</a></p></div><div class="article" lang="en"><div class="titlepage"><div><div><h1 class="title"><a id="N10001" />MMBase Internationalization and Localization</h1></div><div><div class="authorgroup"><strong class="authorgroup">Author: </strong><span class="author"><span class="firstname">Michiel</span> <span class="surname">Meeuwissen</span></span><br /><strong class="authorgroup">Date: </strong>2002-10-19</div></div><div><div class="legalnotice"><a id="N10018" /><p>This software is OSI Certified Open Source Software. OSI Certified is a certification mark of the Open Source Initiative.</p><p>The license (Mozilla version 1.0) can be read at the MMBase site. See <a xmlns:xlink="http://www.w3.org/1999/xlink" href="http://www.mmbase.org/license" target="_top">http://www.mmbase.org/license</a>
+			</p></div></div></div><hr /></div><div class="toc"><p><b>Table of Contents</b></p><dl><dt><span class="section"><a href="i18n.html#N10022">1. Introduction</a></span></dt><dt><span class="section"><a href="i18n.html#encodings">2. Internationalization - Encodings</a></span></dt><dd><dl><dt><span class="section"><a href="i18n.html#images">2.1. Non-ascii in Images</a></span></dt></dl></dd><dt><span class="section"><a href="i18n.html#translations">3. Localization - Translations</a></span></dt><dd><dl><dt><span class="section"><a href="i18n.html#builder">3.1. Builders</a></span></dt><dt><span class="section"><a href="i18n.html#jspeditors">3.2. Generic JSP-editors</a></span></dt><dt><span class="section"><a href="i18n.html#editwizards">3.3. Editwizards</a></span></dt></dl></dd><dt><span class="section"><a href="i18n.html#languagesetting">4. Language setting</a></span></dt></dl></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="N10022" />1. Introduction</h2></div></div></div><p>
+			Since MMBase is basically a server-product, there is only little user-interface, and the issue
+			of which human language (or other `locale' setting) is in use is relatively unimportant. There
+			can be said a few words about it though, and if you want to adapt MMBase to the needs of your
+			country and language, then you can hopefully find what you need in this document.
+		</p><p>
+			Happily MMBase is relatively well `internationalized', which means that effort has been taken
+			to make it possible to `localize' (i.e. basically: add translations) it easily. MMBase was
+			developed in a Dutch environment, rather then an English-only one, which ensured that this
+			issue was always kept in mind relatively well.
+		</p><p>
+			Part of the process of `internationalization' (also referred to as `i18n') of course is the
+			possibility to represent all kind of characters, and on this subject the first section will
+			elaborate.
+		</p><p>
+			The second part of this document will point out where the different `translatable' parts of
+			MMBase are, and how to add or improve a translation.
+		</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="encodings" />2. Internationalization - Encodings</h2></div></div></div><p>
+			In MMBase 1.5 and before the default character encoding of the strings in the database was
+			ISO-8859-1, which is a superset of ASCII. In `iso-1' every letter is presented by exactly one
+			byte, so that there can be only 255 different letters and characters. Using ISO-8859-1 most
+			western European language - including English, French, German and Dutch - can be presented
+			without much trouble.
+		</p><p>
+			MMBase however is coded in Java, and Java strings can contain much more than 255 different
+			characters. In fact the characters in Java strings must only be in the Unicode character set,
+			which is a huge set, sufficient to present texts in virtually all languages of the world. See
+			<a xmlns:xlink="http://www.w3.org/1999/xlink" href="i18n.html" target="_top">http://www.unicode.org</a>.
+		</p><p>
+			Therefore in MMBase 1.6 the encoding of the database strings was made configurable. Of course
+			this is only needed if the database (and jdbc driver) does not understand unicode encodings by
+			itself. E.g. mysql does not support unicode by itself, so MMBase has to force it.
+		</p><p>
+			Default this 'encoding' parameter (which can be found in mmbaseroot.xml) is now set to UTF-8,
+			which is the most common unicode encoding. UTF-8 is a multibyte encoding, which means that one
+			character can be presented by 1 or more bytes. It has been arranged that the ASCII letters are
+			presented by the same bytes, which means that texts encoded in ASCII are also encoded in
+			UTF-8, so UTF-8 is largely backwards-compatible.
+		</p><p>
+			Most configuration in MMBase is done by use of XML nowadays. Unicode characters can always be
+			presented in XML documents by the use of `entities' or by the use of UTF-8 (the default
+			character encoding for XML-documents, IIRC).
+		</p><p>
+			Though Java strings can contain any unicode character, usually Java-code cannot be in
+			e.g. UTF-8. I think java code must be in ISO-8859-1 (right?), so if a unicode character
+			outside the range of ISO-8859-1 has to be presented in Java source code then it has to be
+			escaped by the use of the \u notation.
+		</p><p>
+			This also is valid for Java `property files'. Property files are not seldom used as resources
+			for translations, so it is important to realize that they must be encoded in ISO-8859-1, but
+			that it <span class="emphasis"><em>is</em></span> possible to use characters from the complete unicode set. You
+			might want to use a tool to do the escaping for you though if you try to type a language of
+			which most characters are not in ISO-8859-1 (e.g. Greek, Russian and most Asian languages).
+		</p><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="images" />2.1. Non-ascii in Images</h3></div></div></div><p>
+        Usually the 'convert' tool of imagemagick is used to resize, turn or otherwise convert
+        MMBase images. It is also possible in this way to add text to existing Images. 
+      </p><p>
+        The java strings are then fed to the 'convert' tool by a runtime call. The convert-tool
+        expects the string to be encoded according to UTF-8. It is not possible to tell this to
+        Runtime.exec, neither is it clear how you should inform Java about this.
+      </p><p>
+        The current implementation works, also for non-ascii characters, if the java environment is
+        configured for UTF-8. In Linux this is the case if e.g. the LC_ALL environment variable is
+        set to "en_US.UTF-8" or "nl_NL.UTF-8" or so.
+      </p></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="translations" />3. Localization - Translations</h2></div></div></div><p>
+			On a few parts in MMBase there can be found texts in different languages. A language is
+			always indicated by a two letter code from ISO 639 (note that this is for languages, not
+			countries).
+		</p><p>
+			The internationalization of MMBase currently only extends to the real user interface
+			parts, by which is meant in practice `content editors'. There does not yet exist an
+			internationalized administration user interface. Another thing which one might
+			imagine subject to internationalization are error messages, specifically those which
+			can appear to users and templaters; all error messages from the MMCI and the MMBase
+			Taglib can now only appear in English (or broken English). Some of these messages,
+			like Security exceptions (`permission denied'), can occasionally appear to editor
+			users.
+		</p><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="builder" />3.1. Builders</h3></div></div></div><p>
+				`Builders' or `Node-types' are defined by the use of XML-files in MMBase. The description
+				of the builder, complete with `GUI' names is present in the XML file, together with the
+				GUI-names of the fields of this builder. It is easy to add translations. Simply duplicate
+				the tags you want to translate, change the 'xml:lang' attribute and provide the
+				translation. A good start are the `core'-builders. The translated builder and field names
+				will be available in generic editors and for example also in the editwizards.
+			</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="jspeditors" />3.2. Generic JSP-editors</h3></div></div></div><p>
+				The generic JSP-editor does use some text of itself. These messages are internationalized
+				and can be translated by adding a
+				org.mmbase.applications.jsp.editors.editors_&lt;language&gt;.properties resource file
+				containing the new translations.
+			</p><p>
+				Translations for a few languages are available in the mmbase.jar but I think more can be
+				put in the WEB-INF/classes/org/mmbase/applications/jsp/editors/ directory too (so there is
+				no need to make a new mmbase jar). You can send the translations to the community though
+				and then they can be placed in the mmbase jar for common usage.
+			</p></div><div class="section" lang="en"><div class="titlepage"><div><div><h3 class="title"><a id="editwizards" />3.3. Editwizards</h3></div></div></div><p>
+				Also the editwizards are relatively well internationalized. They output HTML-pages in
+				UTF-8, so all characters can be present. Translations for the `current' language are
+				present in a `prompts'.xsl. The default (English) one is next to the other editwizard
+				XSL's, but it can be overridden by placing a translation in
+				&lt;editwizard-dir&gt;/data/&lt;language&gt;/xsl/prompts.xsl. A few examples are shipped
+				with the 1.6 MMBase distribution.
+			</p><p>
+				In the editwizard `schema' XML's the prompt for a field can be explicitly stated. If you
+				omit this prompt though the internationalized version of the builder is used in stead.
+			</p><p>
+				The schema XML itself is also internationalized, and titles, prompts and other
+				messages in these files can be present in more than one
+				language. This is done by the 'xml:lang' attribute. There are
+				bunch of `example' and `library' wizard xmls available in
+				&lt;editwizard-dir&gt;data/samples and
+				&lt;editwizard-dir&gt;data/lib, so for a nice and complete
+				localization to your language, it would be nice to translate
+				those too (search for the already present elements with an
+				xml:lang attribute).
+			</p></div></div><div class="section" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a id="languagesetting" />4. Language setting</h2></div></div></div><p>
+			In the mmbaseroot.xml also the `default language' can be set, which is used if no language
+			is set.
+		</p><p>
+			The language can also be set explicitly in the Cloud of the bridge (using the 'setLocale'
+			function). GUI-names obtained from such a cloud will be localized according to this setting
+			(if possible)
+		</p><p>
+			The MMBase taglib provides the `locale' tag, which sets the language in cloud-tags in
+			surrounds, but also informs other less MMBase specific tags (the time tag), about the locale
+			settings it contains.
+		</p></div></div><hr xmlns="" /><p xmlns="">
+      This is part of the <a href="http://www.mmbase.org">MMBase</a> documentation.
+    </p><p xmlns="">
+      For questions and remarks about this documentation mail to: 
+      <a href="/cdn-cgi/l/email-protection#086c676b7d656d667c697c6167664865656a697b6d26677a6f"><span class="__cf_email__" data-cfemail="0b6f64687e666e657f6a7f6264654b6666696a786e2564796c">[email&#160;protected]</span></a></p><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script></body></html>
